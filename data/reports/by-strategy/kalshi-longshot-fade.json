@@ -1,45 +1,90 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "Silver": {
+        "fees_usd": 1.45,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 6.165,
+        "trades": 3
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 137,
+        "entry_price": 0.92,
+        "instrument_id": "kalshi:KXSILVERD-26SEP2317-T68.75",
+        "mark_price": 0.89,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERD-26SEP2317-T68.75/orderbook?depth=20",
+        "mark_status": "exit_at_bid_conservative",
+        "ticker": "KXSILVERD-26SEP2317-T68.75",
+        "unrealized_pnl_usd": -4.11
+      },
+      {
+        "contracts": 137,
+        "entry_price": 0.95,
+        "instrument_id": "kalshi:KXSILVERD-26SEP2317-T69",
+        "mark_price": 0.92,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERD-26SEP2317-T69/orderbook?depth=20",
+        "mark_status": "exit_at_bid_conservative",
+        "ticker": "KXSILVERD-26SEP2317-T69",
+        "unrealized_pnl_usd": -4.11
+      },
+      {
+        "contracts": 137,
+        "entry_price": 0.97,
+        "instrument_id": "kalshi:KXSILVERD-26SEP2317-T69.25",
+        "mark_price": 0.94,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERD-26SEP2317-T69.25/orderbook?depth=20",
+        "mark_status": "exit_at_bid_conservative",
+        "ticker": "KXSILVERD-26SEP2317-T69.25",
+        "unrealized_pnl_usd": -4.11
+      }
+    ],
+    "trades_by_venue": {
+      "kalshi": 3
+    },
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
   "closed_trades": 0,
   "display_name": "Longshot Fade",
-  "entries": 0,
-  "equity_usd": 100000,
+  "entries": 3,
+  "equity_usd": 99986.22,
   "exits": 0,
-  "fees_paid_usd": 0,
+  "fees_paid_usd": 1.45,
   "market_type": "Kalshi event contract",
-  "open_positions": 0,
+  "open_positions": 3,
   "origin": {
     "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test - the competition is the test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "return_pct": -0.0138,
   "rules": {
     "entry": "YES mid <= 0.10, spread <= 3 cents, at least 2 hours to close, top-3 liquidity strikes only.",
     "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 0,
+  "slippage_paid_usd": 6.165,
   "strategy_id": "kalshi-longshot-fade",
   "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": 0,
+  "traded_market_types": [
+    "Kalshi event contract"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -12.33,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick."
+    "3 ledger records so far: 1 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 1.45 USD of fees and 6.17 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -12.33 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

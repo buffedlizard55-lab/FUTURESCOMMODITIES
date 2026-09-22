@@ -1,45 +1,96 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "Cocoa": {
+        "fees_usd": 1.287496,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 13.1,
+        "trades": 2
+      },
+      "Coffee": {
+        "fees_usd": 0.662279,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.0905,
+        "trades": 1
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 86,
+        "entry_price": 487.1,
+        "instrument_id": "moex:CCG7",
+        "mark_price": 487.3,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "CCG7",
+        "unrealized_pnl_usd": -2.030217
+      },
+      {
+        "contracts": 90,
+        "entry_price": 468.4,
+        "instrument_id": "moex:CCX6",
+        "mark_price": 468.3,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCX6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "CCX6",
+        "unrealized_pnl_usd": -1.062323
+      },
+      {
+        "contracts": 181,
+        "entry_price": 2.779,
+        "instrument_id": "moex:KCX6",
+        "mark_price": 2.778,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/KCX6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "KCX6",
+        "unrealized_pnl_usd": -1.796647
+      }
+    ],
+    "trades_by_venue": {
+      "moex_forts": 3
+    },
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
   "closed_trades": 0,
   "display_name": "Agri Trend",
-  "entries": 0,
-  "equity_usd": 100000,
+  "entries": 3,
+  "equity_usd": 94973.840962,
   "exits": 0,
-  "fees_paid_usd": 0,
+  "fees_paid_usd": 1.949775,
   "market_type": "Exchange-listed commodity future",
-  "open_positions": 0,
+  "open_positions": 3,
   "origin": {
     "claim": "Soft-commodity futures on MOEX trade in long supply-driven trends that are visible in their own official settlement history.",
     "kind": "market_structure",
     "status": "hypothesis under test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "return_pct": -5.0262,
   "rules": {
     "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
     "exit": "Exit when the momentum flips sign.",
     "sizing": "Target notional, capped by published volume and open interest."
   },
-  "slippage_paid_usd": 0,
+  "slippage_paid_usd": 13.1905,
   "strategy_id": "moex-agri-trend",
   "thesis": "Follow the official settlement trend in MOEX soft commodities and grains, taking the strongest movers on each side and holding while the trend persists.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": 0,
+  "traded_market_types": [
+    "Exchange-listed commodity future"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -4.889187,
   "username": "@agri-trend",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Exchange-listed commodity future markets every tick."
+    "3 ledger records so far: 2 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 1.95 USD of fees and 13.19 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -4.89 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
