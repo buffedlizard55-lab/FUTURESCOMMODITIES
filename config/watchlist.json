@@ -1,0 +1,57 @@
+{
+  "_readme": [
+    "Watchlist resolution rules. The engine resolves these rules against the LIVE official Kalshi",
+    "series list on every tick and records which series matched, so the universe is discovered",
+    "and verifiable rather than hand-asserted. Anything that does not resolve is reported as",
+    "unresolved in data/registry/universe.json and is never traded.",
+    "",
+    "keyword (regex, case-insensitive) is matched against '<ticker> <title>'."
+  ],
+  "kalshi": {
+    "categories": ["Commodities", "Economics", "Financials", "Crypto"],
+    "series_rules": [
+      { "id": "energy", "group": "Energy", "keyword": "WTI|BRENT|CRUDE|NATGAS|NATURAL GAS|GASOLINE|DIESEL|HEATING OIL|PROPANE|POWER|ELECTRIC" },
+      { "id": "precious", "group": "Precious Metals", "keyword": "GOLD|SILVER|PLATINUM|PALLADIUM" },
+      { "id": "base", "group": "Industrial Metals", "keyword": "COPPER|ALUMIN|NICKEL|ZINC|LEAD|STEEL|LITHIUM" },
+      { "id": "grains", "group": "Grains & Oilseeds", "keyword": "CORN|WHEAT|SOY|OATS|RICE|CANOLA" },
+      { "id": "softs", "group": "Soft Commodities", "keyword": "COFFEE|COCOA|SUGAR|COTTON|ORANGE" },
+      { "id": "livestock", "group": "Livestock & Dairy", "keyword": "CATTLE|HOG|PORK|MILK|BUTTER|CHEESE|WHEY|FEEDER" },
+      { "id": "carbon", "group": "Carbon & Environment", "keyword": "CARBON|EMISSION|CREDIT|RIN|RGGI" },
+      { "id": "equity_index", "group": "Equity Index", "keyword": "S&P|SP500|NASDAQ|DOW|RUSSELL" },
+      { "id": "rates", "group": "Interest Rates", "keyword": "FED|RATE|CPI|INFLATION|TREASURY|YIELD" },
+      { "id": "fx", "group": "FX", "keyword": "EUR/USD|USD/JPY|DOLLAR|EURO|YEN" },
+      { "id": "crypto", "group": "Crypto", "keyword": "BITCOIN|BTC|ETHEREUM|ETH|SOLANA|XRP" }
+    ],
+    "exclude_keyword": "NBA|NFL|MLB|WNBA|NHL|TENNIS|OSCAR|EMMY|GRAMMY|ELECTION|PRESIDENT|GAME|MATCH|ALBUM|MOVIE",
+    "max_series": 60,
+    "max_quoted_markets": 45,
+    "min_volume_24h_for_quote": 0,
+    "quote_orderbooks_for": "top_by_volume_and_spread"
+  },
+  "kalshi_margin_perps": {
+    "include_asset_classes": ["Commodities", "Metals", "Crypto"],
+    "max_quoted": 12
+  },
+  "moex": {
+    "enabled": true,
+    "asset_codes": ["GOLD", "SILV", "PLT", "PLTM", "SLV", "COPPER", "NICKEL", "ALUM", "COCOA", "COFFEE", "SUGAR", "WHEAT", "AI92", "AI95"],
+    "max_contracts_per_asset": 2,
+    "board": "RFUD"
+  },
+  "benchmarks": {
+    "eia": {
+      "enabled": true,
+      "series": [
+        { "id": "RCLC1", "name": "Cushing OK WTI spot price FOB (daily, official EIA)", "page": "https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=RCLC1&f=D" },
+        { "id": "RNGWHHD", "name": "Henry Hub natural gas spot price (daily, official EIA)", "page": "https://www.eia.gov/dnav/ng/hist/LeafHandler.ashx?n=NG&s=RNGWHHD&f=D" }
+      ]
+    },
+    "usda_ams": {
+      "enabled": true,
+      "reports": [
+        { "slug_id": 2453, "name": "National Daily Boxed Beef Cutout & Boxed Beef Cuts - Negotiated Sales", "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports" },
+        { "slug_id": 2466, "name": "5 Area Daily Weighted Average Direct Slaughter Cattle - Negotiated", "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports" }
+      ]
+    }
+  }
+}

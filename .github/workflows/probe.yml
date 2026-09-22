@@ -1,75 +1,10 @@
 name: probe
 on:
-  push:
-    branches: [arena/01a0ca5d-futurescommodities]
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
-  probe4:
+  noop:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: probe4
-        run: |
-          set +e
-          mkdir -p probe; O=probe/results4.txt; : > $O
-          K="https://api.elections.kalshi.com/trade-api/v2"
-          {
-          echo "### KALSHI CORS matrix"
-          for org in "" "https://buffedlizard55-lab.github.io" "https://kalshi.com" "https://example.com"; do
-            if [ -z "$org" ]; then
-              code=$(curl -s -o /tmp/a -w "%{http_code}" --max-time 20 "$K/markets?limit=1"); echo "no-Origin -> $code"
-            else
-              code=$(curl -s -o /tmp/a -w "%{http_code}" -H "Origin: $org" --max-time 20 "$K/markets?limit=1"); echo "Origin=$org -> $code  ACAO=$(curl -s -D - -o /dev/null -H "Origin: $org" --max-time 20 "$K/markets?limit=1" | grep -i 'access-control-allow-origin' | tr -d '\r')"
-            fi
-          done
-          echo "OPTIONS preflight ->"; curl -s -o /dev/null -w "%{http_code}\n" -X OPTIONS -H "Origin: https://buffedlizard55-lab.github.io" -H "Access-Control-Request-Method: GET" --max-time 20 "$K/markets?limit=1"
-          echo "### KALSHI WS handshake (with browser Origin)"
-          for host in "wss://api.elections.kalshi.com/trade-api/ws/v2" "wss://external-api-ws.kalshi.com/trade-api/ws/v2"; do
-            url=$(echo $host | sed 's|^wss://|https://|')
-            echo -n "$host -> "; curl -s -o /dev/null -w "%{http_code}\n" --max-time 15 -H "Connection: Upgrade" -H "Upgrade: websocket" -H "Sec-WebSocket-Version: 13" -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" -H "Origin: https://buffedlizard55-lab.github.io" "$url"
-          done
-          } >> $O 2>&1
-          python3 - >> $O 2>&1 <<'PY'
-          import json,urllib.request,urllib.parse,re
-          def get(u,timeout=30):
-              return urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0 research"}),timeout=timeout).read()
-          print("### MOEX quotes/history")
-          try:
-              d=json.loads(get("https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off&iss.only=securities,marketdata"))
-              for sec in ["securities","marketdata"]:
-                  blk=d[sec]; cols=blk["columns"]
-                  for row in blk["data"][:1]:
-                      print(sec, {c:v for c,v in zip(cols,row) if v not in (None,"")})
-          except Exception as e: print("MOEX quote ERR",e)
-          try:
-              d=json.loads(get("https://iss.moex.com/iss/history/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off&from=2026-09-01&till=2026-09-22"))
-              blk=d["history"]; print("history cols:",blk["columns"][:20]); print("rows:",len(blk["data"]));
-              for row in blk["data"][-2:]: print("  ",dict(zip(blk["columns"],row)))
-          except Exception as e: print("MOEX history ERR",e)
-          print("### EIA series discovery")
-          for u in ["https://www.eia.gov/dnav/pet/pet_pri_fut_s1_d.htm",
-                    "https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls",
-                    "https://www.eia.gov/dnav/ng/hist_xls/RNGWHHDd.xls"]:
-              try:
-                  b=get(u,40); print(u,"bytes",len(b))
-                  if u.endswith("htm"):
-                      txt=b.decode("utf8","ignore")
-                      ids=sorted(set(re.findall(r"[A-Z]{3,4}[A-Z0-9_]{2,12}", txt)))[:40]
-                      print("   looks like ids:",ids[:40])
-              except Exception as e: print(u,"ERR",e)
-          print("### USDA AMS report list sample")
-          try:
-              d=json.loads(get("https://mpr.datamart.ams.usda.gov/services/v1.1/reports?q=livestock"))
-              print("reports:",[(x["slug_id"],x["report_title"][:60]) for x in d][:15])
-          except Exception as e: print("USDA ERR",e)
-          print("### SGX attempts")
-          for u in ["https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity",
-                    "https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=code&value=TF",
-                    "https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=name&value=rubber"]:
-              try: print(u,"->",get(u)[:200])
-              except Exception as e: print(u,"ERR",e)
-          PY
-          git config user.name "probe-bot"; git config user.email "probe@users.noreply.github.com"
-          git add -A; git commit -m "probe: results4 [skip ci]"; git push
+      - run: echo "manual probe placeholder"
