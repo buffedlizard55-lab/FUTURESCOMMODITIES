@@ -1,0 +1,353 @@
+{
+  "generated_at": "2026-09-22T19:25:13.392Z",
+  "strategies": [
+    {
+      "display_name": "Longshot Fade",
+      "has_exit_rule": false,
+      "id": "kalshi-longshot-fade",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
+        "kind": "documented_anomaly",
+        "status": "hypothesis under test - the competition is the test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "YES mid <= 0.10, spread <= 3 cents, at least 2 hours to close, top-3 liquidity strikes only.",
+        "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
+        "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
+      },
+      "sizing": {
+        "max_spread_cents": 3,
+        "notional_usd": 4000
+      },
+      "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
+      "username": "@fade-the-crowd",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "display_name": "Favourite Carry",
+      "has_exit_rule": false,
+      "id": "kalshi-favourite-carry",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
+        "kind": "documented_anomaly",
+        "status": "hypothesis under test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "YES mid >= 0.90, spread <= 3 cents, closes within 48 hours.",
+        "exit": "No exit: held to settlement.",
+        "sizing": "Target notional, capped by verified resting depth."
+      },
+      "sizing": {
+        "max_hours_to_close": 48,
+        "max_spread_cents": 3,
+        "notional_usd": 4000
+      },
+      "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
+      "username": "@carry-collector",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "display_name": "Spread Capture",
+      "has_exit_rule": false,
+      "id": "kalshi-spread-capture",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "Kalshi charges no maker fee on standard series, so resting inside a wide commodity spread captures the bid-ask spread at zero commission if it gets filled.",
+        "kind": "market_structure",
+        "status": "structural - no forecast required"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Spread >= 3 cents, resting bid at best bid + 1 cent, never crossing the offer.",
+        "exit": "Working orders expire after the configured TTL; positions are marked to the opposite side of the book.",
+        "sizing": "One resting order per market, size from verified depth at the resting price."
+      },
+      "sizing": {
+        "min_spread_cents": 3,
+        "notional_usd": 2500
+      },
+      "thesis": "Rest passive bids one cent inside the spread on the most liquid commodity contracts and rely on the exchange order flow to cross them. The maker fee multiplier is zero for standard series per the official fee schedule, so a fill at the resting price is pure spread capture.",
+      "username": "@spread-hunter",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "display_name": "Extreme Reversion",
+      "has_exit_rule": true,
+      "id": "kalshi-extreme-reversion",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "Single-day price gaps in thin commodity ladders often overshoot and partially retrace, because the gap is driven by order-flow rather than information.",
+        "kind": "market_structure",
+        "status": "hypothesis under test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Last completed daily candle change >= 4 standard deviations of the series history, trade the opposite direction.",
+        "exit": "Exit when the mid returns to within half the gap, or when the market closes.",
+        "sizing": "Target notional, capped by verified depth."
+      },
+      "sizing": {
+        "notional_usd": 3000,
+        "z_threshold": 4
+      },
+      "thesis": "When a series candle history shows a move of more than four standard deviations of its own daily changes, take the opposite side of that move in the front ladder. Measured entirely from Kalshi's own official candle payload.",
+      "username": "@vol-crusher",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "display_name": "Cheap Momentum",
+      "has_exit_rule": true,
+      "id": "kalshi-cheap-momentum",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "Cheap YES contracts that are already trending up can keep trending when the underlying commodity is moving, giving convex payoffs; this is the explicit counter-hypothesis to the longshot fade.",
+        "kind": "market_structure",
+        "status": "hypothesis under test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "YES mid <= 0.10, 5-day candle momentum > 0, spread <= 3 cents.",
+        "exit": "Exit when 5-day momentum turns negative or the market closes.",
+        "sizing": "Target notional, capped by depth."
+      },
+      "sizing": {
+        "max_spread_cents": 3,
+        "notional_usd": 2500
+      },
+      "thesis": "Buy YES at 10 cents or less only when the series own official candle history is trending up. This strategy is deliberately the opposite bet to @fade-the-crowd, so the leaderboard measures which view of cheap contracts is right.",
+      "username": "@tail-rider",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "display_name": "Ladder Arbitrage",
+      "has_exit_rule": false,
+      "id": "kalshi-ladder-arbitrage",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
+        "kind": "market_structure",
+        "status": "structural - no forecast required"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Monotonicity violation of at least 2 cents between two strikes of the same series and expiry.",
+        "exit": "Held to settlement (the two legs converge by construction).",
+        "sizing": "Target notional per leg, capped by depth."
+      },
+      "sizing": {
+        "min_violation": 0.02,
+        "notional_usd": 2000
+      },
+      "thesis": "Within one series and one expiry, the YES price must fall as the strike rises (for greater-than markets). When the published book violates that ordering by more than the configured tolerance, buy the underpriced YES leg and the NO of the overpriced leg.",
+      "username": "@ladder-arb",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "display_name": "Oil Trend Rider",
+      "has_exit_rule": true,
+      "id": "kalshi-oil-trend",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "Energy event contracts follow the underlying crude complex with a lag; the exchange own candle history is a verified, free proxy for that trend.",
+        "kind": "market_structure",
+        "status": "hypothesis under test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "|5-day candle momentum| >= 2%, enter in the direction of the trend, YES mid between 0.2 and 0.6.",
+        "exit": "Exit when momentum flips sign or the market closes.",
+        "sizing": "Target notional, capped by depth."
+      },
+      "sizing": {
+        "min_momentum": 0.02,
+        "notional_usd": 3000
+      },
+      "thesis": "Trade the Kalshi WTI/Brent ladders in the direction of the verified trend in the same series own official candle history, taking the side whose price is closest to a coin flip so that a correct directional call pays multiples.",
+      "username": "@barrel-rider",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "display_name": "Perp Surfer",
+      "has_exit_rule": true,
+      "id": "kalshi-perp-trend",
+      "implemented": true,
+      "market_type": "Kalshi perpetual future",
+      "origin": {
+        "claim": "Listed metal perpetuals trend after their own mark price moves when the underlying spot market is closed, because the perpetual must carry the overnight move.",
+        "kind": "market_structure",
+        "status": "hypothesis under test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Price changed since the previous committed snapshot, with a live two-sided quote.",
+        "exit": "Exit when the direction of the last change flips.",
+        "sizing": "Target notional, capped by a share of published 24h notional volume."
+      },
+      "sizing": {
+        "notional_usd": 5000
+      },
+      "thesis": "Take the direction of the last verified move in each Kalshi metal perpetual and hold it, re-evaluating on every snapshot. The perpetual is the only instrument in this project that trades continuously, so it is where an overnight trend can actually be captured.",
+      "username": "@perp-surfer",
+      "venues": [
+        "kalshi_margin"
+      ]
+    },
+    {
+      "display_name": "Metals Trend",
+      "has_exit_rule": true,
+      "id": "moex-metals-trend",
+      "implemented": true,
+      "market_type": "Exchange-listed commodity future",
+      "origin": {
+        "claim": "Cross-sectional momentum in metals futures is a long-documented effect; this strategy simply buys the strongest and shorts the weakest contract it can actually price.",
+        "kind": "market_structure",
+        "status": "hypothesis under test with a verified, free official data feed"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "20-observation settlement momentum, long the top mover and short the bottom mover on each side when |momentum| >= 1%.",
+        "exit": "Exit when the momentum flips sign.",
+        "sizing": "Target notional, capped by published volume and open interest."
+      },
+      "sizing": {
+        "min_momentum": 0.01,
+        "notional_usd": 6000
+      },
+      "thesis": "Rank the MOEX metal futures by their official settlement momentum over the cached history window and take the extremes, long the strongest and short the weakest. Trades only when the exchange publishes both a live quote and USD valuation inputs.",
+      "username": "@metal-trend",
+      "venues": [
+        "moex_forts"
+      ]
+    },
+    {
+      "display_name": "Calendar Carry",
+      "has_exit_rule": true,
+      "id": "moex-calendar-carry",
+      "implemented": true,
+      "market_type": "Exchange-listed commodity future",
+      "origin": {
+        "claim": "The spread between two expiries of the same commodity is a financing/storage carry; when its annualised value exceeds the exchange-published round-trip cost, the carry is capturable.",
+        "kind": "market_structure",
+        "status": "structural - measured, not forecast"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Annualised calendar spread >= 12% after measured round-trip fees.",
+        "exit": "Exit when the annualised spread compresses below 4%, or when either contract is within 5 days of expiry.",
+        "sizing": "Target notional per leg, capped by both contracts published liquidity."
+      },
+      "sizing": {
+        "exit_annualised_carry": 0.04,
+        "min_annualised_carry": 0.12,
+        "notional_usd": 5000
+      },
+      "thesis": "Buy the near expiry and sell the far expiry (or the reverse) whenever the annualised spread between the official mid prices exceeds the exchange published round-trip fee converted at the official USD/RUB rate. Both legs are real orders with real fees.",
+      "username": "@calendar-carry",
+      "venues": [
+        "moex_forts"
+      ]
+    },
+    {
+      "display_name": "Agri Trend",
+      "has_exit_rule": true,
+      "id": "moex-agri-trend",
+      "implemented": true,
+      "market_type": "Exchange-listed commodity future",
+      "origin": {
+        "claim": "Soft-commodity futures on MOEX trade in long supply-driven trends that are visible in their own official settlement history.",
+        "kind": "market_structure",
+        "status": "hypothesis under test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
+        "exit": "Exit when the momentum flips sign.",
+        "sizing": "Target notional, capped by published volume and open interest."
+      },
+      "sizing": {
+        "min_momentum": 0.015,
+        "notional_usd": 5000
+      },
+      "thesis": "Follow the official settlement trend in MOEX soft commodities and grains, taking the strongest movers on each side and holding while the trend persists.",
+      "username": "@agri-trend",
+      "venues": [
+        "moex_forts"
+      ]
+    },
+    {
+      "display_name": "Cross-Venue Basis",
+      "has_exit_rule": true,
+      "id": "cross-venue-basis",
+      "implemented": true,
+      "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
+      "origin": {
+        "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge.",
+        "kind": "market_structure",
+        "status": "structural - two real legs on two real venues"
+      },
+      "pairs": [
+        {
+          "metal": "Gold",
+          "moexAsset": "GOLD",
+          "perpTicker": "KXGOLDPERP"
+        },
+        {
+          "metal": "Silver",
+          "moexAsset": "SILV",
+          "perpTicker": "KXSILVERPERP"
+        },
+        {
+          "metal": "Platinum",
+          "moexAsset": "PLT",
+          "perpTicker": "KXPLATINUMPERP"
+        },
+        {
+          "metal": "Palladium",
+          "moexAsset": "PALL",
+          "perpTicker": "KXPALLADIUMPERP"
+        }
+      ],
+      "rules": {
+        "entry": "Basis >= 0.5% between the perpetual mid and the MOEX future mid.",
+        "exit": "Exit when the basis compresses below 0.1%.",
+        "sizing": "Target notional per leg, capped by each venue published liquidity."
+      },
+      "sizing": {
+        "exit_basis": 0.001,
+        "min_basis": 0.005,
+        "notional_usd": 4000
+      },
+      "thesis": "Compare the Kalshi metal perpetual with the front MOEX future on the same metal. When the percentage spread between them is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
+      "username": "@basis-hunter",
+      "venues": [
+        "kalshi_margin",
+        "moex_forts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "_readme": [
+    "Catalog of data sources with their official documentation/terms links and the exact",
+    "verification status this project established by testing the endpoint from GitHub Actions",
+    "on 2026-09-22 (see docs/VERIFICATION.md for the raw evidence and probe outputs).",
+    "",
+    "status values:",
+    "  automated            - the platform pulls this source on every tick, keyless and official",
+    "  automated_partial    - usable, but only part of the source is machine-readable / current",
+    "  blocked_by_data_terms- automated collection not permitted; values are cited manually with links",
+    "  not_automated_yet    - official endpoint exists/plausible but not wired up yet (documented blocker)",
+    "  not_yet_verified     - not checked yet; no claims made about it"
+  ],
+  "venues": [
+    {
+      "id": "kalshi",
+      "name": "Kalshi (event contracts)",
+      "type": "event_contract_exchange",
+      "status": "automated",
+      "base_url": "https://api.elections.kalshi.com/trade-api/v2",
+      "also_supported": "https://external-api.kalshi.com/trade-api/v2",
+      "docs_url": "https://docs.kalshi.com/",
+      "terms_url": "https://kalshi.com/terms",
+      "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+      "evidence": [
+        "GET /exchange/status -> HTTP 200 {\"exchange_active\":true,\"trading_active\":true,...} (2026-09-22)",
+        "GET /markets?status=open -> HTTP 200 with live markets (2026-09-22)",
+        "GET /markets/{ticker}/orderbook -> HTTP 200 orderbook_fp with real resting sizes (2026-09-22)",
+        "GET /series?category=Commodities -> HTTP 200, 150 series (2026-09-22)",
+        "Official docs state the order book endpoint requires no authentication."
+      ],
+      "microstructure_notes": [
+        "Order books contain bids only. A NO bid at y equals a YES ask at (1-y); a YES bid at x equals a NO ask at (1-x).",
+        "Taker fee = roundup(M * 0.07 * C * P * (1-P)); maker fee = roundup(M * 0.0175 * C * P * (1-P)) with M defaulting to 0.",
+        "No settlement fee and no membership fee.",
+        "A foreign Origin header receives HTTP 403, so a browser page cannot call this API directly (verified 2026-09-22); the site therefore reads data files committed by the tick pipeline."
+      ]
+    },
+    {
+      "id": "kalshi_margin",
+      "name": "Kalshi Perpetual Futures (Perps API, /margin namespace)",
+      "type": "perpetual_futures_exchange",
+      "status": "automated",
+      "base_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets",
+      "docs_url": "https://docs.kalshi.com/margin",
+      "evidence": [
+        "GET /margin/markets?limit=200 -> HTTP 200 (2026-09-22).",
+        "Tickers observed live: KXBTCPERP, KXETHPERP, KXSOLPERP, KXXRPPERP, KXDOGEPERP, KXHBARPERP, KXGOLDPERP, KXSILVERPERP, KXPLATINUMPERP, KXPALLADIUMPERP, KXADAPERP, KXLINKPERP, KXLTCPERP, KXBNBPERP, KXVVVPERP, KXZECPERP, KXNEARPERP, KXSUIPERP, KXXLMPERP, KXDOTPERP, KXHYPEPERP, KXAAVEPERP, KXKSHIBPERP, KXWLDPERP.",
+        "Each record carries bid, ask, contract_size, leverage estimates, liquidation mark price with an epoch-ms timestamp."
+      ],
+      "limitations": [
+        "No official perp fee schedule was retrieved in this project, so perp trades store fee_usd = null with status 'not_applied_fee_schedule_unverified' instead of assuming zero.",
+        "Perp funding is recorded when present in the payload; otherwise it is flagged as not applied."
+      ]
+    },
+    {
+      "id": "moex_forts",
+      "name": "Moscow Exchange (MOEX) FORTS derivatives market",
+      "type": "futures_exchange",
+      "status": "automated",
+      "base_url": "https://iss.moex.com/iss",
+      "docs_url": "https://iss.moex.com/iss/reference/",
+      "evidence": [
+        "GET /iss/engines/futures/markets/forts/securities.json -> HTTP 200, 503 contracts (2026-09-22).",
+        "GET /iss/engines/futures/markets/forts/securities/GDZ6.json -> HTTP 200 with BID 4432.2 / OFFER 4432.3, SETTLEPRICE 4431.5, OPENPOSITION 264778, VOLTODAY 156788 (2026-09-22).",
+        "GET /iss/history/engines/futures/markets/forts/securities/GDZ6.json?from=2026-09-01 -> HTTP 200 with daily OPEN/LOW/HIGH/CLOSE/SETTLEPRICE/VOLUME/OPENPOSITION rows.",
+        "Keyless: no registration or payment is required for these ISS endpoints."
+      ],
+      "covered_assets_verified": ["GOLD", "SILV", "SLV", "PLT", "PLTM", "COPPER", "NICKEL", "ALUM", "COCOA", "COFFEE", "SUGAR", "WHEAT", "AI92", "AI95"],
+      "limitations": [
+        "ISS publishes best bid/offer and aggregate volume/open interest, not per-level depth, so futures fills cannot be walked level-by-level the way Kalshi fills are.",
+        "Contracts whose FACEUNIT is not USD are excluded from trading until an official FX conversion step is added (the engine records the blocker on each attempt)."
+      ]
+    },
+    {
+      "id": "eia",
+      "name": "U.S. Energy Information Administration (daily benchmark series)",
+      "type": "government_data",
+      "status": "automated_partial",
+      "docs_url": "https://www.eia.gov/opendata/",
+      "evidence": [
+        "GET https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls -> HTTP 200, 494,592 bytes (2026-09-22).",
+        "GET https://www.eia.gov/dnav/ng/hist_xls/RNGWHHDd.xls -> HTTP 200, 294,400 bytes (2026-09-22).",
+        "The official NYMEX futures page is titled: 'NYMEX Futures Prices (Futures prices after April 5, 2024, are not available)' - so EIA cannot be used for current futures prices."
+      ],
+      "limitations": [
+        "Daily spot benchmark pages are parsed from the published HTML table; the engine records parse failures explicitly instead of guessing.",
+        "Only spot/benchmark series are used; the discontinued futures table is documented but not used for live pricing."
+      ]
+    },
+    {
+      "id": "usda_ams",
+      "name": "USDA Agricultural Marketing Service (Market News / My Market News)",
+      "type": "government_data",
+      "status": "automated_partial",
+      "docs_url": "https://mpr.datamart.ams.usda.gov/",
+      "evidence": [
+        "GET https://mpr.datamart.ams.usda.gov/services/v1.1/reports?q=livestock -> HTTP 200 with report catalog entries (slug ids 2451-2467 observed), e.g. 2453 'National Daily Boxed Beef Cutout & Boxed Beef Cuts - Negotiated' and 2466 '5 Area Daily Weighted Average Direct Slaughter Cattle - Negotiated' (2026-09-22)."
+      ],
+      "limitations": [
+        "Report payload schemas vary by report; the platform stores the retrieved report metadata and only wires a report into a signal once its fields are read and verified."
+      ]
+    },
+    {
+      "id": "cme",
+      "name": "CME Group (CME, CBOT, NYMEX, COMEX)",
+      "type": "futures_exchange",
+      "status": "blocked_by_data_terms",
+      "docs_url": "https://www.cmegroup.com/markets/products.html",
+      "terms_url": "https://www.cmegroup.com/trading/market-data-explanation-disclaimer.html",
+      "evidence": [
+        "Automated request from a GitHub Actions runner returned HTTP 403 with: 'This IP address is blocked due to suspected web scraping activity associated with it on this CMEgroup.com page. Use of scripts, software, spiders, robots, avatars, agents, tools or other scraping mechanisms is strictly prohibited by CME Group's website Data Terms of Use.' (2026-09-22)",
+        "Contract specifications were instead read manually from the official product pages and are cited with their URLs in docs/VERIFICATION.md."
+      ],
+      "verified_spec_sources": [
+        { "product": "CL - WTI Crude Oil", "code": "CL", "unit": "1,000 barrels", "tick": "0.01 per barrel = $10.00", "url": "https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html" },
+        { "product": "NG - Henry Hub Natural Gas", "code": "NG", "unit": "10,000 MMBtu", "tick": "0.001 per MMBtu = $10.00", "url": "https://www.cmegroup.com/markets/energy/natural-gas/natural-gas.contractSpecs.html" },
+        { "product": "GC - Gold", "code": "GC", "url": "https://www.cmegroup.com/markets/metals/precious/gold.contractSpecs.html", "spec_status": "page verified to exist; unit/tick fields stated on the page must be read at the source before use" },
+        { "product": "SI - Silver", "code": "SI", "url": "https://www.cmegroup.com/markets/metals/precious/silver.contractSpecs.html", "spec_status": "page verified to exist; unit/tick fields stated on the page must be read at the source before use" }
+      ],
+      "limitations": [
+        "No automated CME prices. Adding CME instruments to the leaderboard requires either a licensed data feed or an official file the operator is entitled to use; the import path is documented in docs/LIMITATIONS.md."
+      ]
+    },
+    {
+      "id": "ice",
+      "name": "ICE (Intercontinental Exchange)",
+      "type": "futures_exchange",
+      "status": "not_automated_yet",
+      "url": "https://www.ice.com/report-center",
+      "evidence": [
+        "https://www.ice.com/report/10 (ICE Futures Europe end-of-day report) returned a click-through page: 'End of day report packages in .csv format are available for purchase on a subscription basis.' (2026-09-22)"
+      ],
+      "limitations": ["ICE end-of-day commodity data is a paid subscription; no free official API was found. ICE-listed commodities (Brent, sugar No.11, cocoa, coffee, cotton, orange juice) are therefore catalogued but not priced automatically."]
+    },
+    {
+      "id": "lme",
+      "name": "London Metal Exchange",
+      "type": "futures_exchange",
+      "status": "not_automated_yet",
+      "url": "https://www.lme.com/",
+      "evidence": ["https://www.lme.com/api/prices -> HTTP 403 Cloudflare 'Just a moment...' challenge from the runner (2026-09-22)."],
+      "limitations": ["LME official prices are published on the website; automated retrieval is blocked by bot protection and LME data licensing. Aluminium, zinc, lead and nickel are therefore catalogued but priced only where another official venue quotes them (MOEX lists ALUM, NICKEL, COPPER)."]
+    },
+    {
+      "id": "eurex",
+      "name": "Eurex",
+      "type": "futures_exchange",
+      "status": "not_automated_yet",
+      "url": "https://www.eurex.com/",
+      "evidence": ["An API-shaped endpoint attempt (https://www.eurex.com/api/v1/derivatives-daily-prices) returned HTTP 404 (2026-09-22)."],
+      "limitations": ["Eurex publishes daily price files for registered users; the correct public endpoint still has to be identified and its terms reviewed."]
+    },
+    {
+      "id": "sgx",
+      "name": "Singapore Exchange (SGX)",
+      "type": "futures_exchange",
+      "status": "not_automated_yet",
+      "url": "https://www.sgx.com/derivatives",
+      "evidence": [
+        "https://api.sgx.com/derivatives/v1.0/contracts responds HTTP 200 but with {\"meta\":{\"code\":\"SGX_4020\",\"message\":\"Invalid or empty kind parameter.\"}} for the parameter combinations tried (kind=commodity; kind=commodity&by=code&value=TF) (2026-09-22)."
+      ],
+      "limitations": ["The service exists and is public, but the correct parameter scheme is unresolved; no SGX market is included in the universe yet."]
+    },
+    {
+      "id": "jpx",
+      "name": "Japan Exchange Group (JPX)",
+      "type": "futures_exchange",
+      "status": "not_automated_yet",
+      "url": "https://www.jpx.co.jp/english/derivatives/",
+      "evidence": ["Attempted statistics page returned HTTP 404 (2026-09-22)."],
+      "limitations": ["JPX publishes daily derivative data as files behind a page structure that must be located and checked for terms."]
+    },
+    {
+      "id": "euronext",
+      "name": "Euronext",
+      "type": "futures_exchange",
+      "status": "not_yet_verified",
+      "url": "https://www.euronext.com/en/products/commodities",
+      "limitations": ["Milling wheat and rapeseed (canola) futures are Euronext-listed; no endpoint has been tested yet, so nothing is claimed."]
+    },
+    {
+      "id": "b3",
+      "name": "B3 (Brasil, Bolsa, Balcão)",
+      "type": "futures_exchange",
+      "status": "not_automated_yet",
+      "url": "https://www.b3.com.br/en_us/market-data-and-indices/",
+      "evidence": ["https://arquivos.b3.com.br/apinegocios/ticker/DI1 returned HTTP 404 (2026-09-22)."],
+      "limitations": ["B3 publishes settlement prices for its agricultural and FX futures; the correct public file/API path still has to be identified."]
+    },
+    {
+      "id": "hkex",
+      "name": "Hong Kong Exchanges and Clearing",
+      "type": "futures_exchange",
+      "status": "not_yet_verified",
+      "url": "https://www.hkex.com.hk/Products/Listed-Derivatives",
+      "limitations": ["No endpoint tested yet."]
+    },
+    {
+      "id": "dme",
+      "name": "Dubai Mercantile Exchange (DME, part of CME Group)",
+      "type": "futures_exchange",
+      "status": "not_yet_verified",
+      "url": "https://www.theice.com/",
+      "limitations": ["DME Oman crude is cleared by CME/ICE infrastructure; given the CME access restriction and no tested DME feed, no DME instrument is included."]
+    }
+  ]
+}

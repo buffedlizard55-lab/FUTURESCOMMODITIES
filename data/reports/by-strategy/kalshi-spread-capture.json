@@ -1,0 +1,48 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 3,
+  "blocked_reasons": {
+    "resting_order_registered": 3
+  },
+  "closed_trades": 0,
+  "display_name": "Spread Capture",
+  "entries": 0,
+  "equity_usd": 100000,
+  "exits": 0,
+  "fees_paid_usd": 0,
+  "market_type": "Kalshi event contract",
+  "open_positions": 0,
+  "origin": {
+    "claim": "Kalshi charges no maker fee on standard series, so resting inside a wide commodity spread captures the bid-ask spread at zero commission if it gets filled.",
+    "kind": "market_structure",
+    "status": "structural - no forecast required"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": 0,
+  "rules": {
+    "entry": "Spread >= 3 cents, resting bid at best bid + 1 cent, never crossing the offer.",
+    "exit": "Working orders expire after the configured TTL; positions are marked to the opposite side of the book.",
+    "sizing": "One resting order per market, size from verified depth at the resting price."
+  },
+  "slippage_paid_usd": 0,
+  "strategy_id": "kalshi-spread-capture",
+  "thesis": "Rest passive bids one cent inside the spread on the most liquid commodity contracts and rely on the exchange order flow to cross them. The maker fee multiplier is zero for standard series per the official fee schedule, so a fill at the resting price is pure spread capture.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": 0,
+  "username": "@spread-hunter",
+  "venues": [
+    "kalshi"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick.",
+    "Orders it tried to place were not executed, for these recorded reasons: resting_order_registered (3). Each of those is a liquidity or data limitation of the real market, not a strategy result."
+  ]
+}

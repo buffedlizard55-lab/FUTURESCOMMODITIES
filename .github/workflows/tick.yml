@@ -1,0 +1,82 @@
+name: competition tick
+
+on:
+  schedule:
+    # Every 30 minutes: one "market moment" per tick — fetch, decide, fill, mark, publish.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      max_requests:
+        description: 'HTTP request budget for this tick'
+        required: false
+        default: '400'
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/**'
+      - 'docs/**'
+      - 'README.md'
+      - 'index.html'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tick
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The engine has no dependencies; it runs on the Node standard library and fetch().
+      - name: Run competition tick
+        run: node engine/tick.mjs --max-requests=${{ github.event.inputs.max_requests || '400' }}
+
+      - name: Verify every ledger trade against its run's provenance
+        run: node engine/verify.mjs
+
+      - name: Build strategy result reports
+        run: node engine/report.mjs
+
+      - name: Rebuild the public site from committed artifacts
+        run: node engine/build-site.mjs
+
+      - name: Commit published data and the site
+        run: |
+          set -e
+          git config user.name "competition-bot"
+          git config user.email "competition-bot@users.noreply.github.com"
+          git add data index.html
+          if git diff --cached --quiet; then
+            echo "no data changes this tick"
+          else
+            git commit -m "tick: $(date -u +%Y-%m-%dT%H:%MZ) market snapshot, ledger, leaderboard and site [skip ci]"
+            git push
+          fi
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Competition tick"
+            echo ""
+            if [ -f data/state/leaderboard.json ]; then
+              echo "| Trading as | Strategy | Market type | Equity (USD) | Return % | Open | Closed |"
+              echo "| --- | --- | --- | --- | --- | --- | --- |"
+              node -e "const l=require('./data/state/leaderboard.json');for(const r of l.leaderboard)console.log('| '+r.username+' | '+r.strategy_id+' | '+r.market_type+' | '+r.equity_usd+' | '+r.return_pct+' | '+r.open_positions+' | '+r.closed_trades+' |')"
+            fi
+            echo ""
+            if [ -f data/verification/report.json ]; then
+              echo "### Verification"
+              echo ""
+              node -e "const v=require('./data/verification/report.json');console.log(v.fully_verified+' of '+v.trades_checked+' trades fully verified; '+v.anomaly_count+' anomalies.')"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,28 @@
+### KALSHI CORS matrix
+no-Origin -> 200
+Origin=https://buffedlizard55-lab.github.io -> 403  ACAO=
+Origin=https://kalshi.com -> 200  ACAO=access-control-allow-origin: https://kalshi.com
+Origin=https://example.com -> 403  ACAO=
+OPTIONS preflight ->
+403
+### KALSHI WS handshake (with browser Origin)
+wss://api.elections.kalshi.com/trade-api/ws/v2 -> 401
+wss://external-api-ws.kalshi.com/trade-api/ws/v2 -> 401
+### MOEX quotes/history
+securities {'SECID': 'GDZ6', 'BOARDID': 'RFUD', 'SHORTNAME': 'GOLD-12.26', 'SECNAME': 'Фьючерсный контракт GOLD-12.26', 'PREVSETTLEPRICE': 4421.1, 'DECIMALS': 1, 'MINSTEP': 0.1, 'LASTTRADEDATE': '2026-12-18', 'LASTDELDATE': '2026-12-18', 'SECTYPE': 'GD', 'LATNAME': 'GOLD-12.26', 'ASSETCODE': 'GOLD', 'PREVOPENPOSITION': 258720, 'LOTVOLUME': 1, 'INITIALMARGIN': 33542.15, 'HIGHLIMIT': 4648.3, 'LOWLIMIT': 4193.9, 'STEPPRICE': 8.40954, 'LASTSETTLEPRICE': 4421.1, 'PREVPRICE': 4416, 'IMTIME': '2026-09-22 07:00:08', 'BUYSELLFEE': 49.08, 'SCALPERFEE': 24.54, 'NEGOTIATEDFEE': 16.36, 'EXERCISEFEE': 16.36, 'SETTLEPRICE_CLR': 4403.7}
+marketdata {'SECID': 'GDZ6', 'BOARDID': 'RFUD', 'BID': 4432.2, 'OFFER': 4432.3, 'SPREAD': 0.1, 'OPEN': 4418.4, 'HIGH': 4432.2, 'LOW': 4365.4, 'LAST': 4432.2, 'QUANTITY': 1, 'LASTCHANGE': 0.5, 'SETTLEPRICE': 4431.5, 'SETTLETOPREVSETTLE': 10.4, 'OPENPOSITION': 264778, 'NUMTRADES': 51910, 'VOLTODAY': 156788, 'VALTODAY': 58003086621, 'VALTODAY_USD': 688893217, 'UPDATETIME': '21:17:51', 'LASTCHANGEPRCNT': 0.01, 'TIME': '21:17:49', 'SETTLETOPREVSETTLEPRC': 0.23, 'SEQNUM': 20260922213252, 'SYSTIME': '2026-09-22 21:32:52', 'TRADEDATE': '2026-09-22', 'LASTTOPREVPRICE': 0.37, 'OICHANGE': 6058, 'OPENPERIODPRICE': 0.0, 'SWAPRATE': 0.0, 'TRADE_SESSION_DATE': '2026-09-22', 'LAST_RUB': 372728, 'SWAPRATE_CURR': 0.0}
+history cols: ['BOARDID', 'TRADEDATE', 'SECID', 'OPEN', 'LOW', 'HIGH', 'CLOSE', 'OPENPOSITIONVALUE', 'VALUE', 'VOLUME', 'OPENPOSITION', 'SETTLEPRICE', 'SWAPRATE', 'WAPRICE', 'CHANGE', 'QTY', 'NUMTRADES', 'SHORTNAME', 'ASSETCODE']
+rows: 15
+   {'BOARDID': 'RFUD', 'TRADEDATE': '2026-09-18', 'SECID': 'GDZ6', 'OPEN': 4429.3, 'LOW': 4417.0, 'HIGH': 4472.4, 'CLOSE': 4454.7, 'OPENPOSITIONVALUE': 85500441608.4, 'VALUE': 64479003111.17, 'VOLUME': 172111, 'OPENPOSITION': 229320, 'SETTLEPRICE': 4428.2, 'SWAPRATE': 0.0, 'WAPRICE': 4449.5, 'CHANGE': 0.89, 'QTY': 3, 'NUMTRADES': 64335, 'SHORTNAME': 'GOLD-12.26', 'ASSETCODE': 'GOLD'}
+   {'BOARDID': 'RFUD', 'TRADEDATE': '2026-09-21', 'SECID': 'GDZ6', 'OPEN': 4453.6, 'LOW': 4395.1, 'HIGH': 4457.6, 'CLOSE': 4416.0, 'OPENPOSITIONVALUE': 96190587662.4, 'VALUE': 56166759314.59, 'VOLUME': 150981, 'OPENPOSITION': 258720, 'SETTLEPRICE': 4421.1, 'SWAPRATE': 0.0, 'WAPRICE': 4423.7, 'CHANGE': -0.87, 'QTY': 1, 'NUMTRADES': 48814, 'SHORTNAME': 'GOLD-12.26', 'ASSETCODE': 'GOLD'}
+### EIA series discovery
+https://www.eia.gov/dnav/pet/pet_pri_fut_s1_d.htm bytes 23696
+   looks like ids: ['DOCTYPE', 'EER_EPD2F_PE1_Y', 'EER_EPD2F_PE2_Y', 'EER_EPD2F_PE3_Y', 'EER_EPD2F_PE4_Y', 'EER_EPLLPA_PE1_', 'EER_EPLLPA_PE2_', 'EER_EPLLPA_PE3_', 'EER_EPLLPA_PE4_', 'EER_EPMRR_PE1_Y', 'EER_EPMRR_PE2_Y', 'EER_EPMRR_PE3_Y', 'EER_EPMRR_PE4_Y', 'EER_EPMR_PE1_Y3', 'EER_EPMR_PE2_Y3', 'EER_EPMR_PE3_Y3', 'EER_EPMR_PE4_Y3', 'NOSCRIPT', 'NYMEX', 'ONCHANGE', 'PET_PRI_FUT_S1_', 'PUBLIC', 'RCLC1', 'RCLC2', 'RCLC3', 'RCLC4', 'SELECTED']
+https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls bytes 494592
+https://www.eia.gov/dnav/ng/hist_xls/RNGWHHDd.xls bytes 294400
+### USDA AMS report list sample
+reports: [(2451, 'National/Regional Daily Boneless Processing Beef/ Beef Trimm'), (2453, 'National Daily Boxed Beef Cutout & Boxed Beef Cuts - Negotia'), (2455, 'National 5-day Rolling Cutter Cow Cutout and Boxed Cow Beef '), (2456, 'National Weekly Formulated Boneless Cow Beef & Beef Trimming'), (2457, 'National Weekly Boxed Beef Cuts for Branded Product - Negoti'), (2458, 'National Weekly Boxed Beef Cuts - Formulated Sales (PDF) (LM'), (2459, 'National Weekly Boxed Beef Cuts-Negotiated Sales, 22-90 deli'), (2460, 'National Weekly Boxed Beef Cuts for Prime Product - Negotiat'), (2461, 'National Weekly Boxed Beef Cutout & Boxed Beef Cuts - Negoti'), (2462, 'National/Regional Weekly Boneless Processing Beef and Beef T'), (2463, 'National Weekly Cutter Cow Cutout and Boxed Cow Beef Cuts (P'), (2464, 'National Weekly Boxed Beef Cuts for Ungraded Product - Negot'), (2465, 'National Comprehensive Boxed Beef Cutout - all Fed Steer/Hei'), (2466, '5 Area Daily Weighted Average Direct Slaughter Cattle - Nego'), (2467, 'Daily Direct Cow and Bull Negotiated Report - Summary (PDF) ')]
+### SGX attempts
+https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity -> b'{"meta":{"code":"SGX_4020","message":"Invalid or empty kind parameter."},"data":null}'
+https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=code&value=TF -> b'{"meta":{"code":"SGX_4020","message":"Invalid or empty kind parameter."},"data":null}'
+https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=name&value=rubber -> b'{"meta":{"code":"SGX_4020","message":"Invalid or empty kind parameter."},"data":null}'

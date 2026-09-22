@@ -1,0 +1,23 @@
+{
+  "season_id": "season-2026-09-22_to_2027-09-22",
+  "starts_at": "2026-09-22T00:00:00Z",
+  "ends_at": "2027-09-22T00:00:00Z",
+  "duration_note": "One competition season = one year, per the project brief. A new season can be opened by editing this file; all previous seasons remain in data/ledger and data/history as memory for later testing.",
+  "starting_cash_usd": 100000,
+  "request_spacing_ms": 130,
+  "history_refresh_hours": 12,
+  "max_candle_series": 30,
+  "fee_schedule_url": "https://kalshi.com/docs/kalshi-fee-schedule.pdf",
+  "notes": [
+    "Strategies are deliberately return-seeking, not risk-managed, per the brief: position sizing is expressed as target notional and the only hard constraints are real liquidity (order-book depth / exchange quote) and the one-position-per-instrument rule.",
+    "Fees are applied with the official Kalshi formula. Slippage is measured against the same snapshot's mid and stored on every trade."
+  ],
+  "event_contract_price_tolerance": 0.02,
+  "taker_participation_of_visible_depth": 0.25,
+  "maker_order_ttl_hours": 6,
+  "perp_participation_rate": 0.001,
+  "moex_min_volume_today": 10,
+  "moex_min_open_interest": 20,
+  "moex_max_volume_share": 0.02,
+  "moex_max_oi_share": 0.05
+}

@@ -1,0 +1,106 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {
+      "Cocoa": {
+        "fees_usd": 1.258696,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 12.9,
+        "trades": 2
+      },
+      "Sugar": {
+        "fees_usd": 0.038006,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 485,
+        "trades": 2
+      }
+    },
+    "closed_trades": 0,
+    "open_position_marks": [
+      {
+        "contracts": 86,
+        "entry_price": 487.3,
+        "instrument_id": "moex:CCG7",
+        "mark_price": 487.5,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "CCG7",
+        "unrealized_pnl_usd": -2.030217
+      },
+      {
+        "contracts": 86,
+        "entry_price": 468.6,
+        "instrument_id": "moex:CCX6",
+        "mark_price": 468.5,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCX6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "CCX6",
+        "unrealized_pnl_usd": -1.015109
+      },
+      {
+        "contracts": 4,
+        "entry_price": 47650,
+        "instrument_id": "moex:SuV6",
+        "mark_price": 47560,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SuV6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "SuV6",
+        "unrealized_pnl_usd": -0.42493
+      },
+      {
+        "contracts": 1,
+        "entry_price": 49100,
+        "instrument_id": "moex:SuX6",
+        "mark_price": 49710,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SuX6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "SuX6",
+        "unrealized_pnl_usd": -0.72002
+      }
+    ],
+    "trades_by_venue": {
+      "moex_forts": 4
+    },
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "display_name": "Calendar Carry",
+  "entries": 4,
+  "equity_usd": 99994.513023,
+  "exits": 0,
+  "fees_paid_usd": 1.296702,
+  "market_type": "Exchange-listed commodity future",
+  "open_positions": 4,
+  "origin": {
+    "claim": "The spread between two expiries of the same commodity is a financing/storage carry; when its annualised value exceeds the exchange-published round-trip cost, the carry is capturable.",
+    "kind": "market_structure",
+    "status": "structural - measured, not forecast"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": -0.0055,
+  "rules": {
+    "entry": "Annualised calendar spread >= 12% after measured round-trip fees.",
+    "exit": "Exit when the annualised spread compresses below 4%, or when either contract is within 5 days of expiry.",
+    "sizing": "Target notional per leg, capped by both contracts published liquidity."
+  },
+  "slippage_paid_usd": 497.9,
+  "strategy_id": "moex-calendar-carry",
+  "thesis": "Buy the near expiry and sell the far expiry (or the reverse) whenever the annualised spread between the official mid prices exceeds the exchange published round-trip fee converted at the official USD/RUB rate. Both legs are real orders with real fees.",
+  "traded_market_types": [
+    "Exchange-listed commodity future"
+  ],
+  "trades": 4,
+  "unrealized_pnl_usd": -4.190275,
+  "username": "@calendar-carry",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "4 ledger records so far: 2 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 1.30 USD of fees and 497.90 USD of measured slippage against the mid.",
+    "4 open positions carry verified marks totalling -4.19 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
+  ]
+}
