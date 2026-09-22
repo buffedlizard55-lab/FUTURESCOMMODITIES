@@ -3,33 +3,42 @@ on:
   push:
     branches: [arena/01a0ca5d-futurescommodities]
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: probe official endpoints
         run: |
+          mkdir -p probe
+          OUT=probe/results.txt
+          : > $OUT
           probe () {
-            echo "===== $1"
+            echo "===== $1" >> $OUT
             code=$(curl -s -o /tmp/o -w "%{http_code}" -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36" -H "Accept: application/json,text/html,*/*" --max-time 25 "$1" || echo ERR)
-            echo "HTTP $code bytes=$(wc -c </tmp/o 2>/dev/null || echo 0)"
-            head -c 300 /tmp/o 2>/dev/null; echo; echo
+            echo "HTTP $code bytes=$(wc -c </tmp/o 2>/dev/null || echo 0)" >> $OUT
+            head -c 400 /tmp/o >> $OUT 2>/dev/null || true
+            echo >> $OUT; echo >> $OUT
           }
           probe "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/425/FUT?tradeDate=09/21/2026"
           probe "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/CL/FUT"
           probe "https://www.cmegroup.com/ftp/pub/settle/stlcur"
-          probe "https://www.cmegroup.com/CmeWS/mvc/ProductSlate/V2/Products/1/1/desc/oi/"
           probe "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=3"
           probe "https://api.elections.kalshi.com/trade-api/v2/markets?series_ticker=KXWTI&status=open&limit=2"
           probe "https://stooq.com/q/d/l/?s=cl.f&i=d"
-      - name: grep product ids on CME pages
-        run: |
+          echo "===== CME CL page grep" >> $OUT
           curl -s -A "Mozilla/5.0" --max-time 30 "https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html" -o /tmp/cl.html || true
-          echo "bytes=$(wc -c </tmp/cl.html)"
-          grep -o -i -E '"productId"[^,]{0,40}' /tmp/cl.html | head -10
-          grep -o -i -E 'productId[^,]{0,40}' /tmp/cl.html | head -10
-          grep -o -i -E 'product_id=[0-9]+' /tmp/cl.html | head -5
-          echo "--- products page ---"
+          echo "bytes=$(wc -c </tmp/cl.html)" >> $OUT
+          grep -o -i -E 'productId[^,]{0,40}' /tmp/cl.html | head -10 >> $OUT || true
+          grep -o -i -E 'data-product-id="[^"]*"' /tmp/cl.html | head -10 >> $OUT || true
+          echo "===== products page grep" >> $OUT
           curl -s -A "Mozilla/5.0" --max-time 30 "https://www.cmegroup.com/markets/products.html" -o /tmp/p.html || true
-          echo "bytes=$(wc -c </tmp/p.html)"
-          grep -o -i -E 'productId[^,]{0,40}' /tmp/p.html | head -10
+          echo "bytes=$(wc -c </tmp/p.html)" >> $OUT
+          grep -o -i -E 'productId[^,]{0,40}' /tmp/p.html | head -10 >> $OUT || true
+          git config user.name "probe-bot"
+          git config user.email "probe@users.noreply.github.com"
+          git add probe/results.txt
+          git commit -m "probe: endpoint results [skip ci]" || true
+          git push || true
