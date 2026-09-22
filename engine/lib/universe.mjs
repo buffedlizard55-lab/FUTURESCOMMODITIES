@@ -195,8 +195,9 @@ export function buildKalshiPerpInstruments({ marginMarkets, provenance }) {
 
 /* ------------------------------------------------------------ MOEX */
 
-export function buildMoexInstrument({ row, classification, quote, valuation, provenance, listing }) {
+export function buildMoexInstrument({ row, classification, quote, valuation, provenance, listing, description = null }) {
   const instrumentId = `moex:${row.SECID}`;
+  const descriptionFields = description?.fields ?? null;
   return {
     instrument_id: instrumentId,
     venue: 'moex_forts',
@@ -212,9 +213,16 @@ export function buildMoexInstrument({ row, classification, quote, valuation, pro
     contract_specification: {
       type: 'deliverable_or_cash_settled_future',
       lot_volume: num(row.LOTVOLUME),
+      // Official per-contract reference facts from the MOEX ISS description table
+      // (/iss/securities/{SECID}.json -> description block).
+      lot_size: descriptionFields?.LOTSIZE != null ? num(descriptionFields.LOTSIZE) : null,
+      quote_unit: descriptionFields?.UNIT ?? null,
+      settlement_currency: descriptionFields?.FACEUNIT ?? null,
+      settlement_type: descriptionFields?.EXECTYPE ?? null,
+      first_trade_date: descriptionFields?.FRSTTRADE ?? null,
       min_step: num(row.MINSTEP),
       step_price_rub: num(row.STEPPRICE),
-      face_unit: row.FACEUNIT ?? null,
+      face_unit: descriptionFields?.FACEUNIT ?? row.FACEUNIT ?? null,
       initial_margin_rub: num(row.INITIALMARGIN),
       buy_sell_fee_rub: num(row.BUYSELLFEE),
       fees_as_published: {
@@ -224,6 +232,9 @@ export function buildMoexInstrument({ row, classification, quote, valuation, pro
       },
       spec_source_url: provenance?.url ?? null,
       spec_source_sha256: provenance?.sha256 ?? null,
+      description_source_url: description?.provenance?.url ?? null,
+      description_source_sha256: description?.provenance?.sha256 ?? null,
+      description_source_retrieved_at: description?.provenance?.retrieved_at ?? null,
       docs_url: 'https://iss.moex.com/iss/reference/',
     },
     usd_valuation: valuation,

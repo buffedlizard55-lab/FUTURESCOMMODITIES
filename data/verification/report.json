@@ -101,6 +101,12 @@
       "trade_id": "26a651d7a6796717b1d1"
     }
   ],
+  "anomalies_by_check": [
+    {
+      "check": "instrument_present_in_published_universe",
+      "count": 10
+    }
+  ],
   "anomaly_count": 10,
   "coverage": {
     "instruments": 74,
@@ -139,7 +145,7 @@
     "unclassified_series": 1
   },
   "fully_verified": 34,
-  "generated_at": "2026-09-22T22:23:55.971Z",
+  "generated_at": "2026-09-22T23:03:54.333Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
     "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula, and its instrument is still published with its own provenance.",
@@ -2186,6 +2192,7 @@
       "trade_id": "1d68d5fc308d6baf49f6"
     }
   ],
+  "retention_note": "Run manifests carry the per-request provenance (URL, status, SHA-256) for the most recent runs only; older manifests are pruned so the repository stays small. A trade from a pruned run cannot be hash-matched and shows payload_hash_present_in_that_runs_provenance_log as failed - that is a retention limit, disclosed here, not a price discrepancy.",
   "trades_checked": 44,
   "with_anomalies": 10
 }

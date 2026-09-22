@@ -37,6 +37,27 @@ committed to `data/verification/report.json` and rendered on the site.
    (`roundup(M × 0.07 × C × P × (1 − P))` for takers, `M × 0.0175 × …` for makers).
 7. **`instrument_present_in_published_universe`** — the instrument is still published with its own listing
    provenance.
+8. **`cross_venue_basis_normalisation_recorded`** (cross-venue basis trades only) — both legs carry the
+   recorded normalisation to USD per underlying unit (Kalshi `contract_size`; MOEX ISS description
+   `UNIT`/`LOT SIZE`), and the MOEX quote unit is USD. This is the audit for the unit defect that produced
+   the archived, excluded pilot trades before 2026-09-22.
+
+Anomaly counts are broken down per check in `data/verification/report.json`
+(`anomalies_by_check`), and the report carries an explicit retention note: run manifests hold the
+per-request provenance for the most recent runs only (older ones are pruned so the repository stays
+small), so a trade from a pruned run cannot be hash-matched and fails
+`payload_hash_present_in_that_runs_provenance_log`. That failure is a retention limit, disclosed as such —
+not evidence of a wrong price.
+
+## Backtests
+
+`engine/backtest.mjs` re-runs documented rules against the committed official histories
+(`data/history/kalshi/*.json`, `data/history/moex/*.json`) and writes
+`data/reports/backtests.json`, rendered on the site's *Research & backtests* section. A backtest row is
+verifiable the same way a trade is: each backtest carries the source file's endpoint, HTTP status,
+SHA-256 and retrieval time, and every row shows dates, both prices, fees and PnL. A backtest never touches
+the season ledger and never represents liquidity (no historical books exist). Strategies without an
+official history to run on are listed as `unavailable_for_backtesting` with the reason.
 
 A trade is only counted as **fully verified** when every check passes. Anything else is listed as an
 anomaly with its trade id and ticker. Anomalies are reported, never silently corrected.

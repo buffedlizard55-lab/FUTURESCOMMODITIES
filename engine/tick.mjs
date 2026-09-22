@@ -25,7 +25,7 @@
 import { readdirSync as readdirSyncSafe, rmSync } from 'node:fs';
 import { get as httpGet, nowIso, provenanceSnapshot } from './lib/http.mjs';
 import { KalshiClient } from './lib/venues/kalshi.mjs';
-import { fetchFortsSecurities, fetchHistory, fetchSecurity, fetchUsdRub, classifyMoexContract } from './lib/venues/moex.mjs';
+import { fetchFortsSecurities, fetchHistory, fetchSecurity, fetchUsdRub, moexSecurityDescription, classifyMoexContract } from './lib/venues/moex.mjs';
 import { archiveSeries, EIA_HISTORICAL_FUTURES_SERIES, EIA_FUTURES_PAGE, EIA_FUTURES_LAST_DATE } from './lib/venues/eia.mjs';
 import {
   applyFill,
@@ -185,8 +185,11 @@ async function main() {
   let moexQuotes = {};
   let fx = null;
   let moexHistoryCache = {};
+  let moexDescriptionCache = {};
   let kalshiCandles = {};
   let moexDiscoveryCount = 0;
+
+  const descriptionCacheFor = (secid) => moexDescriptionCache[secid] ?? null;
 
   if (!OFFLINE) {
     const listing = await fetchFortsSecurities({ assetCodes: (watchlist.moex?.asset_codes ?? []).map((a) => a.asset_code ?? a) });
@@ -271,7 +274,8 @@ async function main() {
       const file = `${paths.history}/kalshi/${inst.series_ticker}.json`;
       const age = fileAgeHours(file);
       const cached = readJson(file, null);
-      if (cached && age != null && age < historyRefreshHours) {
+      const cachedHasPrices = (cached?.candles ?? []).some((c) => c && c.close != null);
+      if (cached && cachedHasPrices && age != null && age < historyRefreshHours) {
         kalshiCandles[inst.series_ticker] = cached.candles ?? [];
         continue;
       }
@@ -283,13 +287,18 @@ async function main() {
         kalshiCandles[inst.series_ticker] = cached?.candles ?? [];
         continue;
       }
+      // Official candlestick schema (docs.kalshi.com get-market-candlesticks): OHLC values live
+      // in `price.close_dollars`, `yes_bid.close_dollars`, `yes_ask.close_dollars` (fixed-point
+      // dollar strings), volumes in `volume_fp`/`open_interest_fp`. Candles whose OHLC is null
+      // are the exchange's synthetic placeholder for "no data in this period" (documented in the
+      // schema) and are stored as nulls, never treated as prices.
       const candles = (res.candles ?? []).map((c) => ({
         end_period_ts: c.end_period_ts,
-        close: c.price?.close ?? c.yes_ask?.close ?? null,
-        yes_bid_close: c.yes_bid?.close ?? null,
-        yes_ask_close: c.yes_ask?.close ?? null,
-        volume: c.volume ?? null,
-        open_interest: c.open_interest ?? null,
+        close: num(c.price?.close_dollars) ?? num(c.price?.close) ?? null,
+        yes_bid_close: num(c.yes_bid?.close_dollars) ?? null,
+        yes_ask_close: num(c.yes_ask?.close_dollars) ?? null,
+        volume: num(c.volume_fp) ?? num(c.volume) ?? null,
+        open_interest: num(c.open_interest_fp) ?? num(c.open_interest) ?? null,
       }));
       kalshiCandles[inst.series_ticker] = candles;
       writeJson(file, {
@@ -478,6 +487,14 @@ async function main() {
   });
 
   /* ------------------------------------------------ 5. Strategy engine */
+
+  if (OFFLINE) {
+    // An offline run is a cache rebuild / code check, not a market moment: no venue was reached,
+    // so no strategy may decide, no intent or trade may be recorded, and the season state must
+    // not gain a phantom tick. Published artifacts are left exactly as the last live run wrote them.
+    console.log('   offline: strategy engine, ledger and season state untouched (run a live tick to trade)');
+    return;
+  }
 
   const stateCompetition = readJson(`${paths.state}/competition.json`, null) ?? {
     season_id: competition.season_id,
@@ -1357,22 +1374,42 @@ function pruneManifests(keep) {
   }
 }
 
-function computeMoexValuation({ securities, fx }) {
+function computeMoexValuation({ securities, fx, descriptionFields = null }) {
   const minStep = num(securities?.MINSTEP);
   const stepPriceRub = num(securities?.STEPPRICE);
   const fxRate = fx?.rate ?? null;
+  const quoteUnit = descriptionFields?.UNIT ?? null;
+  const lotSize = descriptionFields?.LOTSIZE != null ? num(descriptionFields.LOTSIZE) : null;
+  if (quoteUnit === 'USD') {
+    // The exchange's own reference data states that the price is quoted in USD per unit of the
+    // underlying (UNIT=USD) and settled in USD (FACEUNIT=USD), so 1.0 of price movement is
+    // exactly 1 USD per unit. This replaces the older STEPPRICE-derived approximation below
+    // (which mixed in MOEX's own RUB step valuation and a separately captured USD/RUB rate and
+    // therefore understated the USD value of a USD-quoted contract by the fixing difference).
+    return {
+      usd_per_price_unit: 1.0,
+      quote_unit: quoteUnit,
+      lot_size: lotSize,
+      basis: `MOEX ISS description for this contract publishes UNIT=USD (quotation currency) and FACEUNIT=${descriptionFields?.FACEUNIT ?? 'n/a'} (settlement currency): the quote is USD per underlying unit, so 1.0 of price movement is 1 USD per unit.`,
+      note: `Derived only from exchange-published reference fields: UNIT=${quoteUnit}, FACEUNIT=${descriptionFields?.FACEUNIT ?? 'n/a'}, LOTSIZE=${descriptionFields?.LOTSIZE ?? 'n/a'}.`,
+    };
+  }
   if (minStep && stepPriceRub && fxRate) {
-    const usdPerPriceUnit = Number(((stepPriceRub / minStep) / fxRate).toFixed(8));
+    const usdPerPriceUnit = Number((stepPriceRub / minStep / fxRate).toFixed(8));
     return {
       usd_per_price_unit: usdPerPriceUnit,
+      quote_unit: quoteUnit ?? null,
+      lot_size: lotSize,
       basis: `USD value of a one-unit price move = (MOEX STEPPRICE ${stepPriceRub} RUB per MINSTEP ${minStep}) / MOEX USD/RUB ${fxRate}`,
-      note: `Derived only from exchange-published fields: STEPPRICE ${stepPriceRub} RUB, MINSTEP ${minStep}, USD/RUB ${fxRate}.`,
+      note: `Derived only from exchange-published fields: STEPPRICE ${stepPriceRub} RUB, MINSTEP ${minStep}, USD/RUB ${fxRate}${quoteUnit ? `, quotation UNIT=${quoteUnit}` : ''}.`,
     };
   }
   return {
     usd_per_price_unit: null,
+    quote_unit: quoteUnit ?? null,
+    lot_size: lotSize,
     basis: null,
-    note: 'MOEX did not publish STEPPRICE/MINSTEP or the USD/RUB rate was unavailable in this snapshot, so no USD P&L is computed.',
+    note: 'MOEX did not publish STEPPRICE/MINSTEP or the USD/RUB rate was unavailable in this snapshot, and the reference description did not state a USD quotation, so no USD P&L is computed.',
   };
 }
 

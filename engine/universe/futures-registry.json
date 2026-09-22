@@ -1,272 +1,1421 @@
 {
-  "_readme": [
-    "Verified futures/commodity reference registry.",
-    "",
-    "This file is REFERENCE DATA, not a price feed. It records which markets exist, on which",
-    "exchange, and how each fact was verified. It contains no prices and no liquidity figures.",
-    "",
-    "spec_status values:",
-    "  verified        - the contract-specification table was read on the official product page",
-    "                    during this project and the quoted fields below are copied from it",
-    "  listed_only     - the exchange's own product navigation (or category page) proves the",
-    "                    product code and spec page exist; the individual field values were NOT",
-    "                    read in this session and are therefore left null",
-    "  unverified      - the market is known to exist in the industry but no official page was",
-    "                    confirmed in this session, so nothing is claimed beyond that",
-    "",
-    "price_data.status values:",
-    "  automated_official_api   - this project pulls prices for it from the exchange's own API",
-    "  historical_only          - official historical prices exist; the series has been discontinued",
-    "  licensed_feed_required   - the exchange blocks automated access; a licensed feed is needed",
-    "  endpoint_unresolved      - a public endpoint exists but its parameters/terms are unresolved",
-    "",
-    "Every entry carries the official URL a human reviewer can open to check it."
-  ],
-  "exchanges": {
-    "cme": {
-      "name": "CME Group",
-      "venues": ["CME (Globex)", "CBOT", "NYMEX", "COMEX"],
-      "products_page": "https://www.cmegroup.com/markets/products.html",
-      "data_terms": "https://www.cmegroup.com/trading/market-data-explanation-disclaimer.html",
-      "automated_access": "blocked",
-      "automated_access_evidence": "Automated requests from GitHub Actions receive HTTP 403: 'This IP address is blocked due to suspected web scraping activity... Use of scripts, software, spiders, robots, avatars, agents, tools or other scraping mechanisms is strictly prohibited by CME Group's website Data Terms of Use.' (verified 2026-09-22)",
-      "note": "Contract specifications below were read from official CME Group product pages. Prices are not automated: a CME-licensed feed is required for that, so no CME market is priced in the simulation."
-    },
-    "ice": {
-      "name": "ICE (Intercontinental Exchange)",
-      "venues": ["ICE Futures U.S.", "ICE Futures Europe", "ICE Futures Canada"],
-      "report_center": "https://www.ice.com/report-center",
-      "automated_access": "blocked",
-      "automated_access_evidence": "https://www.ice.com/report/10 returned a click-through page stating end-of-day report packages in .csv format are available for purchase on a subscription basis (verified 2026-09-22).",
-      "note": "Soft commodities (coffee, cocoa, sugar, cotton, FCOJ) and Brent crude are ICE-listed. No free official price API was found, so these markets are catalogued but not priced."
-    },
-    "lme": {
-      "name": "London Metal Exchange",
-      "products_page": "https://www.lme.com/en/Metals",
-      "automated_access": "blocked",
-      "automated_access_evidence": "https://www.lme.com/api/prices returned HTTP 403 with a Cloudflare 'Just a moment...' challenge (verified 2026-09-22)."
-    },
-    "moex": {
-      "name": "Moscow Exchange (MOEX), FORTS derivatives market",
-      "documentation": "https://iss.moex.com/iss/reference/",
-      "automated_access": "open",
-      "automated_access_evidence": "Keyless ISS endpoints returned HTTP 200 for the contract list (503 contracts), individual contract quotes and daily history (verified 2026-09-22).",
-      "note": "This is the only futures exchange besides Kalshi whose live quotes this project can price trades from. Contracts are discovered live from the exchange listing; the codes below are the ones the exchange actually publishes."
-    },
-    "sgx": {
-      "name": "Singapore Exchange",
-      "products_page": "https://www.sgx.com/derivatives",
-      "automated_access": "endpoint_unresolved",
-      "automated_access_evidence": "https://api.sgx.com/derivatives/v1.0/contracts returned HTTP 200 with {\"meta\":{\"code\":\"SGX_4020\",\"message\":\"Invalid or empty kind parameter.\"}} for every parameter combination tried (verified 2026-09-22)."
-    },
-    "eurex": {
-      "name": "Eurex",
-      "products_page": "https://www.eurex.com/ex-en/markets",
-      "automated_access": "endpoint_unresolved",
-      "automated_access_evidence": "The API-shaped endpoint tried returned HTTP 404 (verified 2026-09-22); no public keyless price interface was confirmed."
-    },
-    "jpx": {
-      "name": "Japan Exchange Group (JPX / TOCOM)",
-      "products_page": "https://www.jpx.co.jp/english/derivatives/",
-      "automated_access": "endpoint_unresolved",
-      "automated_access_evidence": "The attempted statistics endpoint returned HTTP 404 (verified 2026-09-22)."
-    },
-    "euronext": {
-      "name": "Euronext",
-      "products_page": "https://www.euronext.com/en/products/commodities",
-      "automated_access": "unverified",
-      "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed."
-    },
-    "b3": {
-      "name": "B3 (Brasil, Bolsa, Balcão)",
-      "products_page": "https://www.b3.com.br/en_us/market-data-and-indices/",
-      "automated_access": "endpoint_unresolved",
-      "automated_access_evidence": "https://arquivos.b3.com.br/apinegocios/ticker/DI1 returned HTTP 404 (verified 2026-09-22)."
-    },
-    "hkex": {
-      "name": "Hong Kong Exchanges and Clearing",
-      "products_page": "https://www.hkex.com.hk/Products/Listed-Derivatives",
-      "automated_access": "unverified",
-      "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed."
-    },
-    "dme": {
-      "name": "Dubai Mercantile Exchange (DME)",
-      "products_page": "https://www.theice.com/",
-      "automated_access": "unverified",
-      "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed."
-    }
+ "_readme": [
+  "Verified futures/commodity reference registry.",
+  "",
+  "This file is REFERENCE DATA, not a price feed. It records which markets exist, on which",
+  "exchange, and how each fact was verified. It contains no prices and no liquidity figures.",
+  "",
+  "spec_status values:",
+  "  verified        - the contract-specification table was read on the official product page",
+  "                    during this project and the quoted fields below are copied from it",
+  "  listed_only     - the exchange's own product navigation (or category page) proves the",
+  "                    product code and spec page exist; the individual field values were NOT",
+  "                    read in this session and are therefore left null",
+  "  unverified      - the market is known to exist in the industry but no official page was",
+  "                    confirmed in this session, so nothing is claimed beyond that",
+  "",
+  "price_data.status values:",
+  "  automated_official_api   - this project pulls prices for it from the exchange's own API",
+  "  historical_only          - official historical prices exist; the series has been discontinued",
+  "  licensed_feed_required   - the exchange blocks automated access; a licensed feed is needed",
+  "  endpoint_unresolved      - a public endpoint exists but its parameters/terms are unresolved",
+  "",
+  "Every entry carries the official URL a human reviewer can open to check it."
+ ],
+ "exchanges": {
+  "cme": {
+   "name": "CME Group",
+   "venues": [
+    "CME (Globex)",
+    "CBOT",
+    "NYMEX",
+    "COMEX"
+   ],
+   "products_page": "https://www.cmegroup.com/markets/products.html",
+   "data_terms": "https://www.cmegroup.com/trading/market-data-explanation-disclaimer.html",
+   "automated_access": "blocked",
+   "automated_access_evidence": "Automated requests from GitHub Actions receive HTTP 403: 'This IP address is blocked due to suspected web scraping activity... Use of scripts, software, spiders, robots, avatars, agents, tools or other scraping mechanisms is strictly prohibited by CME Group's website Data Terms of Use.' (verified 2026-09-22)",
+   "note": "Contract specifications below were read from official CME Group product pages. Prices are not automated: a CME-licensed feed is required for that, so no CME market is priced in the simulation."
   },
-  "products": [
-    {
-      "id": "cme-cl",
-      "exchange": "cme",
-      "venue": "NYMEX",
-      "code": "CL",
-      "name": "Crude Oil (Light Sweet) Futures",
-      "commodity": "WTI Crude Oil",
-      "category": "Energy",
-      "contract_unit": "1,000 barrels",
-      "price_quotation": "U.S. dollars and cents per barrel",
-      "min_tick": "0.01 per barrel",
-      "tick_value_usd": 10.0,
-      "settlement_method": "Deliverable",
-      "spec_url": "https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html",
-      "spec_status": "verified",
-      "spec_verified_at": "2026-09-22",
-      "price_data": { "status": "licensed_feed_required", "note": "CME blocks automated access; the product page shows a delayed quote only." }
-    },
-    {
-      "id": "cme-ng",
-      "exchange": "cme",
-      "venue": "NYMEX",
-      "code": "NG",
-      "name": "Henry Hub Natural Gas Futures",
-      "commodity": "Natural Gas",
-      "category": "Energy",
-      "contract_unit": "10,000 MMBtu",
-      "price_quotation": "U.S. dollars and cents per MMBtu",
-      "min_tick": "0.001 per MMBtu",
-      "tick_value_usd": 10.0,
-      "settlement_method": "Deliverable",
-      "spec_url": "https://www.cmegroup.com/markets/energy/natural-gas/natural-gas.contractSpecs.html",
-      "spec_status": "verified",
-      "spec_verified_at": "2026-09-22",
-      "spec_note": "TAS code NGT. Page also showed a delayed front-month quote (NGV26 2.951, volume 135,338) at the time of reading.",
-      "price_data": { "status": "licensed_feed_required", "note": "CME blocks automated access." }
-    },
-    { "id": "cme-bz", "exchange": "cme", "venue": "NYMEX", "code": "BZ", "name": "Brent Crude Oil Last Day Financial Futures", "commodity": "Brent Crude Oil", "category": "Energy", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required", "note": "Brent also trades on ICE (paid end-of-day reports)." } },
-    { "id": "cme-rb", "exchange": "cme", "venue": "NYMEX", "code": "RB", "name": "RBOB Gasoline Futures", "commodity": "Gasoline (RBOB)", "category": "Energy", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "historical_only", "note": "EIA publishes the RBOB NYMEX futures series EER_EPMRR_PE1..PE4, which stops 2024-04-05." } },
-    { "id": "cme-ho", "exchange": "cme", "venue": "NYMEX", "code": "HO", "name": "NY Harbor ULSD (Heating Oil / Diesel) Futures", "commodity": "Diesel / Heating Oil", "category": "Energy", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "historical_only", "note": "EIA series EER_EPD2F_PE1..PE4 (No. 2 heating oil) stops 2024-04-05." } },
-    { "id": "cme-power", "exchange": "cme", "venue": "NYMEX", "code": null, "name": "Electricity / power futures (PJM, MISO, ERCOT, CAISO hubs)", "commodity": "Electricity", "category": "Energy", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required", "note": "CME lists North American power futures; the specific product pages and codes were not verified in this session, so no code is stated here." } },
-    {
-      "id": "cme-gc",
-      "exchange": "cme",
-      "venue": "COMEX",
-      "code": "GC",
-      "name": "Gold Futures",
-      "commodity": "Gold",
-      "category": "Precious Metals",
-      "contract_unit": "100 troy ounces",
-      "price_quotation": "U.S. dollars and cents per troy ounce",
-      "min_tick": "0.10 per troy ounce",
-      "tick_value_usd": 10.0,
-      "settlement_method": "Deliverable",
-      "delivery_grade": "Minimum 995 fineness",
-      "rulebook": "COMEX 113",
-      "termination": "Trading terminates at 12:30 p.m. CT on the third last business day of the contract month.",
-      "spec_url": "https://www.cmegroup.com/markets/metals/precious/gold.contractSpecs.html",
-      "spec_status": "verified",
-      "spec_verified_at": "2026-09-22",
-      "spec_note": "TAS code GCT, TAM code GCD. Page also showed a delayed front-month quote (GCV6 last 4359.8, volume 16,518) at the time of reading.",
-      "price_data": { "status": "licensed_feed_required", "note": "CME blocks automated access." }
-    },
-    {
-      "id": "cme-si",
-      "exchange": "cme",
-      "venue": "COMEX",
-      "code": "SI",
-      "name": "Silver Futures",
-      "commodity": "Silver",
-      "category": "Precious Metals",
-      "contract_unit": "5,000 troy ounces",
-      "price_quotation": "U.S. dollars and cents per troy ounce",
-      "min_tick": "0.005 per troy ounce",
-      "tick_value_usd": 25.0,
-      "settlement_method": "Deliverable",
-      "delivery_grade": "Minimum 999 fineness",
-      "rulebook": "COMEX 112",
-      "termination": "Trading terminates at 12:25 p.m. CT on the third last business day of the contract month.",
-      "spec_url": "https://www.cmegroup.com/markets/metals/precious/silver.contractSpecs.html",
-      "spec_status": "verified",
-      "spec_verified_at": "2026-09-22",
-      "spec_note": "TAS code SIT; calendar spread tick 0.001 = $5.00. Page also showed a delayed front-month quote (SIZ6 last 67.300, volume 44,312) at the time of reading.",
-      "price_data": { "status": "licensed_feed_required" }
-    },
-    { "id": "cme-pl", "exchange": "cme", "venue": "NYMEX", "code": "PL", "name": "Platinum Futures", "commodity": "Platinum", "category": "Precious Metals", "spec_url": "https://www.cmegroup.com/markets/metals/precious/platinum.contractSpecs.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-pa", "exchange": "cme", "venue": "NYMEX", "code": "PA", "name": "Palladium Futures", "commodity": "Palladium", "category": "Precious Metals", "spec_url": "https://www.cmegroup.com/markets/metals/precious/palladium.contractSpecs.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    {
-      "id": "cme-hg",
-      "exchange": "cme",
-      "venue": "COMEX",
-      "code": "HG",
-      "name": "Copper Futures",
-      "commodity": "Copper",
-      "category": "Industrial Metals",
-      "contract_unit": "25,000 pounds",
-      "price_quotation": "U.S. dollars and cents per pound",
-      "min_tick": "0.0005 per pound",
-      "tick_value_usd": 12.5,
-      "settlement_method": "Deliverable",
-      "termination": "Trading terminates at 12:00 noon CT on the third last business day of the contract month.",
-      "spec_url": "https://www.cmegroup.com/markets/metals/base/copper.contractSpecs.html",
-      "spec_status": "verified",
-      "spec_verified_at": "2026-09-22",
-      "spec_note": "TAS codes HGT / HG0, TAM code HGF. Page also showed a delayed front-month quote (HGZ6 last 6.8675, volume 36,926) at the time of reading.",
-      "price_data": { "status": "licensed_feed_required" }
-    },
-    { "id": "cme-ali", "exchange": "cme", "venue": "COMEX", "code": "ALI", "name": "Aluminum Futures", "commodity": "Aluminium", "category": "Industrial Metals", "spec_url": "https://www.cmegroup.com/markets/metals/base/aluminum.contractSpecs.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-znc", "exchange": "cme", "venue": "COMEX", "code": "ZNC", "name": "Zinc Futures", "commodity": "Zinc", "category": "Industrial Metals", "spec_url": "https://www.cmegroup.com/markets/metals/base/zinc.contractSpecs.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-led", "exchange": "cme", "venue": "COMEX", "code": "LED", "name": "Lead Futures", "commodity": "Lead", "category": "Industrial Metals", "spec_url": "https://www.cmegroup.com/markets/metals/base/lead.contractSpecs.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-hr", "exchange": "cme", "venue": "COMEX", "code": "HR", "name": "U.S. Midwest Domestic Hot-Rolled Coil Steel (CRU) Index Futures", "commodity": "Steel (HRC)", "category": "Industrial Metals", "spec_url": "https://www.cmegroup.com/markets/metals/ferrous/hrc-steel.contractSpecs.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-tio", "exchange": "cme", "venue": "COMEX", "code": "TIO", "name": "Iron Ore 62% Fe, CFR China (TSI) Futures", "commodity": "Iron Ore", "category": "Industrial Metals", "spec_url": "https://www.cmegroup.com/markets/metals/ferrous/iron-ore-62pct-fe-cfr-china-tsi-swap-futures.contractSpecs.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "lme-ni", "exchange": "lme", "venue": "LME", "code": "NI", "name": "LME Nickel", "commodity": "Nickel", "category": "Industrial Metals", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required", "note": "LME blocks automated access (Cloudflare 403). Nickel is priced in this project only via the MOEX nickel future, which is a different, separately-specified contract." } },
-    { "id": "sgx-tf", "exchange": "sgx", "venue": "SGX", "code": "TF", "name": "SGX FTSE China A50 futures / SGX iron ore (TIO) and rubber contracts", "commodity": "Iron Ore / Rubber", "category": "Industrial Metals", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "endpoint_unresolved", "note": "The SGX derivatives API answered but rejected every parameter combination tried; no SGX market is claimed." } },
-    {
-      "id": "cme-zc",
-      "exchange": "cme",
-      "venue": "CBOT",
-      "code": "ZC",
-      "name": "Corn Futures",
-      "commodity": "Corn",
-      "category": "Grains & Oilseeds",
-      "contract_unit": "5,000 bushels",
-      "price_quotation": "U.S. cents per bushel",
-      "min_tick": "1/4 of one cent (0.0025) per bushel",
-      "tick_value_usd": 12.5,
-      "settlement_method": "Deliverable",
-      "termination": "Trading terminates on the business day prior to the 15th day of the contract month.",
-      "delivery_grade": "#2 Yellow at contract price",
-      "rulebook": "CBOT 10",
-      "spec_url": "https://www.cmegroup.com/markets/agriculture/grains/corn/specs",
-      "spec_status": "verified",
-      "spec_verified_at": "2026-09-22",
-      "spec_note": "Globex code ZC, ClearPort/clearing code C, TAS code ZCT.",
-      "price_data": { "status": "licensed_feed_required" }
-    },
-    { "id": "cme-zw", "exchange": "cme", "venue": "CBOT", "code": "ZW", "name": "Chicago SRW Wheat Futures", "commodity": "Wheat", "category": "Grains & Oilseeds", "spec_url": null, "spec_status": "unverified", "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-zo", "exchange": "cme", "venue": "CBOT", "code": "ZO", "name": "Oats Futures", "commodity": "Oats", "category": "Grains & Oilseeds", "spec_url": null, "spec_status": "unverified", "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-zr", "exchange": "cme", "venue": "CBOT", "code": "ZR", "name": "Rough Rice Futures", "commodity": "Rice", "category": "Grains & Oilseeds", "spec_url": null, "spec_status": "unverified", "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-zs", "exchange": "cme", "venue": "CBOT", "code": "ZS", "name": "Soybean Futures", "commodity": "Soybeans", "category": "Grains & Oilseeds", "product_id": 320, "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-zl", "exchange": "cme", "venue": "CBOT", "code": "ZL", "name": "Soybean Oil Futures", "commodity": "Soybean Oil", "category": "Grains & Oilseeds", "product_id": 312, "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-zm", "exchange": "cme", "venue": "CBOT", "code": "ZM", "name": "Soybean Meal Futures", "commodity": "Soybean Meal", "category": "Grains & Oilseeds", "spec_url": null, "spec_status": "unverified", "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "ice-canola", "exchange": "ice", "venue": "ICE Futures Canada", "code": "RS", "name": "Canola Futures", "commodity": "Canola", "category": "Grains & Oilseeds", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required", "note": "ICE end-of-day data is a paid subscription." } },
-    { "id": "euronext-milling-wheat", "exchange": "euronext", "venue": "Euronext", "code": null, "name": "Milling Wheat Futures", "commodity": "Wheat (milling)", "category": "Grains & Oilseeds", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "unverified", "note": "Euronext lists milling wheat and rapeseed futures; no endpoint was tested, so nothing is claimed." } },
-    { "id": "ice-kc", "exchange": "ice", "venue": "ICE Futures U.S.", "code": "KC", "name": "Coffee C Futures", "commodity": "Coffee", "category": "Soft Commodities", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required", "note": "Coffee is also priced in this project through the MOEX coffee future, a separately-specified contract." } },
-    { "id": "ice-cc", "exchange": "ice", "venue": "ICE Futures U.S.", "code": "CC", "name": "Cocoa Futures", "commodity": "Cocoa", "category": "Soft Commodities", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required", "note": "Cocoa is also priced through the MOEX cocoa future." } },
-    { "id": "ice-sb", "exchange": "ice", "venue": "ICE Futures U.S.", "code": "SB", "name": "Sugar No. 11 Futures", "commodity": "Sugar", "category": "Soft Commodities", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required", "note": "Sugar is also priced through the MOEX sugar future." } },
-    { "id": "ice-ct", "exchange": "ice", "venue": "ICE Futures U.S.", "code": "CT", "name": "Cotton No. 2 Futures", "commodity": "Cotton", "category": "Soft Commodities", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "ice-oj", "exchange": "ice", "venue": "ICE Futures U.S.", "code": "OJ", "name": "FCOJ-A (Orange Juice) Futures", "commodity": "Orange Juice", "category": "Soft Commodities", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-le", "exchange": "cme", "venue": "CME", "code": "LE", "name": "Live Cattle Futures", "commodity": "Live Cattle", "category": "Livestock", "product_id": 22, "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-gf", "exchange": "cme", "venue": "CME", "code": "GF", "name": "Feeder Cattle Futures", "commodity": "Feeder Cattle", "category": "Livestock", "product_id": 34, "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-he", "exchange": "cme", "venue": "CME", "code": "HE", "name": "Lean Hogs Futures", "commodity": "Lean Hogs", "category": "Livestock", "product_id": 19, "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-pork-cutout", "exchange": "cme", "venue": "CME", "code": null, "name": "Pork Cutout Futures", "commodity": "Pork", "category": "Livestock", "product_id": 8948, "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-dc", "exchange": "cme", "venue": "CME", "code": "DC", "name": "Class III Milk Futures", "commodity": "Milk (Class III)", "category": "Dairy", "product_id": 781, "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/dairy.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-dairy-pack", "exchange": "cme", "venue": "CME", "code": null, "name": "Dairy complex (butter, cheese, nonfat dry milk, dry whey)", "commodity": "Butter / Cheese / Whey", "category": "Dairy", "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/agriculture/dairy.html", "price_data": { "status": "licensed_feed_required", "note": "The dairy category page is verified; individual product codes were not read, so none are stated." } },
-    { "id": "cme-lbr", "exchange": "cme", "venue": "CME", "code": "LBR", "name": "Random-Length Lumber Futures", "commodity": "Lumber", "category": "Lumber & Other", "spec_url": "https://www.cmegroup.com/markets/agriculture/lumber-and-softs/lumber.html", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-ag-index", "exchange": "cme", "venue": "CME", "code": null, "name": "CME Group Agriculture Index Futures", "commodity": "Agriculture index", "category": "Commodity Indexes", "spec_url": "https://www.cmegroup.com/markets/agriculture/agriculture-index", "spec_status": "listed_only", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-es", "exchange": "cme", "venue": "CME", "code": "ES", "name": "E-mini S&P 500 Futures", "commodity": "Equity index (S&P 500)", "category": "Equity Index", "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/equities.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-equity-complex", "exchange": "cme", "venue": "CME", "code": null, "name": "Equity index complex (Nasdaq-100, Dow, Russell, international indices, sectors)", "commodity": "Equity index", "category": "Equity Index", "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/equities.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-rates-complex", "exchange": "cme", "venue": "CBOT / CME", "code": null, "name": "Interest-rate complex (SOFR, Fed Funds, Treasury futures, T-Bills, ESTR, TIIE, TBA)", "commodity": "Interest rates", "category": "Interest Rates", "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/interest-rates.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-fx-complex", "exchange": "cme", "venue": "CME", "code": null, "name": "FX futures complex (EUR, JPY, GBP, AUD, CAD, CHF and micro/mini sizes)", "commodity": "Foreign exchange", "category": "FX", "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/fx.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-crypto-complex", "exchange": "cme", "venue": "CME", "code": null, "name": "Crypto futures (Bitcoin, Ether and micro sizes)", "commodity": "Crypto", "category": "Crypto", "spec_url": null, "spec_status": "listed_only", "category_page": "https://www.cmegroup.com/markets/cryptocurrencies.html", "price_data": { "status": "licensed_feed_required" } },
-    { "id": "cme-carbon", "exchange": "cme", "venue": "NYMEX", "code": null, "name": "Environmental / carbon offset futures (Global Emissions Offset, Nature-Based GEOF, EU Allowances)", "commodity": "Carbon", "category": "Carbon & Environmental", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "unverified", "note": "CME lists environmental products, but no official product page was verified in this session, so nothing is claimed." } },
-    { "id": "cme-water", "exchange": "cme", "venue": "CME", "code": "NQH2O", "name": "Nasdaq Veles California Water Index Futures", "commodity": "Water", "category": "Water", "spec_url": null, "spec_status": "unverified", "price_data": { "status": "unverified", "note": "The contract is widely reported to be CME-listed; no official page was verified in this session, so it is listed here only as an item to verify." } }
-  ],
-  "kalshi_reference": {
-    "note": "Kalshi event contracts and perpetual futures are discovered live from the official API at run time - see data/universe/instruments.json. Nothing about Kalshi is hard-coded here.",
-    "api": "https://api.elections.kalshi.com/trade-api/v2",
-    "docs": "https://docs.kalshi.com/",
-    "perps_docs": "https://docs.kalshi.com/margin",
-    "fee_schedule": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+  "ice": {
+   "name": "ICE (Intercontinental Exchange)",
+   "venues": [
+    "ICE Futures U.S.",
+    "ICE Futures Europe",
+    "ICE Futures Canada"
+   ],
+   "report_center": "https://www.ice.com/report-center",
+   "automated_access": "blocked",
+   "automated_access_evidence": "https://www.ice.com/report/10 returned a click-through page stating end-of-day report packages in .csv format are available for purchase on a subscription basis (verified 2026-09-22).",
+   "note": "Soft commodities (coffee, cocoa, sugar, cotton, FCOJ) and Brent crude are ICE-listed. No free official price API was found, so these markets are catalogued but not priced."
+  },
+  "lme": {
+   "name": "London Metal Exchange",
+   "products_page": "https://www.lme.com/en/Metals",
+   "automated_access": "blocked",
+   "automated_access_evidence": "https://www.lme.com/api/prices returned HTTP 403 with a Cloudflare 'Just a moment...' challenge (verified 2026-09-22)."
+  },
+  "moex": {
+   "name": "Moscow Exchange (MOEX), FORTS derivatives market",
+   "documentation": "https://iss.moex.com/iss/reference/",
+   "automated_access": "open",
+   "automated_access_evidence": "Keyless ISS endpoints returned HTTP 200 for the contract list (503 contracts), individual contract quotes and daily history (verified 2026-09-22).",
+   "note": "This is the only futures exchange besides Kalshi whose live quotes this project can price trades from. Contracts are discovered live from the exchange listing; the codes below are the ones the exchange actually publishes.",
+   "listing_evidence_2026_09_22": {
+    "listing_endpoint": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json",
+    "commodity_asset_codes_verified": [
+     "GOLD",
+     "GOLDM",
+     "SILV",
+     "SILVM",
+     "PLT",
+     "PLTM",
+     "COPPER",
+     "NICKEL",
+     "ALUM",
+     "ZINC",
+     "COCOA",
+     "COFFEE",
+     "SUGAR",
+     "SUGR",
+     "WHEAT",
+     "WTI",
+     "BR",
+     "NG",
+     "NGM",
+     "TTF",
+     "DTL",
+     "AI92",
+     "AI95",
+     "ORANGE"
+    ],
+    "palladium": "NO palladium asset code exists in the FORTS listing (P codes are PLT/PLTM platinum and PLD/PLDM/PLZLM equities) - verified 2026-09-22. The watchlist keeps PALL as a documented request; nothing is traded under it.",
+    "non_commodity_sectors_verified": [
+     "equity indexes (MIX, RTS, NASD, SPYF, DJ30, DAX, NIKK, R2000, STOX, HANG and others)",
+     "interest rates (RUONIA, 1MFR, RGBI)",
+     "FX (Si, CNY, Eu, GBPU, AUDU, UJPY and others)",
+     "crypto (BTC, ETH, SOL, XRP, TRX)",
+     "perpetual-style continuous contracts (USDRUBF, GLDRUBF, SLVRUBF, BTCUSDF and others)"
+    ]
+   }
+  },
+  "sgx": {
+   "name": "Singapore Exchange",
+   "products_page": "https://www.sgx.com/derivatives",
+   "automated_access": "endpoint_unresolved",
+   "automated_access_evidence": "https://api.sgx.com/derivatives/v1.0/contracts returned HTTP 200 with {\"meta\":{\"code\":\"SGX_4020\",\"message\":\"Invalid or empty kind parameter.\"}} for every parameter combination tried (verified 2026-09-22)."
+  },
+  "eurex": {
+   "name": "Eurex",
+   "products_page": "https://www.eurex.com/ex-en/markets",
+   "automated_access": "endpoint_unresolved",
+   "automated_access_evidence": "The API-shaped endpoint tried returned HTTP 404 (verified 2026-09-22); no public keyless price interface was confirmed."
+  },
+  "jpx": {
+   "name": "Japan Exchange Group (JPX / TOCOM)",
+   "products_page": "https://www.jpx.co.jp/english/derivatives/",
+   "automated_access": "endpoint_unresolved",
+   "automated_access_evidence": "The attempted statistics endpoint returned HTTP 404 (verified 2026-09-22)."
+  },
+  "euronext": {
+   "name": "Euronext",
+   "products_page": "https://www.euronext.com/en/products/commodities",
+   "automated_access": "unverified",
+   "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed."
+  },
+  "b3": {
+   "name": "B3 (Brasil, Bolsa, Balcão)",
+   "products_page": "https://www.b3.com.br/en_us/market-data-and-indices/",
+   "automated_access": "endpoint_unresolved",
+   "automated_access_evidence": "https://arquivos.b3.com.br/apinegocios/ticker/DI1 returned HTTP 404 (verified 2026-09-22)."
+  },
+  "hkex": {
+   "name": "Hong Kong Exchanges and Clearing",
+   "products_page": "https://www.hkex.com.hk/Products/Listed-Derivatives",
+   "automated_access": "unverified",
+   "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed."
+  },
+  "dme": {
+   "name": "Dubai Mercantile Exchange (DME)",
+   "products_page": "https://www.theice.com/",
+   "automated_access": "unverified",
+   "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed."
   }
+ },
+ "products": [
+  {
+   "id": "cme-cl",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": "CL",
+   "name": "Crude Oil (Light Sweet) Futures",
+   "commodity": "WTI Crude Oil",
+   "category": "Energy",
+   "contract_unit": "1,000 barrels",
+   "price_quotation": "U.S. dollars and cents per barrel",
+   "min_tick": "0.01 per barrel",
+   "tick_value_usd": 10,
+   "settlement_method": "Deliverable",
+   "spec_url": "https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "CME blocks automated access; the product page shows a delayed quote only."
+   }
+  },
+  {
+   "id": "cme-ng",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": "NG",
+   "name": "Henry Hub Natural Gas Futures",
+   "commodity": "Natural Gas",
+   "category": "Energy",
+   "contract_unit": "10,000 MMBtu",
+   "price_quotation": "U.S. dollars and cents per MMBtu",
+   "min_tick": "0.001 per MMBtu",
+   "tick_value_usd": 10,
+   "settlement_method": "Deliverable",
+   "spec_url": "https://www.cmegroup.com/markets/energy/natural-gas/natural-gas.contractSpecs.html",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_note": "TAS code NGT. Page also showed a delayed front-month quote (NGV26 2.951, volume 135,338) at the time of reading.",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "CME blocks automated access."
+   }
+  },
+  {
+   "id": "cme-bz",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": "BZ",
+   "name": "Brent Crude Oil Last Day Financial Futures",
+   "commodity": "Brent Crude Oil",
+   "category": "Energy",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "Brent also trades on ICE (paid end-of-day reports)."
+   }
+  },
+  {
+   "id": "cme-rb",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": "RB",
+   "name": "RBOB Gasoline Futures",
+   "commodity": "Gasoline (RBOB)",
+   "category": "Energy",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "historical_only",
+    "note": "EIA publishes the RBOB NYMEX futures series EER_EPMRR_PE1..PE4, which stops 2024-04-05."
+   }
+  },
+  {
+   "id": "cme-ho",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": "HO",
+   "name": "NY Harbor ULSD (Heating Oil / Diesel) Futures",
+   "commodity": "Diesel / Heating Oil",
+   "category": "Energy",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "historical_only",
+    "note": "EIA series EER_EPD2F_PE1..PE4 (No. 2 heating oil) stops 2024-04-05."
+   }
+  },
+  {
+   "id": "cme-power",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": null,
+   "name": "Electricity / power futures (PJM, MISO, ERCOT, CAISO hubs)",
+   "commodity": "Electricity",
+   "category": "Energy",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "CME lists North American power futures; the specific product pages and codes were not verified in this session, so no code is stated here."
+   }
+  },
+  {
+   "id": "cme-gc",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "GC",
+   "name": "Gold Futures",
+   "commodity": "Gold",
+   "category": "Precious Metals",
+   "contract_unit": "100 troy ounces",
+   "price_quotation": "U.S. dollars and cents per troy ounce",
+   "min_tick": "0.10 per troy ounce",
+   "tick_value_usd": 10,
+   "settlement_method": "Deliverable",
+   "delivery_grade": "Minimum 995 fineness",
+   "rulebook": "COMEX 113",
+   "termination": "Trading terminates at 12:30 p.m. CT on the third last business day of the contract month.",
+   "spec_url": "https://www.cmegroup.com/markets/metals/precious/gold.contractSpecs.html",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_note": "TAS code GCT, TAM code GCD. Page also showed a delayed front-month quote (GCV6 last 4359.8, volume 16,518) at the time of reading.",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "CME blocks automated access."
+   }
+  },
+  {
+   "id": "cme-si",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "SI",
+   "name": "Silver Futures",
+   "commodity": "Silver",
+   "category": "Precious Metals",
+   "contract_unit": "5,000 troy ounces",
+   "price_quotation": "U.S. dollars and cents per troy ounce",
+   "min_tick": "0.005 per troy ounce",
+   "tick_value_usd": 25,
+   "settlement_method": "Deliverable",
+   "delivery_grade": "Minimum 999 fineness",
+   "rulebook": "COMEX 112",
+   "termination": "Trading terminates at 12:25 p.m. CT on the third last business day of the contract month.",
+   "spec_url": "https://www.cmegroup.com/markets/metals/precious/silver.contractSpecs.html",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_note": "TAS code SIT; calendar spread tick 0.001 = $5.00. Page also showed a delayed front-month quote (SIZ6 last 67.300, volume 44,312) at the time of reading.",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-pl",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": "PL",
+   "name": "Platinum Futures",
+   "commodity": "Platinum",
+   "category": "Precious Metals",
+   "spec_url": "https://www.cmegroup.com/markets/metals/precious/platinum.contractSpecs.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-pa",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": "PA",
+   "name": "Palladium Futures",
+   "commodity": "Palladium",
+   "category": "Precious Metals",
+   "spec_url": "https://www.cmegroup.com/markets/metals/precious/palladium.contractSpecs.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-hg",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "HG",
+   "name": "Copper Futures",
+   "commodity": "Copper",
+   "category": "Industrial Metals",
+   "contract_unit": "25,000 pounds",
+   "price_quotation": "U.S. dollars and cents per pound",
+   "min_tick": "0.0005 per pound",
+   "tick_value_usd": 12.5,
+   "settlement_method": "Deliverable",
+   "termination": "Trading terminates at 12:00 noon CT on the third last business day of the contract month.",
+   "spec_url": "https://www.cmegroup.com/markets/metals/base/copper.contractSpecs.html",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_note": "TAS codes HGT / HG0, TAM code HGF. Page also showed a delayed front-month quote (HGZ6 last 6.8675, volume 36,926) at the time of reading.",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-ali",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "ALI",
+   "name": "Aluminum Futures",
+   "commodity": "Aluminium",
+   "category": "Industrial Metals",
+   "spec_url": "https://www.cmegroup.com/markets/metals/base/aluminum.contractSpecs.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-znc",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "ZNC",
+   "name": "Zinc Futures",
+   "commodity": "Zinc",
+   "category": "Industrial Metals",
+   "spec_url": "https://www.cmegroup.com/markets/metals/base/zinc.contractSpecs.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-led",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "LED",
+   "name": "Lead Futures",
+   "commodity": "Lead",
+   "category": "Industrial Metals",
+   "spec_url": "https://www.cmegroup.com/markets/metals/base/lead.contractSpecs.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-hr",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "HR",
+   "name": "U.S. Midwest Domestic Hot-Rolled Coil Steel (CRU) Index Futures",
+   "commodity": "Steel (HRC)",
+   "category": "Industrial Metals",
+   "spec_url": "https://www.cmegroup.com/markets/metals/ferrous/hrc-steel.contractSpecs.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-tio",
+   "exchange": "cme",
+   "venue": "COMEX",
+   "code": "TIO",
+   "name": "Iron Ore 62% Fe, CFR China (TSI) Futures",
+   "commodity": "Iron Ore",
+   "category": "Industrial Metals",
+   "spec_url": "https://www.cmegroup.com/markets/metals/ferrous/iron-ore-62pct-fe-cfr-china-tsi-swap-futures.contractSpecs.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "lme-ni",
+   "exchange": "lme",
+   "venue": "LME",
+   "code": "NI",
+   "name": "LME Nickel",
+   "commodity": "Nickel",
+   "category": "Industrial Metals",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "LME blocks automated access (Cloudflare 403). Nickel is priced in this project only via the MOEX nickel future, which is a different, separately-specified contract."
+   }
+  },
+  {
+   "id": "sgx-tf",
+   "exchange": "sgx",
+   "venue": "SGX",
+   "code": "TF",
+   "name": "SGX FTSE China A50 futures / SGX iron ore (TIO) and rubber contracts",
+   "commodity": "Iron Ore / Rubber",
+   "category": "Industrial Metals",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "endpoint_unresolved",
+    "note": "The SGX derivatives API answered but rejected every parameter combination tried; no SGX market is claimed."
+   }
+  },
+  {
+   "id": "cme-zc",
+   "exchange": "cme",
+   "venue": "CBOT",
+   "code": "ZC",
+   "name": "Corn Futures",
+   "commodity": "Corn",
+   "category": "Grains & Oilseeds",
+   "contract_unit": "5,000 bushels",
+   "price_quotation": "U.S. cents per bushel",
+   "min_tick": "1/4 of one cent (0.0025) per bushel",
+   "tick_value_usd": 12.5,
+   "settlement_method": "Deliverable",
+   "termination": "Trading terminates on the business day prior to the 15th day of the contract month.",
+   "delivery_grade": "#2 Yellow at contract price",
+   "rulebook": "CBOT 10",
+   "spec_url": "https://www.cmegroup.com/markets/agriculture/grains/corn/specs",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_note": "Globex code ZC, ClearPort/clearing code C, TAS code ZCT.",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-zw",
+   "exchange": "cme",
+   "venue": "CBOT",
+   "code": "ZW",
+   "name": "Chicago SRW Wheat Futures",
+   "commodity": "Wheat",
+   "category": "Grains & Oilseeds",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-zo",
+   "exchange": "cme",
+   "venue": "CBOT",
+   "code": "ZO",
+   "name": "Oats Futures",
+   "commodity": "Oats",
+   "category": "Grains & Oilseeds",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-zr",
+   "exchange": "cme",
+   "venue": "CBOT",
+   "code": "ZR",
+   "name": "Rough Rice Futures",
+   "commodity": "Rice",
+   "category": "Grains & Oilseeds",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-zs",
+   "exchange": "cme",
+   "venue": "CBOT",
+   "code": "ZS",
+   "name": "Soybean Futures",
+   "commodity": "Soybeans",
+   "category": "Grains & Oilseeds",
+   "product_id": 320,
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-zl",
+   "exchange": "cme",
+   "venue": "CBOT",
+   "code": "ZL",
+   "name": "Soybean Oil Futures",
+   "commodity": "Soybean Oil",
+   "category": "Grains & Oilseeds",
+   "product_id": 312,
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-zm",
+   "exchange": "cme",
+   "venue": "CBOT",
+   "code": "ZM",
+   "name": "Soybean Meal Futures",
+   "commodity": "Soybean Meal",
+   "category": "Grains & Oilseeds",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "ice-canola",
+   "exchange": "ice",
+   "venue": "ICE Futures Canada",
+   "code": "RS",
+   "name": "Canola Futures",
+   "commodity": "Canola",
+   "category": "Grains & Oilseeds",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "ICE end-of-day data is a paid subscription."
+   }
+  },
+  {
+   "id": "euronext-milling-wheat",
+   "exchange": "euronext",
+   "venue": "Euronext",
+   "code": null,
+   "name": "Milling Wheat Futures",
+   "commodity": "Wheat (milling)",
+   "category": "Grains & Oilseeds",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "unverified",
+    "note": "Euronext lists milling wheat and rapeseed futures; no endpoint was tested, so nothing is claimed."
+   }
+  },
+  {
+   "id": "ice-kc",
+   "exchange": "ice",
+   "venue": "ICE Futures U.S.",
+   "code": "KC",
+   "name": "Coffee C Futures",
+   "commodity": "Coffee",
+   "category": "Soft Commodities",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "Coffee is also priced in this project through the MOEX coffee future, a separately-specified contract."
+   }
+  },
+  {
+   "id": "ice-cc",
+   "exchange": "ice",
+   "venue": "ICE Futures U.S.",
+   "code": "CC",
+   "name": "Cocoa Futures",
+   "commodity": "Cocoa",
+   "category": "Soft Commodities",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "Cocoa is also priced through the MOEX cocoa future."
+   }
+  },
+  {
+   "id": "ice-sb",
+   "exchange": "ice",
+   "venue": "ICE Futures U.S.",
+   "code": "SB",
+   "name": "Sugar No. 11 Futures",
+   "commodity": "Sugar",
+   "category": "Soft Commodities",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "Sugar is also priced through the MOEX sugar future."
+   }
+  },
+  {
+   "id": "ice-ct",
+   "exchange": "ice",
+   "venue": "ICE Futures U.S.",
+   "code": "CT",
+   "name": "Cotton No. 2 Futures",
+   "commodity": "Cotton",
+   "category": "Soft Commodities",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "ice-oj",
+   "exchange": "ice",
+   "venue": "ICE Futures U.S.",
+   "code": "OJ",
+   "name": "FCOJ-A (Orange Juice) Futures",
+   "commodity": "Orange Juice",
+   "category": "Soft Commodities",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-le",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": "LE",
+   "name": "Live Cattle Futures",
+   "commodity": "Live Cattle",
+   "category": "Livestock",
+   "product_id": 22,
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-gf",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": "GF",
+   "name": "Feeder Cattle Futures",
+   "commodity": "Feeder Cattle",
+   "category": "Livestock",
+   "product_id": 34,
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-he",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": "HE",
+   "name": "Lean Hogs Futures",
+   "commodity": "Lean Hogs",
+   "category": "Livestock",
+   "product_id": 19,
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-pork-cutout",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": null,
+   "name": "Pork Cutout Futures",
+   "commodity": "Pork",
+   "category": "Livestock",
+   "product_id": 8948,
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-dc",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": "DC",
+   "name": "Class III Milk Futures",
+   "commodity": "Milk (Class III)",
+   "category": "Dairy",
+   "product_id": 781,
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/dairy.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-dairy-pack",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": null,
+   "name": "Dairy complex (butter, cheese, nonfat dry milk, dry whey)",
+   "commodity": "Butter / Cheese / Whey",
+   "category": "Dairy",
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/agriculture/dairy.html",
+   "price_data": {
+    "status": "licensed_feed_required",
+    "note": "The dairy category page is verified; individual product codes were not read, so none are stated."
+   }
+  },
+  {
+   "id": "cme-lbr",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": "LBR",
+   "name": "Random-Length Lumber Futures",
+   "commodity": "Lumber",
+   "category": "Lumber & Other",
+   "spec_url": "https://www.cmegroup.com/markets/agriculture/lumber-and-softs/lumber.html",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-ag-index",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": null,
+   "name": "CME Group Agriculture Index Futures",
+   "commodity": "Agriculture index",
+   "category": "Commodity Indexes",
+   "spec_url": "https://www.cmegroup.com/markets/agriculture/agriculture-index",
+   "spec_status": "listed_only",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-es",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": "ES",
+   "name": "E-mini S&P 500 Futures",
+   "commodity": "Equity index (S&P 500)",
+   "category": "Equity Index",
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/equities.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-equity-complex",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": null,
+   "name": "Equity index complex (Nasdaq-100, Dow, Russell, international indices, sectors)",
+   "commodity": "Equity index",
+   "category": "Equity Index",
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/equities.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-rates-complex",
+   "exchange": "cme",
+   "venue": "CBOT / CME",
+   "code": null,
+   "name": "Interest-rate complex (SOFR, Fed Funds, Treasury futures, T-Bills, ESTR, TIIE, TBA)",
+   "commodity": "Interest rates",
+   "category": "Interest Rates",
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/interest-rates.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-fx-complex",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": null,
+   "name": "FX futures complex (EUR, JPY, GBP, AUD, CAD, CHF and micro/mini sizes)",
+   "commodity": "Foreign exchange",
+   "category": "FX",
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/fx.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-crypto-complex",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": null,
+   "name": "Crypto futures (Bitcoin, Ether and micro sizes)",
+   "commodity": "Crypto",
+   "category": "Crypto",
+   "spec_url": null,
+   "spec_status": "listed_only",
+   "category_page": "https://www.cmegroup.com/markets/cryptocurrencies.html",
+   "price_data": {
+    "status": "licensed_feed_required"
+   }
+  },
+  {
+   "id": "cme-carbon",
+   "exchange": "cme",
+   "venue": "NYMEX",
+   "code": null,
+   "name": "Environmental / carbon offset futures (Global Emissions Offset, Nature-Based GEOF, EU Allowances)",
+   "commodity": "Carbon",
+   "category": "Carbon & Environmental",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "unverified",
+    "note": "CME lists environmental products, but no official product page was verified in this session, so nothing is claimed."
+   }
+  },
+  {
+   "id": "cme-water",
+   "exchange": "cme",
+   "venue": "CME",
+   "code": "NQH2O",
+   "name": "Nasdaq Veles California Water Index Futures",
+   "commodity": "Water",
+   "category": "Water",
+   "spec_url": null,
+   "spec_status": "unverified",
+   "price_data": {
+    "status": "unverified",
+    "note": "The contract is widely reported to be CME-listed; no official page was verified in this session, so it is listed here only as an item to verify."
+   }
+  },
+  {
+   "id": "moex-wti",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "WTI",
+   "name": "WTI Crude Oil futures",
+   "commodity": "WTI Crude Oil",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code WTI present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "WTI-9.26 … WTI-12.26 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-br",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "BR",
+   "name": "Brent Crude Oil futures",
+   "commodity": "Brent Crude Oil",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code BR present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "BR-10.26 … BR-12.26 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-ng",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "NG",
+   "name": "Natural Gas (NG) futures",
+   "commodity": "Natural Gas (NG)",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NG present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "NG-9.26 … NG-3.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-ngm",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "NGM",
+   "name": "Natural Gas (NGM) futures",
+   "commodity": "Natural Gas (NGM)",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NGM present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "NGM-9.26 … NGM-4.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-ttf",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "TTF",
+   "name": "Natural Gas (TTF) futures",
+   "commodity": "Natural Gas (TTF)",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code TTF present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "TTF-9.26 … TTF-11.26 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-dtl",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "DTL",
+   "name": "Diesel (DTL) futures",
+   "commodity": "Diesel (DTL)",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code DTL present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "DTL-9.26 … DTL-11.26 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-ai92",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "AI92",
+   "name": "Gasoline AI-92 futures",
+   "commodity": "Gasoline AI-92",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code AI92 present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "AI92-9.26 … AI92-11.26 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-ai95",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "AI95",
+   "name": "Gasoline AI-95 futures",
+   "commodity": "Gasoline AI-95",
+   "category": "Energy",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code AI95 present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "AI95-9.26 … AI95-11.26 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-gold",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "GOLD",
+   "name": "Gold futures",
+   "commodity": "Gold",
+   "category": "Precious Metals",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code GOLD present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "GOLD-12.26 … GOLD-9.27 series; description publishes LOT SIZE=1, quotation UNIT=USD, FACEUNIT=USD (verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-silv",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "SILV",
+   "name": "Silver futures",
+   "commodity": "Silver",
+   "category": "Precious Metals",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SILV present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "SILV-12.26 … SILV-9.27 series; description publishes LOT SIZE=10, quotation UNIT=USD, FACEUNIT=USD (verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-plt",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "PLT",
+   "name": "Platinum futures",
+   "commodity": "Platinum",
+   "category": "Precious Metals",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code PLT present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "PLT-12.26 … PLT-9.27 series; description publishes LOT SIZE=1, quotation UNIT=USD, FACEUNIT=USD (verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-copper",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "COPPER",
+   "name": "Copper futures",
+   "commodity": "Copper",
+   "category": "Industrial Metals",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code COPPER present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "COPPER-12.26 / COPPER-3.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-nickel",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "NICKEL",
+   "name": "Nickel futures",
+   "commodity": "Nickel",
+   "category": "Industrial Metals",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NICKEL present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "NICKEL-12.26 / NICKEL-3.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-alum",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "ALUM",
+   "name": "Aluminium futures",
+   "commodity": "Aluminium",
+   "category": "Industrial Metals",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ALUM present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "ALUM-12.26 / ALUM-3.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-zinc",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "ZINC",
+   "name": "Zinc futures",
+   "commodity": "Zinc",
+   "category": "Industrial Metals",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ZINC present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "ZINC-12.26 / ZINC-3.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-cocoa",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "COCOA",
+   "name": "Cocoa futures",
+   "commodity": "Cocoa",
+   "category": "Soft Commodities",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code COCOA present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "COCOA-11.26 / COCOA-2.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-coffee",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "COFFEE",
+   "name": "Coffee futures",
+   "commodity": "Coffee",
+   "category": "Soft Commodities",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code COFFEE present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "COFFEE-11.26 / COFFEE-2.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-sugar",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "SUGAR",
+   "name": "Sugar (white) futures",
+   "commodity": "Sugar (white)",
+   "category": "Soft Commodities",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SUGAR present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "SUGAR-10.26 / SUGAR-11.26 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-sugr",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "SUGR",
+   "name": "Raw Sugar (SUGR) futures",
+   "commodity": "Raw Sugar (SUGR)",
+   "category": "Soft Commodities",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SUGR present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "SUGR-10.26 … SUGR-5.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-wheat",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "WHEAT",
+   "name": "Wheat futures",
+   "commodity": "Wheat",
+   "category": "Grains & Oilseeds",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code WHEAT present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "WHEAT-9.26 … WHEAT-8.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-orange",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "ORANGE",
+   "name": "Orange Juice (ORANGE) futures",
+   "commodity": "Orange Juice (ORANGE)",
+   "category": "Soft Commodities",
+   "spec_status": "verified",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ORANGE present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+   "spec_evidence": "ORANGE-11.26 / ORANGE-1.27 series (verified in the exchange listing 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api",
+    "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick."
+   }
+  },
+  {
+   "id": "moex-mix",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "MIX",
+   "name": "IMOEX index future",
+   "commodity": null,
+   "category": "Equity index futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code MIX present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-rts",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "RTS",
+   "name": "RTS index future",
+   "commodity": null,
+   "category": "Equity index futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code RTS present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-nasd",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "NASD",
+   "name": "Nasdaq-100 index future",
+   "commodity": null,
+   "category": "Equity index futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NASD present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-spyf",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "SPYF",
+   "name": "S&P 500 index future",
+   "commodity": null,
+   "category": "Equity index futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SPYF present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-ruonia",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "RUONIA",
+   "name": "RUONIA rate future",
+   "commodity": null,
+   "category": "Interest-rate futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code RUONIA present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-1mfr",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "1MFR",
+   "name": "1-month RUONIA rate future",
+   "commodity": null,
+   "category": "Interest-rate futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code 1MFR present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-si",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "Si",
+   "name": "USD/RUB future",
+   "commodity": null,
+   "category": "FX futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code Si present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-cny",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "CNY",
+   "name": "CNY/RUB future",
+   "commodity": null,
+   "category": "FX futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code CNY present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-btc",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "BTC",
+   "name": "Bitcoin future",
+   "commodity": null,
+   "category": "Crypto futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code BTC present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  },
+  {
+   "id": "moex-eth",
+   "exchange": "moex",
+   "venue": "FORTS",
+   "code": "ETH",
+   "name": "Ether future",
+   "commodity": null,
+   "category": "Crypto futures",
+   "spec_status": "listed_only",
+   "spec_verified_at": "2026-09-22",
+   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ETH present in the exchange listing, verified 2026-09-22)",
+   "price_data": {
+    "status": "automated_official_api_available",
+    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+   }
+  }
+ ],
+ "kalshi_reference": {
+  "note": "Kalshi event contracts and perpetual futures are discovered live from the official API at run time - see data/universe/instruments.json. Nothing about Kalshi is hard-coded here.",
+  "api": "https://api.elections.kalshi.com/trade-api/v2",
+  "docs": "https://docs.kalshi.com/",
+  "perps_docs": "https://docs.kalshi.com/margin",
+  "fee_schedule": "https://kalshi.com/docs/kalshi-fee-schedule.pdf"
+ }
 }

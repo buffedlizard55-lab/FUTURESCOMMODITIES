@@ -3,13 +3,15 @@
 A research, strategy and **paper-trading competition** platform for commodity markets, built so that every
 number it publishes can be traced back to an official public source.
 
-Twelve strategies — one per username — trade three kinds of instrument against prices pulled from the
+Seventeen strategies — one per username — trade three kinds of instrument against prices pulled from the
 exchanges' own APIs:
 
 * **Kalshi commodity/prediction event contracts** (binary commodity, energy and metals markets),
 * **Kalshi perpetual futures** where the exchange publishes them,
-* **exchange-listed commodity futures** on **MOEX FORTS**, which serves quotes, settlement prices,
-  open interest, fee schedules and full price history through a free, keyless official API.
+* **exchange-listed commodity futures** on **MOEX FORTS** — metals, grains, softs and (verified into the
+  universe on 2026-09-22) WTI, Brent, natural gas (NG/NGM/TTF), diesel, AI-92/95 gasoline and orange
+  juice — through a free, keyless official API with quotes, settlement prices, open interest, fee
+  schedules, reference contract data and full price history.
 
 The competition runs for one year from 2026-09-22. All executions are **simulated paper fills**: the
 engine never sends an order to an exchange. Fills are simulated against the *published order books* of
@@ -22,12 +24,14 @@ each venue, and every trade record states the execution model that produced it.
 | Section | What it shows |
 | --- | --- |
 | Leaderboard | Every strategy ranked by return on the starting $100,000; realised and unrealised PnL, fees, slippage, open and closed trades |
-| Strategies | Which market type each username trades, the claim the strategy came from, its entry/exit rules, and what the results so far actually show |
+| Strategies | Which market type each username trades, the claim it came from (with source links), its entry/exit rules, and what the results so far actually show |
+| Live trade desk | The simulator's desk: the verified book every strategy places orders against (bid/ask/mid/depth, official URL + payload hash + retrieval time per row), the orders being placed right now, the intents that could not execute and why, and the most recent fills |
 | Open positions | Side, size, entry, published mark, collateral and the mark's official source link |
 | Trades | Every trade with all mandatory verification fields: source URL and payload hash, exchange, ticker, contract specification, dates, published bid/ask, execution price, size, liquidity consumed, slippage, fees, PnL, retrieval and verification timestamps |
 | Upcoming & resting | Intents that could not be executed (with the reason) and maker orders resting at a published price |
 | Market universe | Per-series counts of every market read from the exchange, contract terms links, settlement sources, and the exchange access matrix |
-| Verification | The independent audit report: how many trades reproduce exactly, and every anomaly it found |
+| Research & backtests | Documented rules re-run on official daily price history (Kalshi candles, MOEX settlements) with every source file cited, plus the strategies marked unavailable for backtesting and the research register of parked ideas with citations |
+| Verification | The independent audit report: how many trades reproduce exactly, every anomaly it found, and the per-check anomaly breakdown |
 
 ## How a tick works
 
@@ -36,6 +40,7 @@ engine/tick.mjs      fetch official data -> build the universe -> run strategies
                      -> mark positions -> publish snapshot, coverage, leaderboard, ledger, run manifest
 engine/verify.mjs    re-read the append-only ledger and audit every trade against that run's provenance
 engine/report.mjs    per-strategy attribution: where the return came from, what blocked orders
+engine/backtest.mjs  documented rules re-run on committed official daily histories (never season trades)
 engine/build-site.mjs build the self-contained index.html the pages site serves
 ```
 
@@ -43,9 +48,10 @@ Nothing is installed: the engine uses only the Node standard library (`node >= 2
 
 ```bash
 node engine/tick.mjs               # one full market moment (needs egress to the exchanges)
-node engine/tick.mjs --offline     # rebuild from caches without network access
+node engine/tick.mjs --offline     # cache rebuild only: never trades, never touches the ledger or season state
 node engine/verify.mjs             # independent verification pass
 node engine/report.mjs             # strategy result reports
+node engine/backtest.mjs           # research backtests over committed official history
 node engine/build-site.mjs         # regenerate index.html
 ```
 
@@ -56,8 +62,8 @@ forbid it, and no invented values.
 
 | Venue | Access | Used for |
 | --- | --- | --- |
-| Kalshi Trade API v2 (`api.elections.kalshi.com`) | keyless | series, open markets, order books, perps, candlesticks, exchange status |
-| MOEX ISS (`iss.moex.com`) | keyless | FORTS futures quotes, specifications, initial margin, fees, daily history, USD/RUB |
+| Kalshi Trade API v2 (`api.elections.kalshi.com`) | keyless | series, open markets, order books, perps (`/margin`), candlesticks (official `*_dollars` schema), exchange status |
+| MOEX ISS (`iss.moex.com`) | keyless | FORTS futures quotes, reference descriptions (LOT SIZE / quotation UNIT / FACEUNIT per contract), initial margin, fees, daily history, USD/RUB |
 | EIA (`eia.gov`) | keyless files | archived historical NYMEX futures series (discontinued after 2024-04-05) and spot benchmarks |
 | USDA AMS Market News DataMart (`mpr.datamart.ams.usda.gov`) | keyless | physical commodity report rows, stored exactly as published |
 | CME Group, ICE, LME, Eurex, JPX, SGX, B3 and others | blocked to scripts or account-gated | contract specifications are cited from official pages; live prices are **not** simulated for them |

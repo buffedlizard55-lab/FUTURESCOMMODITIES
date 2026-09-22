@@ -768,52 +768,95 @@ export const STRATEGIES = [
     id: 'cross-venue-basis',
     username: '@basis-hunter',
     display_name: 'Cross-Venue Basis',
-    // Disabled until the two venues' contracts can be normalised with verified data. Kalshi publishes
-    // the underlying quantity per perpetual contract (contract_size), but the MOEX machine-readable
-    // payload for the matching future does not state it, so a price-versus-price comparison would be
-    // comparing different units. The first iteration did exactly that and was corrected; the strategy
-    // stays out of the competition rather than trade on an unverifiable comparison.
-    enabled: false,
-    disabled_reason:
-      'Unavailable: comparing the Kalshi perpetual price with the MOEX future price requires the underlying quantity per contract on both venues. Kalshi publishes contract_size in its payload; the MOEX machine-readable payload does not, so the legs cannot be normalised without assuming a contract size. The strategy therefore places no orders until that figure is verified from an official MOEX source.',
+    // Re-enabled on 2026-09-22 after the unit defect was resolved with official data. What was
+    // missing before was the normalisation between the two venues' contracts, and it now exists:
+    //   Kalshi: the Perps API payload publishes `contract_size` per contract (gold 0.001, silver
+    //           0.1, platinum 0.001) - Kalshi's own help-centre specification states contract
+    //           sizes in units of the underlying (troy ounces for metals), so USD per ounce is
+    //           price / contract_size.
+    //   MOEX:   the ISS description table (/iss/securities/{SECID}.json -> description) publishes
+    //           LOTSIZE, UNIT (quotation currency) and FACEUNIT (settlement currency). Verified
+    //           2026-09-22: GDZ6 LOTSIZE=1 UNIT=USD FACEUNIT=USD; SVZ6 LOTSIZE=10 UNIT=USD
+    //           FACEUNIT=USD; PTZ6 LOTSIZE=1 UNIT=USD FACEUNIT=USD. The quote is USD per unit of
+    //           the underlying, so the MOEX mid is already USD per ounce.
+    // Cross-check on 2026-09-22 22:23Z (both venues' own payloads, same run): Kalshi gold perp
+    // 4.36325/0.001 = 4363.25 USD/oz vs MOEX GDZ6 mid 4433.25 (+1.6%); silver 67.2255 vs 68.36
+    // (+1.7%). Two independent official venues within ~2% - the normalisation is corroborated
+    // empirically as well (a lot-vs-unit or gram-vs-ounce error would show 10x/32x gaps).
+    // The strategy refuses to trade any pair whose normalisation inputs are missing in the run.
     market_type: 'Cross-venue: Kalshi perpetual future vs exchange-listed future',
     venues: ['kalshi_margin', 'moex_forts'],
     origin: {
       kind: 'market_structure',
-      claim: 'A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge.',
-      status: 'structural - two real legs on two real venues',
+      claim: 'A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge. The MOEX premium/discount to the world metal price since 2022 is a documented, persistent phenomenon.',
+      status: 'structural - two real legs on two real venues, unit-normalised from official fields',
+      sources: [
+        { label: 'Kalshi perp contract specification (official help centre: contract size in underlying units)', url: 'https://help.kalshi.com/en/articles/15357587-btc-perpetual-futures-contract-specifications' },
+        { label: 'MOEX ISS security description endpoint (LOTSIZE / quotation UNIT / FACEUNIT)', url: 'https://iss.moex.com/iss/securities/GDZ6.json?iss.meta=off&iss.only=description' },
+        { label: 'MOEX ISS reference documentation', url: 'https://iss.moex.com/iss/reference/' },
+      ],
     },
     thesis:
-      'Compare the Kalshi metal perpetual with the front MOEX future on the same metal. When the percentage spread between them is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.',
+      'Compare the Kalshi metal perpetual (price / contract_size = USD per ounce) with the front MOEX future on the same metal (mid = USD per ounce when UNIT=USD). When the normalised basis is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.',
     rules: {
-      entry: 'Basis >= 0.5% between the perpetual mid and the MOEX future mid.',
-      exit: 'Exit when the basis compresses below 0.1%.',
+      entry: 'Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).',
+      exit: 'Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.',
       sizing: 'Target notional per leg, capped by each venue published liquidity.',
     },
-    sizing: { notional_usd: 4000, min_basis: 0.005, exit_basis: 0.001 },
+    sizing: { notional_usd: 20000, min_basis: 0.005, exit_basis: 0.001, sizing_note: 'Per-leg target notional. It must exceed the value of one MOEX metal contract (GOLD-12.26 lot = 1 troy ounce, quoted USD/oz, ~$4,400 per contract on 2026-09-22) or the minimum size is zero contracts and no trade can be placed.' },
     pairs: [
       { metal: 'Gold', perpTicker: 'KXGOLDPERP', moexAsset: 'GOLD' },
       { metal: 'Silver', perpTicker: 'KXSILVERPERP', moexAsset: 'SILV' },
       { metal: 'Platinum', perpTicker: 'KXPLATINUMPERP', moexAsset: 'PLT' },
-      { metal: 'Palladium', perpTicker: 'KXPALLADIUMPERP', moexAsset: 'PALL' },
+      // Palladium is deliberately absent: the MOEX FORTS listing verified on 2026-09-22 contains
+      // no palladium asset code (the P codes are PLT/PLTM platinum and PLD/PLDM/PLZLM equities),
+      // and the Kalshi palladium perp had no two-sided market in the last verified snapshot.
     ],
     decide(ctx) {
       let orders = 0;
       for (const pair of this.pairs ?? []) {
         if (orders >= 2) break;
         const perp = ctx.listInstruments({ venue: 'kalshi_margin' }).find((i) => i.ticker === pair.perpTicker);
-        const future = ctx.listInstruments({ venue: 'moex_forts' }).find((i) => i.asset_code === pair.moexAsset);
+        const moexLegs = ctx.listInstruments({ venue: 'moex_forts' }).filter((i) => i.asset_code === pair.moexAsset);
+        // front (nearest) expiry only
+        const future = [...moexLegs].sort((a, b) => String(a.last_trade_date ?? '').localeCompare(String(b.last_trade_date ?? '')))[0] ?? null;
         if (!perp || !future) continue;
         const pq = ctx.quote(perp.instrument_id);
         const fq = ctx.quote(future.instrument_id);
         if (!pq || !fq || pq.mid == null || fq.mid == null || pq.bid == null || pq.offer == null || fq.bid == null || fq.offer == null) continue;
-        const basis = (pq.mid - fq.mid) / fq.mid;
+        const perpContractSize = perp.contract_specification?.contract_size ?? pq.contract_size ?? null;
+        if (!(perpContractSize > 0)) {
+          ctx.note({ pair: pair.metal, skipped: 'kalshi_contract_size_unavailable', contract_size: perpContractSize });
+          continue;
+        }
+        if (future.contract_specification?.quote_unit !== 'USD') {
+          ctx.note({ pair: pair.metal, skipped: 'moex_quote_unit_not_usd', quote_unit: future.contract_specification?.quote_unit ?? null });
+          continue;
+        }
+        const perpUsdPerOunce = pq.mid / perpContractSize;
+        const moexUsdPerOunce = fq.mid; // quote_unit is USD per underlying unit (official MOEX description)
+        if (!(perpUsdPerOunce > 0) || !(moexUsdPerOunce > 0)) continue;
+        const basis = (perpUsdPerOunce - moexUsdPerOunce) / moexUsdPerOunce;
+        const normalization = {
+          perp_ticker: perp.ticker,
+          perp_contract_size: perpContractSize,
+          perp_mid: pq.mid,
+          perp_usd_per_ounce: Number(perpUsdPerOunce.toFixed(6)),
+          moex_ticker: future.ticker,
+          moex_quote_unit: future.contract_specification.quote_unit,
+          moex_lot_size: future.contract_specification.lot_size ?? null,
+          moex_face_unit: future.contract_specification.settlement_currency ?? null,
+          moex_mid: fq.mid,
+          moex_usd_per_ounce: Number(moexUsdPerOunce.toFixed(6)),
+          formula: 'basis = (perp_mid / perp_contract_size - moex_mid) / moex_mid',
+          sources: { perp: pq.source?.url ?? null, moex: fq.source?.url ?? null, moex_description: future.contract_specification.description_source_url ?? null },
+        };
         const existingPerp = ctx.portfolio.positions[perp.instrument_id];
         const existingFuture = ctx.portfolio.positions[future.instrument_id];
         if (Math.abs(basis) < this.sizing.min_basis) {
           if (Math.abs(basis) < this.sizing.exit_basis && (existingPerp || existingFuture)) {
-            ctx.exit(perp.instrument_id, `Basis compressed to ${(basis * 100).toFixed(3)}%, below the exit threshold.`, { name: 'basis_convergence', basis: Number(basis.toFixed(5)) });
-            ctx.exit(future.instrument_id, `Basis compressed to ${(basis * 100).toFixed(3)}%, below the exit threshold.`, { name: 'basis_convergence', basis: Number(basis.toFixed(5)) });
+            ctx.exit(perp.instrument_id, `Normalised basis compressed to ${(basis * 100).toFixed(3)}%, below the exit threshold.`, { name: 'basis_convergence', basis: Number(basis.toFixed(5)), normalization });
+            ctx.exit(future.instrument_id, `Normalised basis compressed to ${(basis * 100).toFixed(3)}%, below the exit threshold.`, { name: 'basis_convergence', basis: Number(basis.toFixed(5)), normalization });
           }
           continue;
         }
@@ -839,8 +882,8 @@ export const STRATEGIES = [
           contracts,
           limit_price: perpPrice,
           order_type: 'taker',
-          thesis: `Basis ${(basis * 100).toFixed(3)}% between ${perp.ticker} and ${future.ticker}; perpetual leg at ${perpPrice}.`,
-          signal: { name: 'cross_venue_basis', basis: Number(basis.toFixed(5)), perp_mid: pq.mid, future_mid: fq.mid, leg: 'perpetual' },
+          thesis: `Normalised basis ${(basis * 100).toFixed(3)}%: ${perp.ticker} ${perpUsdPerOunce.toFixed(2)} USD/oz vs ${future.ticker} ${moexUsdPerOunce.toFixed(2)} USD/oz; perpetual leg at ${perpPrice}.`,
+          signal: { name: 'cross_venue_basis', basis: Number(basis.toFixed(5)), leg: 'perpetual', normalization },
         });
         ctx.order({
           strategy_id: this.id,
@@ -851,14 +894,387 @@ export const STRATEGIES = [
           contracts,
           limit_price: futurePrice,
           order_type: 'taker',
-          thesis: `Basis ${(basis * 100).toFixed(3)}% between ${perp.ticker} and ${future.ticker}; futures leg at ${futurePrice}.`,
-          signal: { name: 'cross_venue_basis', basis: Number(basis.toFixed(5)), perp_mid: pq.mid, future_mid: fq.mid, leg: 'future' },
+          thesis: `Normalised basis ${(basis * 100).toFixed(3)}%: ${perp.ticker} ${perpUsdPerOunce.toFixed(2)} USD/oz vs ${future.ticker} ${moexUsdPerOunce.toFixed(2)} USD/oz; futures leg at ${futurePrice}.`,
+          signal: { name: 'cross_venue_basis', basis: Number(basis.toFixed(5)), leg: 'future', normalization },
         });
       }
       return { notes: [] };
     },
     exit(ctx, position) {
-      return { reason: 'Cross-venue legs are held until the measured basis converges below the exit threshold; the engine re-checks on every tick.', signal: { name: 'basis_review' } };
+      // Re-derive the normalised basis for this position's pair; only exit when it has converged.
+      const inst = ctx.instrument(position.instrument_id);
+      const pair = (this.pairs ?? []).find(
+        (p) => position.ticker === p.perpTicker || (inst && inst.asset_code === p.moexAsset),
+      );
+      if (!pair) {
+        return { reason: 'This position no longer belongs to a verified cross-venue pair; unwinding rather than holding an unmodellable leg.', signal: { name: 'basis_pair_removed' } };
+      }
+      const perp = ctx.listInstruments({ venue: 'kalshi_margin' }).find((i) => i.ticker === pair.perpTicker);
+      const future = [...ctx.listInstruments({ venue: 'moex_forts' }).filter((i) => i.asset_code === pair.moexAsset)].sort((a, b) => String(a.last_trade_date ?? '').localeCompare(String(b.last_trade_date ?? '')))[0];
+      if (!perp || !future) {
+        return { reason: 'One leg of the pair is no longer published with a quote; the converged-price premise cannot be checked, so the leg is unwound.', signal: { name: 'basis_leg_unavailable' } };
+      }
+      const pq = ctx.quote(perp.instrument_id);
+      const fq = ctx.quote(future.instrument_id);
+      const perpContractSize = perp.contract_specification?.contract_size ?? pq?.contract_size ?? null;
+      if (!pq || !fq || pq.mid == null || fq.mid == null || !(perpContractSize > 0) || future.contract_specification?.quote_unit !== 'USD') {
+        return { reason: 'Normalisation inputs for the pair are unavailable in this snapshot; the basis premise cannot be checked, so the leg is unwound rather than held unverified.', signal: { name: 'basis_normalisation_unavailable' } };
+      }
+      const basis = (pq.mid / perpContractSize - fq.mid) / fq.mid;
+      if (Math.abs(basis) >= this.sizing.exit_basis) return null;
+      return {
+        reason: `Normalised basis compressed to ${(basis * 100).toFixed(3)}% (below the ${(this.sizing.exit_basis * 100).toFixed(1)}% exit threshold).`,
+        signal: { name: 'basis_convergence', basis: Number(basis.toFixed(5)), perp_usd_per_ounce: Number((pq.mid / perpContractSize).toFixed(6)), moex_usd_per_ounce: Number(fq.mid.toFixed(6)) },
+      };
+    },
+  },
+
+  /* ------------------------------------------------------------------ 13 */
+  {
+    id: 'kalshi-orderbook-imbalance',
+    username: '@book-watcher',
+    display_name: 'Order-Book Imbalance',
+    market_type: 'Kalshi event contract',
+    venues: ['kalshi'],
+    origin: {
+      kind: 'documented_anomaly',
+      claim: 'Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side\'s direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.',
+      status: 'hypothesis under test - the competition is the test',
+      sources: [
+        { label: 'Prediction-market strategy synthesis (flow and liquidity signals)', url: 'https://medium.com/@FrenzyCapital/trading-strategies-for-prediction-markets-4025a050e2e2' },
+      ],
+    },
+    thesis:
+      'Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.',
+    rules: {
+      entry: 'Depth ratio >= 70% or <= 30% on visible book depth, spread <= 3 cents, YES mid between 0.15 and 0.85, at least 2 hours to close.',
+      exit: 'Exit when the depth ratio crosses back through 50% or the market closes.',
+      sizing: 'Target notional, capped at 25% of the resting depth within 2 cents of the offer.',
+    },
+    sizing: { notional_usd: 2500, max_spread_cents: 3, imbalance: 0.7 },
+    decide(ctx) {
+      let orders = 0;
+      for (const inst of ctx.listInstruments({ venue: 'kalshi' })) {
+        if (orders >= 3) break;
+        if (!hasTimeLeft(inst, 120, ctx.now)) continue;
+        if (ctx.portfolio.positions[inst.instrument_id]) continue;
+        const q = ctx.quote(inst.instrument_id);
+        if (!q || q.mid == null || q.spread == null) continue;
+        if (q.mid < 0.15 || q.mid > 0.85 || q.spread > this.sizing.max_spread_cents / 100) continue;
+        const depthYes = q.depth_yes_contracts ?? 0;
+        const depthNo = q.depth_no_contracts ?? 0;
+        const total = depthYes + depthNo;
+        if (total < 50) continue; // need a real book before an imbalance means anything
+        const ratio = depthYes / total;
+        if (ratio < this.sizing.imbalance && ratio > 1 - this.sizing.imbalance) continue;
+        const buyYes = ratio >= this.sizing.imbalance;
+        const price = buyYes ? q.best_yes_ask : q.best_no_ask;
+        if (price == null) continue;
+        const contracts = sizeContracts({ notional: this.sizing.notional_usd, price });
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: inst.instrument_id,
+          venue: 'kalshi',
+          action: 'buy',
+          outcome: buyYes ? 'yes' : 'no',
+          contracts,
+          limit_price: Number((price + 0.02).toFixed(4)),
+          order_type: 'taker',
+          thesis: `Resting depth is ${(Math.max(ratio, 1 - ratio) * 100).toFixed(0)}% on the ${buyYes ? 'YES' : 'NO'} side of ${inst.series_ticker}; following the book.`,
+          signal: { name: 'book_imbalance', depth_ratio_yes: Number(ratio.toFixed(4)), depth_yes_contracts: depthYes, depth_no_contracts: depthNo, side: buyYes ? 'yes' : 'no', series: inst.series_ticker },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const q = ctx.quote(position.instrument_id);
+      if (!q || q.depth_yes_contracts == null || q.depth_no_contracts == null) return null;
+      const total = q.depth_yes_contracts + q.depth_no_contracts;
+      if (total <= 0) return null;
+      const ratio = q.depth_yes_contracts / total;
+      const heldYes = position.outcome === 'yes';
+      const stillWithUs = heldYes ? ratio >= 0.5 : ratio <= 0.5;
+      if (stillWithUs) return null;
+      return { reason: 'The resting-book imbalance crossed back through 50% against the position.', signal: { name: 'book_imbalance_flip', depth_ratio_yes: Number(ratio.toFixed(4)) } };
+    },
+  },
+
+  /* ------------------------------------------------------------------ 14 */
+  {
+    id: 'kalshi-perp-mark-fade',
+    username: '@mark-fade',
+    display_name: 'Perp Mark Fade',
+    market_type: 'Kalshi perpetual future',
+    venues: ['kalshi_margin'],
+    origin: {
+      kind: 'market_structure',
+      claim: 'A perpetual\'s book is anchored to the exchange-published mark/index price: deviations are driven by transient order flow and tend to decay back toward the mark. Kalshi publishes the mark (settlement mark price) for every perpetual in the same payload as the book.',
+      status: 'structural - the anchor is published by the exchange itself',
+    },
+    thesis:
+      'When the Kalshi perpetual mid deviates from the exchange-published mark price by 0.3% or more, trade back toward the mark; exit when the deviation decays below 0.08%. Both the deviation and its anchor come from the exchange payload in the same snapshot.',
+    rules: {
+      entry: '|perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.',
+      exit: 'Exit when the deviation decays below 0.08% or the two-sided quote disappears.',
+      sizing: 'Target notional, capped by a share of published 24h notional volume.',
+    },
+    sizing: { notional_usd: 4000, entry_deviation: 0.003, exit_deviation: 0.0008 },
+    decide(ctx) {
+      let orders = 0;
+      for (const inst of ctx.listInstruments({ venue: 'kalshi_margin' })) {
+        if (orders >= 3) break;
+        const q = ctx.quote(inst.instrument_id);
+        if (!q || q.bid == null || q.offer == null || q.mid == null || q.bid <= 0 || q.offer <= 0) continue;
+        const mark = q.settlement_mark_price ?? q.reference_price ?? null;
+        if (!(mark > 0)) continue;
+        const deviation = (q.mid - mark) / mark;
+        if (Math.abs(deviation) < this.sizing.entry_deviation) continue;
+        if (ctx.portfolio.positions[inst.instrument_id]) continue;
+        const side = deviation > 0 ? 'short' : 'long';
+        const price = side === 'long' ? q.offer : q.bid;
+        const contracts = sizeContracts({ notional: this.sizing.notional_usd, price });
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: inst.instrument_id,
+          venue: 'kalshi_margin',
+          action: side === 'long' ? 'buy' : 'sell',
+          side,
+          contracts,
+          limit_price: price,
+          order_type: 'taker',
+          thesis: `${inst.ticker} mid ${(deviation * 100).toFixed(3)}% ${deviation > 0 ? 'above' : 'below'} the exchange mark ${mark}; trading back toward the mark.`,
+          signal: { name: 'perp_mark_fade', deviation_pct: Number((deviation * 100).toFixed(4)), mid: q.mid, exchange_mark: mark },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const q = ctx.quote(position.instrument_id);
+      if (!q || q.mid == null) return null;
+      const mark = q.settlement_mark_price ?? q.reference_price ?? null;
+      if (!(mark > 0)) {
+        return { reason: 'The exchange mark is no longer published, so the anchor for this position is gone.', signal: { name: 'perp_mark_unavailable' } };
+      }
+      const deviation = (q.mid - mark) / mark;
+      if (Math.abs(deviation) >= this.sizing.exit_deviation) return null;
+      return { reason: `Deviation to the exchange mark decayed to ${(deviation * 100).toFixed(3)}%.`, signal: { name: 'perp_mark_reached', deviation_pct: Number((deviation * 100).toFixed(4)), exchange_mark: mark } };
+    },
+  },
+
+  /* ------------------------------------------------------------------ 15 */
+  {
+    id: 'moex-energy-trend',
+    username: '@rig-count',
+    display_name: 'Energy Trend',
+    market_type: 'Exchange-listed commodity future',
+    venues: ['moex_forts'],
+    origin: {
+      kind: 'market_structure',
+      claim: 'Energy futures trend on supply shocks: crude, products and gas move in multi-week runs that their own settlement history makes measurable. MOEX lists WTI, Brent, natural gas (NG/NGM/TTF), diesel and AI-92/95 gasoline contracts, all readable from the official ISS API.',
+      status: 'hypothesis under test on contracts verified in the exchange listing on 2026-09-22',
+    },
+    thesis:
+      'Follow the official settlement trend in MOEX energy futures - crude (WTI, Brent), products (diesel, AI-92/95 gasoline) and gas (NG, NGM, TTF) - taking the strongest movers on each side and holding while the trend persists.',
+    rules: {
+      entry: '15-observation settlement momentum, |momentum| >= 1.5%.',
+      exit: 'Exit when the momentum flips sign.',
+      sizing: 'Target notional, capped by published volume and open interest.',
+    },
+    sizing: { notional_usd: 5000, min_momentum: 0.015 },
+    decide(ctx) {
+      let orders = 0;
+      for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups: ['Energy'] })) {
+        if (orders >= 3) break;
+        if (!inst.usd_valuation?.usd_per_price_unit) continue;
+        if (ctx.portfolio.positions[inst.instrument_id]) continue;
+        const q = ctx.quote(inst.instrument_id);
+        if (!q || q.offer == null || q.bid == null) continue;
+        const rows = ctx.moexHistory(inst.ticker);
+        const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+        if (closes.length < 8) continue;
+        const momentum = (closes[closes.length - 1] - closes[0]) / closes[0];
+        if (Math.abs(momentum) < this.sizing.min_momentum) continue;
+        const side = momentum > 0 ? 'long' : 'short';
+        const price = side === 'long' ? q.offer : q.bid;
+        const contracts = sizeContracts({ notional: this.sizing.notional_usd, price: price * inst.usd_valuation.usd_per_price_unit });
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: inst.instrument_id,
+          venue: 'moex_forts',
+          action: side === 'long' ? 'buy' : 'sell',
+          side,
+          contracts,
+          limit_price: price,
+          order_type: 'taker',
+          thesis: `${(momentum * 100).toFixed(1)}% settlement momentum in ${inst.ticker} (${inst.commodity}).`,
+          signal: { name: 'energy_settlement_momentum', momentum: Number(momentum.toFixed(4)), observations: closes.length, quote_unit: inst.contract_specification?.quote_unit ?? null },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const rows = ctx.moexHistory(position.ticker);
+      const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+      if (closes.length < 8) return null;
+      const momentum = (closes[closes.length - 1] - closes[0]) / closes[0];
+      const held = position.side === 'long' ? 1 : -1;
+      if (Math.sign(momentum) === held || momentum === 0) return null;
+      return { reason: 'Settlement momentum flipped against the energy position.', signal: { name: 'energy_momentum_flip', momentum: Number(momentum.toFixed(4)) } };
+    },
+  },
+
+  /* ------------------------------------------------------------------ 16 */
+  {
+    id: 'moex-metal-breakout',
+    username: '@donchian-desk',
+    display_name: 'Channel Breakout',
+    market_type: 'Exchange-listed commodity future',
+    venues: ['moex_forts'],
+    origin: {
+      kind: 'documented_anomaly',
+      claim: 'Channel (Donchian) breakout rules - buy a 20-period high, sell a 20-period low, exit on the opposite 10-period extreme - are the public-domain Turtle trading rules, among the most documented systematic futures strategies.',
+      status: 'documented rule, forward-tested here on official MOEX settlements',
+      sources: [
+        { label: 'Original Turtle Trading rules (public domain, official release by the authors)', url: 'https://www.turtletrader.com/turtle/' },
+      ],
+    },
+    thesis:
+      'Run the classic 20/10 channel breakout on MOEX metals futures using only the exchange\'s official daily settlement history: buy the 20-day high breakout, short the 20-day low breakout, exit on the opposite 10-day extreme.',
+    rules: {
+      entry: 'Daily settlement CLOSE crosses above the prior 20-observation high (long) or below the prior 20-observation low (short).',
+      exit: 'Close crosses the opposite 10-observation extreme.',
+      sizing: 'Target notional, capped by published volume and open interest.',
+    },
+    sizing: { notional_usd: 5000, entry_channel: 20, exit_channel: 10 },
+    decide(ctx) {
+      let orders = 0;
+      for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups: ['Precious Metals', 'Industrial Metals'] })) {
+        if (orders >= 3) break;
+        if (!inst.usd_valuation?.usd_per_price_unit) continue;
+        if (ctx.portfolio.positions[inst.instrument_id]) continue;
+        const q = ctx.quote(inst.instrument_id);
+        if (!q || q.offer == null || q.bid == null) continue;
+        const rows = ctx.moexHistory(inst.ticker);
+        const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+        const entryN = this.sizing.entry_channel;
+        if (closes.length < entryN + 1) continue;
+        const prior = closes.slice(-entryN - 1, -1);
+        const high = Math.max(...prior);
+        const low = Math.min(...prior);
+        const last = closes[closes.length - 1];
+        if (last < high && last > low) continue;
+        const side = last >= high ? 'long' : 'short';
+        const price = side === 'long' ? q.offer : q.bid;
+        const contracts = sizeContracts({ notional: this.sizing.notional_usd, price: price * inst.usd_valuation.usd_per_price_unit });
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: inst.instrument_id,
+          venue: 'moex_forts',
+          action: side === 'long' ? 'buy' : 'sell',
+          side,
+          contracts,
+          limit_price: price,
+          order_type: 'taker',
+          thesis: `${inst.ticker} settlement ${last} broke the prior ${entryN}-observation ${side === 'long' ? `high ${high}` : `low ${low}`}.`,
+          signal: { name: 'channel_breakout', side, last_settlement: last, prior_high: high, prior_low: low, channel: entryN },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const rows = ctx.moexHistory(position.ticker);
+      const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+      const exitN = this.sizing.exit_channel;
+      if (closes.length < exitN + 1) return null;
+      const prior = closes.slice(-exitN - 1, -1);
+      const last = closes[closes.length - 1];
+      if (position.side === 'long' && last < Math.min(...prior)) {
+        return { reason: `Settlement broke the opposite ${exitN}-observation low; the long channel breakout is over.`, signal: { name: 'channel_exit', last_settlement: last, exit_extreme: Math.min(...prior) } };
+      }
+      if (position.side === 'short' && last > Math.max(...prior)) {
+        return { reason: `Settlement broke the opposite ${exitN}-observation high; the short channel breakout is over.`, signal: { name: 'channel_exit', last_settlement: last, exit_extreme: Math.max(...prior) } };
+      }
+      return null;
+    },
+  },
+
+  /* ------------------------------------------------------------------ 17 */
+  {
+    id: 'kalshi-jump-reversal',
+    username: '@snap-fader',
+    display_name: 'Jump Reversal',
+    market_type: 'Kalshi event contract',
+    venues: ['kalshi'],
+    origin: {
+      kind: 'documented_anomaly',
+      claim: 'Short-horizon reversal: abrupt one-interval price jumps in thin binary books routinely overshoot because the first wave of flow consumes several levels; prediction-market write-ups treat post-jump entries as a recurring, testable pattern.',
+      status: 'hypothesis under test - tick-to-tick, on official snapshot mids only',
+    },
+    thesis:
+      'When a contract\'s official mid moves by 6 cents or more between two consecutive verified snapshots, take the opposite side: fade the jump. Deliberately distinct from @vol-crusher (which fades daily-candle extremes from the exchange candle history), this acts on tick-to-tick snapshot moves.',
+    rules: {
+      entry: '|mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.',
+      exit: 'Exit when the mid retraces half of the measured jump, or the market closes.',
+      sizing: 'Target notional, capped by verified depth.',
+    },
+    sizing: { notional_usd: 2000, min_jump: 0.06, max_spread_cents: 4 },
+    decide(ctx) {
+      let orders = 0;
+      for (const inst of ctx.listInstruments({ venue: 'kalshi' })) {
+        if (orders >= 3) break;
+        if (!hasTimeLeft(inst, 120, ctx.now)) continue;
+        if (ctx.portfolio.positions[inst.instrument_id]) continue;
+        const q = ctx.quote(inst.instrument_id);
+        if (!q || q.mid == null || q.spread == null) continue;
+        if (q.spread > this.sizing.max_spread_cents / 100 || q.mid < 0.08 || q.mid > 0.92) continue;
+        const previous = ctx.previousMid(inst.instrument_id);
+        if (previous == null || previous <= 0 || previous >= 1) continue;
+        const jump = q.mid - previous;
+        if (Math.abs(jump) < this.sizing.min_jump) continue;
+        const fadeJumpUp = jump > 0; // price jumped up -> buy NO
+        const price = fadeJumpUp ? q.best_no_ask : q.best_yes_ask;
+        if (price == null) continue;
+        const contracts = sizeContracts({ notional: this.sizing.notional_usd, price });
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: inst.instrument_id,
+          venue: 'kalshi',
+          action: 'buy',
+          outcome: fadeJumpUp ? 'no' : 'yes',
+          contracts,
+          limit_price: Number((price + 0.02).toFixed(4)),
+          order_type: 'taker',
+          thesis: `Mid jumped ${(jump * 100).toFixed(1)} cents between snapshots (from ${previous} to ${q.mid}); fading the jump.`,
+          signal: { name: 'jump_reversal', jump: Number(jump.toFixed(4)), previous_mid: previous, current_mid: q.mid, series: inst.series_ticker },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const q = ctx.quote(position.instrument_id);
+      const jump = position.entry_signal?.jump;
+      if (!q || q.mid == null || typeof jump !== 'number' || jump === 0) return null;
+      const heldMid = position.outcome === 'yes' ? q.mid : q.mid != null ? 1 - q.mid : null;
+      if (heldMid == null) return null;
+      const gain = heldMid - position.avg_entry_price;
+      const target = Math.abs(jump) / 2;
+      if (gain >= target) {
+        return { reason: `Held-side mid gained ${(gain * 100).toFixed(1)} cents since entry - the faded jump has retraced at least half.`, signal: { name: 'jump_retrace_target', gain: Number(gain.toFixed(4)), target: Number(target.toFixed(4)) } };
+      }
+      if (gain <= -Math.abs(jump)) {
+        return { reason: 'The jump continued in the original direction by more than its full size against this fade; the reversion thesis is invalidated.', signal: { name: 'jump_continuation', gain: Number(gain.toFixed(4)) } };
+      }
+      return null;
     },
   },
 ];

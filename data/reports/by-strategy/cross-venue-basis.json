@@ -10,9 +10,9 @@
   "blocked_orders": 0,
   "blocked_reasons": {},
   "closed_trades": 0,
-  "disabled_reason": "Unavailable: comparing the Kalshi perpetual price with the MOEX future price requires the underlying quantity per contract on both venues. Kalshi publishes contract_size in its payload; the MOEX machine-readable payload does not, so the legs cannot be normalised without assuming a contract size. The strategy therefore places no orders until that figure is verified from an official MOEX source.",
+  "disabled_reason": null,
   "display_name": "Cross-Venue Basis",
-  "enabled": false,
+  "enabled": true,
   "entries": 0,
   "equity_usd": 100000,
   "exits": 0,
@@ -20,20 +20,34 @@
   "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
   "open_positions": 0,
   "origin": {
-    "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge.",
+    "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge. The MOEX premium/discount to the world metal price since 2022 is a documented, persistent phenomenon.",
     "kind": "market_structure",
-    "status": "structural - two real legs on two real venues"
+    "sources": [
+      {
+        "label": "Kalshi perp contract specification (official help centre: contract size in underlying units)",
+        "url": "https://help.kalshi.com/en/articles/15357587-btc-perpetual-futures-contract-specifications"
+      },
+      {
+        "label": "MOEX ISS security description endpoint (LOTSIZE / quotation UNIT / FACEUNIT)",
+        "url": "https://iss.moex.com/iss/securities/GDZ6.json?iss.meta=off&iss.only=description"
+      },
+      {
+        "label": "MOEX ISS reference documentation",
+        "url": "https://iss.moex.com/iss/reference/"
+      }
+    ],
+    "status": "structural - two real legs on two real venues, unit-normalised from official fields"
   },
   "realized_pnl_usd": 0,
   "return_pct": 0,
   "rules": {
-    "entry": "Basis >= 0.5% between the perpetual mid and the MOEX future mid.",
-    "exit": "Exit when the basis compresses below 0.1%.",
+    "entry": "Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).",
+    "exit": "Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.",
     "sizing": "Target notional per leg, capped by each venue published liquidity."
   },
   "slippage_paid_usd": 0,
   "strategy_id": "cross-venue-basis",
-  "thesis": "Compare the Kalshi metal perpetual with the front MOEX future on the same metal. When the percentage spread between them is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
+  "thesis": "Compare the Kalshi metal perpetual (price / contract_size = USD per ounce) with the front MOEX future on the same metal (mid = USD per ounce when UNIT=USD). When the normalised basis is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
   "traded_market_types": [],
   "trades": 0,
   "unrealized_pnl_usd": 0,

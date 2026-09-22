@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T22:23:55.903Z",
+  "generated_at": "2026-09-22T23:01:14.954Z",
   "strategies": [
     {
       "disabled_reason": null,
@@ -322,17 +322,31 @@
       ]
     },
     {
-      "disabled_reason": "Unavailable: comparing the Kalshi perpetual price with the MOEX future price requires the underlying quantity per contract on both venues. Kalshi publishes contract_size in its payload; the MOEX machine-readable payload does not, so the legs cannot be normalised without assuming a contract size. The strategy therefore places no orders until that figure is verified from an official MOEX source.",
+      "disabled_reason": null,
       "display_name": "Cross-Venue Basis",
-      "enabled": false,
+      "enabled": true,
       "has_exit_rule": true,
       "id": "cross-venue-basis",
       "implemented": true,
       "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
       "origin": {
-        "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge.",
+        "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge. The MOEX premium/discount to the world metal price since 2022 is a documented, persistent phenomenon.",
         "kind": "market_structure",
-        "status": "structural - two real legs on two real venues"
+        "sources": [
+          {
+            "label": "Kalshi perp contract specification (official help centre: contract size in underlying units)",
+            "url": "https://help.kalshi.com/en/articles/15357587-btc-perpetual-futures-contract-specifications"
+          },
+          {
+            "label": "MOEX ISS security description endpoint (LOTSIZE / quotation UNIT / FACEUNIT)",
+            "url": "https://iss.moex.com/iss/securities/GDZ6.json?iss.meta=off&iss.only=description"
+          },
+          {
+            "label": "MOEX ISS reference documentation",
+            "url": "https://iss.moex.com/iss/reference/"
+          }
+        ],
+        "status": "structural - two real legs on two real venues, unit-normalised from official fields"
       },
       "pairs": [
         {
@@ -349,28 +363,185 @@
           "metal": "Platinum",
           "moexAsset": "PLT",
           "perpTicker": "KXPLATINUMPERP"
-        },
-        {
-          "metal": "Palladium",
-          "moexAsset": "PALL",
-          "perpTicker": "KXPALLADIUMPERP"
         }
       ],
       "rules": {
-        "entry": "Basis >= 0.5% between the perpetual mid and the MOEX future mid.",
-        "exit": "Exit when the basis compresses below 0.1%.",
+        "entry": "Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).",
+        "exit": "Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.",
         "sizing": "Target notional per leg, capped by each venue published liquidity."
       },
       "sizing": {
         "exit_basis": 0.001,
         "min_basis": 0.005,
-        "notional_usd": 4000
+        "notional_usd": 20000,
+        "sizing_note": "Per-leg target notional. It must exceed the value of one MOEX metal contract (GOLD-12.26 lot = 1 troy ounce, quoted USD/oz, ~$4,400 per contract on 2026-09-22) or the minimum size is zero contracts and no trade can be placed."
       },
-      "thesis": "Compare the Kalshi metal perpetual with the front MOEX future on the same metal. When the percentage spread between them is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
+      "thesis": "Compare the Kalshi metal perpetual (price / contract_size = USD per ounce) with the front MOEX future on the same metal (mid = USD per ounce when UNIT=USD). When the normalised basis is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
       "username": "@basis-hunter",
       "venues": [
         "kalshi_margin",
         "moex_forts"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "Order-Book Imbalance",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "kalshi-orderbook-imbalance",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
+        "kind": "documented_anomaly",
+        "sources": [
+          {
+            "label": "Prediction-market strategy synthesis (flow and liquidity signals)",
+            "url": "https://medium.com/@FrenzyCapital/trading-strategies-for-prediction-markets-4025a050e2e2"
+          }
+        ],
+        "status": "hypothesis under test - the competition is the test"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Depth ratio >= 70% or <= 30% on visible book depth, spread <= 3 cents, YES mid between 0.15 and 0.85, at least 2 hours to close.",
+        "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
+        "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
+      },
+      "sizing": {
+        "imbalance": 0.7,
+        "max_spread_cents": 3,
+        "notional_usd": 2500
+      },
+      "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
+      "username": "@book-watcher",
+      "venues": [
+        "kalshi"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "Perp Mark Fade",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "kalshi-perp-mark-fade",
+      "implemented": true,
+      "market_type": "Kalshi perpetual future",
+      "origin": {
+        "claim": "A perpetual's book is anchored to the exchange-published mark/index price: deviations are driven by transient order flow and tend to decay back toward the mark. Kalshi publishes the mark (settlement mark price) for every perpetual in the same payload as the book.",
+        "kind": "market_structure",
+        "status": "structural - the anchor is published by the exchange itself"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "|perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.",
+        "exit": "Exit when the deviation decays below 0.08% or the two-sided quote disappears.",
+        "sizing": "Target notional, capped by a share of published 24h notional volume."
+      },
+      "sizing": {
+        "entry_deviation": 0.003,
+        "exit_deviation": 0.0008,
+        "notional_usd": 4000
+      },
+      "thesis": "When the Kalshi perpetual mid deviates from the exchange-published mark price by 0.3% or more, trade back toward the mark; exit when the deviation decays below 0.08%. Both the deviation and its anchor come from the exchange payload in the same snapshot.",
+      "username": "@mark-fade",
+      "venues": [
+        "kalshi_margin"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "Energy Trend",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "moex-energy-trend",
+      "implemented": true,
+      "market_type": "Exchange-listed commodity future",
+      "origin": {
+        "claim": "Energy futures trend on supply shocks: crude, products and gas move in multi-week runs that their own settlement history makes measurable. MOEX lists WTI, Brent, natural gas (NG/NGM/TTF), diesel and AI-92/95 gasoline contracts, all readable from the official ISS API.",
+        "kind": "market_structure",
+        "status": "hypothesis under test on contracts verified in the exchange listing on 2026-09-22"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
+        "exit": "Exit when the momentum flips sign.",
+        "sizing": "Target notional, capped by published volume and open interest."
+      },
+      "sizing": {
+        "min_momentum": 0.015,
+        "notional_usd": 5000
+      },
+      "thesis": "Follow the official settlement trend in MOEX energy futures - crude (WTI, Brent), products (diesel, AI-92/95 gasoline) and gas (NG, NGM, TTF) - taking the strongest movers on each side and holding while the trend persists.",
+      "username": "@rig-count",
+      "venues": [
+        "moex_forts"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "Channel Breakout",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "moex-metal-breakout",
+      "implemented": true,
+      "market_type": "Exchange-listed commodity future",
+      "origin": {
+        "claim": "Channel (Donchian) breakout rules - buy a 20-period high, sell a 20-period low, exit on the opposite 10-period extreme - are the public-domain Turtle trading rules, among the most documented systematic futures strategies.",
+        "kind": "documented_anomaly",
+        "sources": [
+          {
+            "label": "Original Turtle Trading rules (public domain, official release by the authors)",
+            "url": "https://www.turtletrader.com/turtle/"
+          }
+        ],
+        "status": "documented rule, forward-tested here on official MOEX settlements"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Daily settlement CLOSE crosses above the prior 20-observation high (long) or below the prior 20-observation low (short).",
+        "exit": "Close crosses the opposite 10-observation extreme.",
+        "sizing": "Target notional, capped by published volume and open interest."
+      },
+      "sizing": {
+        "entry_channel": 20,
+        "exit_channel": 10,
+        "notional_usd": 5000
+      },
+      "thesis": "Run the classic 20/10 channel breakout on MOEX metals futures using only the exchange's official daily settlement history: buy the 20-day high breakout, short the 20-day low breakout, exit on the opposite 10-day extreme.",
+      "username": "@donchian-desk",
+      "venues": [
+        "moex_forts"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "Jump Reversal",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "kalshi-jump-reversal",
+      "implemented": true,
+      "market_type": "Kalshi event contract",
+      "origin": {
+        "claim": "Short-horizon reversal: abrupt one-interval price jumps in thin binary books routinely overshoot because the first wave of flow consumes several levels; prediction-market write-ups treat post-jump entries as a recurring, testable pattern.",
+        "kind": "documented_anomaly",
+        "status": "hypothesis under test - tick-to-tick, on official snapshot mids only"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "|mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.",
+        "exit": "Exit when the mid retraces half of the measured jump, or the market closes.",
+        "sizing": "Target notional, capped by verified depth."
+      },
+      "sizing": {
+        "max_spread_cents": 4,
+        "min_jump": 0.06,
+        "notional_usd": 2000
+      },
+      "thesis": "When a contract's official mid moves by 6 cents or more between two consecutive verified snapshots, take the opposite side: fade the jump. Deliberately distinct from @vol-crusher (which fades daily-candle extremes from the exchange candle history), this acts on tick-to-tick snapshot moves.",
+      "username": "@snap-fader",
+      "venues": [
+        "kalshi"
       ]
     }
   ]

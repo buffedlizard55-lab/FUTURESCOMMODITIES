@@ -1,0 +1,47 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": null,
+  "disabled_reason": null,
+  "display_name": "Jump Reversal",
+  "enabled": true,
+  "entries": 0,
+  "equity_usd": null,
+  "exits": 0,
+  "fees_paid_usd": null,
+  "market_type": "Kalshi event contract",
+  "open_positions": null,
+  "origin": {
+    "claim": "Short-horizon reversal: abrupt one-interval price jumps in thin binary books routinely overshoot because the first wave of flow consumes several levels; prediction-market write-ups treat post-jump entries as a recurring, testable pattern.",
+    "kind": "documented_anomaly",
+    "status": "hypothesis under test - tick-to-tick, on official snapshot mids only"
+  },
+  "realized_pnl_usd": null,
+  "return_pct": null,
+  "rules": {
+    "entry": "|mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.",
+    "exit": "Exit when the mid retraces half of the measured jump, or the market closes.",
+    "sizing": "Target notional, capped by verified depth."
+  },
+  "slippage_paid_usd": null,
+  "strategy_id": "kalshi-jump-reversal",
+  "thesis": "When a contract's official mid moves by 6 cents or more between two consecutive verified snapshots, take the opposite side: fade the jump. Deliberately distinct from @vol-crusher (which fades daily-candle extremes from the exchange candle history), this acts on tick-to-tick snapshot moves.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": null,
+  "username": "@snap-fader",
+  "venues": [
+    "kalshi"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick."
+  ]
+}
