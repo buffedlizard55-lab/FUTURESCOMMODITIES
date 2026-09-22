@@ -6,68 +6,70 @@ on:
 permissions:
   contents: write
 jobs:
-  probe3:
+  probe4:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: probe3
+      - name: probe4
         run: |
           set +e
-          mkdir -p probe
+          mkdir -p probe; O=probe/results4.txt; : > $O
           K="https://api.elections.kalshi.com/trade-api/v2"
           {
-          echo "=== CORS headers (browser access test)"
-          curl -s -D - -o /dev/null -H "Origin: https://buffedlizard55-lab.github.io" --max-time 20 "$K/markets?limit=1" | grep -i -E "access-control|^HTTP"
-          echo "=== python env"
-          python3 -V
-          } > probe/results3.txt 2>&1
-          python3 - >> probe/results3.txt 2>&1 <<'PY'
-          import json,urllib.request,urllib.parse
-          K="https://api.elections.kalshi.com/trade-api/v2"
-          def get(u):
-              r=urllib.request.Request(u,headers={"User-Agent":"research-probe/1.0"})
-              return json.load(urllib.request.urlopen(r,timeout=30))
-          out={}
-          for cat in ["Commodities","Financials","Economics","Crypto"]:
-              try:
-                  d=get(f"{K}/series?category={urllib.parse.quote(cat)}")
-                  out[cat]=[{"ticker":s["ticker"],"title":s["title"],"frequency":s.get("frequency"),"tags":s.get("tags"),"settlement_sources":s.get("settlement_sources")} for s in d.get("series",[])]
-                  print("series ok",cat,len(out[cat]))
-              except Exception as e:
-                  out[cat]=f"ERROR {e}"; print("series ERR",cat,e)
-          json.dump(out,open("probe/kalshi_series.json","w"),indent=1)
+          echo "### KALSHI CORS matrix"
+          for org in "" "https://buffedlizard55-lab.github.io" "https://kalshi.com" "https://example.com"; do
+            if [ -z "$org" ]; then
+              code=$(curl -s -o /tmp/a -w "%{http_code}" --max-time 20 "$K/markets?limit=1"); echo "no-Origin -> $code"
+            else
+              code=$(curl -s -o /tmp/a -w "%{http_code}" -H "Origin: $org" --max-time 20 "$K/markets?limit=1"); echo "Origin=$org -> $code  ACAO=$(curl -s -D - -o /dev/null -H "Origin: $org" --max-time 20 "$K/markets?limit=1" | grep -i 'access-control-allow-origin' | tr -d '\r')"
+            fi
+          done
+          echo "OPTIONS preflight ->"; curl -s -o /dev/null -w "%{http_code}\n" -X OPTIONS -H "Origin: https://buffedlizard55-lab.github.io" -H "Access-Control-Request-Method: GET" --max-time 20 "$K/markets?limit=1"
+          echo "### KALSHI WS handshake (with browser Origin)"
+          for host in "wss://api.elections.kalshi.com/trade-api/ws/v2" "wss://external-api-ws.kalshi.com/trade-api/ws/v2"; do
+            url=$(echo $host | sed 's|^wss://|https://|')
+            echo -n "$host -> "; curl -s -o /dev/null -w "%{http_code}\n" --max-time 15 -H "Connection: Upgrade" -H "Upgrade: websocket" -H "Sec-WebSocket-Version: 13" -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" -H "Origin: https://buffedlizard55-lab.github.io" "$url"
+          done
+          } >> $O 2>&1
+          python3 - >> $O 2>&1 <<'PY'
+          import json,urllib.request,urllib.parse,re
+          def get(u,timeout=30):
+              return urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0 research"}),timeout=timeout).read()
+          print("### MOEX quotes/history")
           try:
-              m=get(f"{K}/margin/markets?limit=200")
-              json.dump(m,open("probe/kalshi_margin.json","w"),indent=1)
-              print("margin tickers:",[x.get("ticker") for x in m.get("markets",[])])
-          except Exception as e: print("margin err",e)
-          PY
-          python3 - >> probe/results3.txt 2>&1 <<'PY'
-          import json,urllib.request,re
-          def get(u,hdr=None):
-              r=urllib.request.Request(u,headers=hdr or {"User-Agent":"Mozilla/5.0"})
-              return urllib.request.urlopen(r,timeout=25).read()
-          res={}
+              d=json.loads(get("https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off&iss.only=securities,marketdata"))
+              for sec in ["securities","marketdata"]:
+                  blk=d[sec]; cols=blk["columns"]
+                  for row in blk["data"][:1]:
+                      print(sec, {c:v for c,v in zip(cols,row) if v not in (None,"")})
+          except Exception as e: print("MOEX quote ERR",e)
           try:
-              b=get("https://iss.moex.com/iss/engines/futures/markets/forts/securities.json?iss.meta=off&iss.only=securities&securities.columns=SECID,SHORTNAME,ASSETCODE,LASTTRADEDATE")
-              d=json.loads(b)["securities"]
-              rows=[dict(zip(d["columns"],r)) for r in d["data"]]
-              kw=re.compile(r"GOLD|SILV|PLAT|PALL|WHEAT|SUGAR|CORN|OIL|BRENT|GAS|COPPER|NICKEL|ALUM|COCOA|COFFEE|COTTON|SOY|BARLEY|PLT|SLV",re.I)
-              res["moex_commodity_like"]=[r for r in rows if kw.search(json.dumps(r))]
-              res["moex_total"]=len(rows); res["moex_sample"]=rows[:5]
-              print("moex rows",len(rows),"commodity-like",len(res["moex_commodity_like"]))
-          except Exception as e:
-              res["moex"]=f"ERR {e}"; print("moex ERR",e)
-          for name,u in [("fred_csv","https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"),
-                         ("eia_xls","https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls"),
-                         ("b3_settle","https://arquivos.b3.com.br/apinegocios/ticker/DI1"),
-                         ("sgx_deriv","https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=code&value=TF"),
-                         ("usda_ams","https://mpr.datamart.ams.usda.gov/services/v1.1/reports?q=livestock")]:
+              d=json.loads(get("https://iss.moex.com/iss/history/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off&from=2026-09-01&till=2026-09-22"))
+              blk=d["history"]; print("history cols:",blk["columns"][:20]); print("rows:",len(blk["data"]));
+              for row in blk["data"][-2:]: print("  ",dict(zip(blk["columns"],row)))
+          except Exception as e: print("MOEX history ERR",e)
+          print("### EIA series discovery")
+          for u in ["https://www.eia.gov/dnav/pet/pet_pri_fut_s1_d.htm",
+                    "https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls",
+                    "https://www.eia.gov/dnav/ng/hist_xls/RNGWHHDd.xls"]:
               try:
-                  b=get(u); res[name]={"status":"ok","bytes":len(b),"head":b[:100].decode("utf8","ignore")}
-              except Exception as e: res[name]=f"ERR {e}"
-              print(name,res[name] if isinstance(res[name],str) else res[name]["status"])
-          json.dump(res,open("probe/sources.json","w"),indent=1,default=str)
+                  b=get(u,40); print(u,"bytes",len(b))
+                  if u.endswith("htm"):
+                      txt=b.decode("utf8","ignore")
+                      ids=sorted(set(re.findall(r"[A-Z]{3,4}[A-Z0-9_]{2,12}", txt)))[:40]
+                      print("   looks like ids:",ids[:40])
+              except Exception as e: print(u,"ERR",e)
+          print("### USDA AMS report list sample")
+          try:
+              d=json.loads(get("https://mpr.datamart.ams.usda.gov/services/v1.1/reports?q=livestock"))
+              print("reports:",[(x["slug_id"],x["report_title"][:60]) for x in d][:15])
+          except Exception as e: print("USDA ERR",e)
+          print("### SGX attempts")
+          for u in ["https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity",
+                    "https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=code&value=TF",
+                    "https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=name&value=rubber"]:
+              try: print(u,"->",get(u)[:200])
+              except Exception as e: print(u,"ERR",e)
           PY
           git config user.name "probe-bot"; git config user.email "probe@users.noreply.github.com"
-          git add -A; git commit -m "probe: harvest [skip ci]"; git push
+          git add -A; git commit -m "probe: results4 [skip ci]"; git push
