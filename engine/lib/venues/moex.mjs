@@ -107,6 +107,29 @@ export async function fetchUsdRub() {
 }
 
 /**
+ * Reference description for one security: the authoritative machine-readable place where MOEX
+ * publishes the contract's LOTSIZE (units per lot), UNIT (quotation currency), FACEUNIT
+ * (settlement/execution currency) and EXECTYPE (settlement type).
+ *
+ * Verified live on 2026-09-22 for GDZ6 (GOLD-12.26): LOTSIZE=1, UNIT="USD", FACEUNIT="USD",
+ * EXECTYPE="Расчетный" (cash-settled); for SVZ6 (SILV-12.26): LOTSIZE=10, UNIT="USD",
+ * FACEUNIT="USD"; for PTZ6 (PLT-12.26): LOTSIZE=1, UNIT="USD", FACEUNIT="USD".
+ * This is the field set that makes a like-for-like comparison with another venue's contract
+ * possible (it is what the cross-venue basis strategy was missing before 2026-09-22).
+ */
+export async function moexSecurityDescription(secid) {
+  const url = `${MOEX_ISS}/securities/${encodeURIComponent(secid)}.json?iss.meta=off&iss.only=description`;
+  const res = await get(url, { note: `MOEX ISS security description (LOT SIZE, quotation UNIT, FACEUNIT) for ${secid}`, expect: 'json' });
+  if (!res.ok || !res.json) return { ok: false, secid, provenance: res.provenance };
+  const rows = table(res.json, 'description');
+  const fields = {};
+  for (const r of rows) {
+    if (r.name != null) fields[r.name] = r.value;
+  }
+  return { ok: true, secid, fields, provenance: res.provenance };
+}
+
+/**
  * Commodity contracts on MOEX FORTS. The whitelist is not taken on trust: a contract is only
  * included when the exchange's own listing (a) contains that asset code and (b) the contract's
  * name contains the same keyword, so a wrong mapping cannot slip into the database.
@@ -131,9 +154,17 @@ export const MOEX_COMMODITY_ASSETS = [
   { asset_code: 'RICE', commodity: 'Rice', group: 'Grains & Oilseeds', keywords: ['rice'] },
   { asset_code: 'AI92', commodity: 'Gasoline AI-92', group: 'Energy', keywords: ['ai92', 'ai-92'] },
   { asset_code: 'AI95', commodity: 'Gasoline AI-95', group: 'Energy', keywords: ['ai95', 'ai-95'] },
+  { asset_code: 'WTI', commodity: 'WTI Crude Oil', group: 'Energy', keywords: ['wti'] },
+  { asset_code: 'BR', commodity: 'Brent Crude Oil', group: 'Energy', keywords: ['br-'] },
+  { asset_code: 'NG', commodity: 'Natural Gas (NG)', group: 'Energy', keywords: ['ng-'] },
+  { asset_code: 'NGM', commodity: 'Natural Gas (NGM)', group: 'Energy', keywords: ['ngm-'] },
+  { asset_code: 'TTF', commodity: 'Natural Gas (TTF)', group: 'Energy', keywords: ['ttf'] },
+  { asset_code: 'DTL', commodity: 'Diesel (DTL)', group: 'Energy', keywords: ['dtl'] },
   { asset_code: 'BRENT', commodity: 'Brent Crude Oil', group: 'Energy', keywords: ['brent'] },
   { asset_code: 'NGAS', commodity: 'Natural Gas', group: 'Energy', keywords: ['ngas', 'gas'] },
   { asset_code: 'DAMILK', commodity: 'Raw Milk', group: 'Dairy', keywords: ['milk'] },
+  { asset_code: 'SUGR', commodity: 'Raw Sugar (SUGR)', group: 'Soft Commodities', keywords: ['sugr'] },
+  { asset_code: 'ORANGE', commodity: 'Orange Juice (ORANGE)', group: 'Soft Commodities', keywords: ['orange'] },
 ];
 
 /** Classify a listing row against the commodity whitelist (asset code AND name must agree). */

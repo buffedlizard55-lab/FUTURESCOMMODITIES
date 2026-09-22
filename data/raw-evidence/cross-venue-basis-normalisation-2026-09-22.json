@@ -1,0 +1,46 @@
+{
+  "_readme": [
+    "Verbatim review copies of official MOEX ISS responses used to verify the cross-venue basis",
+    "normalisation on 2026-09-22 (the previous session's blocker). These copies were retrieved",
+    "through the review platform's page fetcher on 2026-09-22 during the working session; the",
+    "engine re-fetches the same endpoints itself in every tick and records the authoritative",
+    "SHA-256 of each response it receives (data/history/moex-ref/{SECID}.json, plus the",
+    "description_source_url / description_source_sha256 fields on each instrument).",
+    "",
+    "What these establish, from the exchange's own machine-readable reference data:",
+    "  GDZ6 (GOLD-12.26):     LOTSIZE=1,  UNIT=USD, FACEUNIT=USD, EXECTYPE=cash-settled",
+    "  SVZ6 (SILV-12.26):     LOTSIZE=10, UNIT=USD, FACEUNIT=USD, EXECTYPE=cash-settled",
+    "  PTZ6 (PLT-12.26):      LOTSIZE=1,  UNIT=USD, FACEUNIT=USD, EXECTYPE=cash-settled",
+    "i.e. the MOEX quote is USD per unit of the underlying with the stated lot size, which is",
+    "exactly the normalisation the cross-venue basis strategy was missing before 2026-09-22.",
+    "Kalshi's side of the normalisation is the `contract_size` field of the official Perps API",
+    "(gold 0.001, silver 0.1, platinum 0.001 oz per traded unit), documented in the Kalshi help",
+    "centre's perp contract specification (help.kalshi.com article 15357587).",
+    "",
+    "Cross-venue sanity check on 2026-09-22 22:23Z (both venues' own payloads, same run):",
+    "  Gold:   Kalshi KXGOLDPERP mid 4.36325 / 0.001 = 4363.25 USD/oz  vs MOEX GDZ6 mid 4433.25  (+1.6% MOEX premium)",
+    "  Silver: Kalshi KXSILVERPERP mid 6.72255 / 0.1 = 67.2255 USD/oz vs MOEX SVZ6 mid 68.36   (+1.7% MOEX premium)",
+    "Two independent regulated venues within ~2% of each other corroborates the unit chain; a",
+    "lot-vs-unit or gram-vs-ounce error would produce a 10x or ~32x gap instead."
+  ],
+  "verified_on": "2026-09-22",
+  "endpoints": [
+    "https://iss.moex.com/iss/securities/GDZ6.json?iss.meta=off&iss.only=description",
+    "https://iss.moex.com/iss/securities/SVZ6.json?iss.meta=off&iss.only=description",
+    "https://iss.moex.com/iss/securities/PTZ6.json?iss.meta=off&iss.only=description",
+    "https://help.kalshi.com/en/articles/15357587-btc-perpetual-futures-contract-specifications"
+  ],
+  "moex_description_values": {
+    "GDZ6": { "LOTSIZE": 1, "UNIT": "USD", "FACEUNIT": "USD", "EXECTYPE": "Расчетный (cash-settled)", "NAME": "Фьючерсный контракт GOLD-12.26", "LSTTRADE": "2026-12-18" },
+    "SVZ6": { "LOTSIZE": 10, "UNIT": "USD", "FACEUNIT": "USD", "EXECTYPE": "Расчетный (cash-settled)", "NAME": "Фьючерсный контракт SILV-12.26", "LSTTRADE": "2026-12-18" },
+    "PTZ6": { "LOTSIZE": 1, "UNIT": "USD", "FACEUNIT": "USD", "EXECTYPE": "Расчетный (cash-settled)", "NAME": "Фьючерсный контракт PLT-12.26", "LSTTRADE": "2026-12-18" }
+  },
+  "kalshi_perp_contract_sizes_from_official_api_payload_2026_09_22": {
+    "KXGOLDPERP": 0.001,
+    "KXSILVERPERP": 0.1,
+    "KXPLATINUMPERP": 0.001,
+    "KXPALLADIUMPERP": 0.001,
+    "source_endpoint": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200"
+  },
+  "note_on_palladium": "The MOEX FORTS listing verified 2026-09-22 contains no palladium asset code (the P codes are PLT/PLTM platinum and PLD/PLDM/PLZLM equities), so no cross-venue palladium pair exists and none is traded."
+}

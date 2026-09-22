@@ -154,6 +154,9 @@ function main() {
     with_anomalies: results.filter((r) => r.failed_checks.length > 0).length,
     anomaly_count: anomalies.length,
     anomalies: anomalies.slice(-200),
+    anomalies_by_check: Object.entries(anomalies.reduce((acc, a) => ({ ...acc, [a.check]: (acc[a.check] ?? 0) + 1 }), {})).map(([check, count]) => ({ check, count })),
+    retention_note:
+      'Run manifests carry the per-request provenance (URL, status, SHA-256) for the most recent runs only; older manifests are pruned so the repository stays small. A trade from a pruned run cannot be hash-matched and shows payload_hash_present_in_that_runs_provenance_log as failed - that is a retention limit, disclosed here, not a price discrepancy.',
     coverage,
     results: results.slice(-300),
     methodology: [

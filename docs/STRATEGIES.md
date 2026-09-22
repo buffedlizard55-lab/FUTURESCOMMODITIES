@@ -1,6 +1,6 @@
 # Strategies
 
-Twelve strategies compete, one per username. Each one states which market type it trades, the claim it
+Seventeen strategies compete, one per username. Each one states which market type it trades, the claim it
 came from, the rules it follows, and — once it has traded — what its own results actually show.
 The live version of this page, with each strategy's current return, attribution and blocked orders, is on
 the [competition site](https://buffedlizard55-lab.github.io/FUTURESCOMMODITIES/#strategies).
@@ -38,19 +38,33 @@ Two rules apply to all of them:
 | `@metal-trend` | `moex-metals-trend` | Cross-sectional momentum in metals futures | 20-observation settlement momentum, \|momentum\| ≥ 1%, long the strongest and short the weakest | Momentum flips sign |
 | `@calendar-carry` | `moex-calendar-carry` | The spread between two expiries is financing/storage carry; capture it when it exceeds the exchange-published round-trip cost | Annualised calendar spread ≥ 12% after measured fees, both legs quoted | Spread compresses below 4%, or a leg is within 5 days of expiry |
 | `@agri-trend` | `moex-agri-trend` | Soft commodities trade in supply-driven trends visible in official settlement history | 15-observation settlement momentum, \|momentum\| ≥ 1.5% | Momentum flips sign |
+| `@rig-count` | `moex-energy-trend` | Energy futures trend on supply shocks; the strategy trades the WTI, Brent, natural gas (NG/NGM/TTF), diesel and AI-92/95 gasoline contracts the exchange itself lists | 15-observation settlement momentum, \|momentum\| ≥ 1.5% | Momentum flips sign |
+| `@donchian-desk` | `moex-metal-breakout` | The public-domain Turtle channel-breakout rule ([original Turtle rules](https://www.turtletrader.com/turtle/)): buy a 20-period high, sell a 20-period low | Daily settlement CLOSE crosses the prior 20-observation high/low | Close crosses the opposite 10-observation extreme |
 
 ## Cross-venue
 
 | Username | Strategy id | Idea | Entry | Exit |
 | --- | --- | --- | --- | --- |
-| `@basis-hunter` | `cross-venue-basis` | A 24/7 perpetual and a session-based future on the same metal cannot diverge indefinitely | **Not trading.** Comparing the two legs requires the underlying quantity per contract on both venues: Kalshi publishes `contract_size` in its payload, MOEX does not publish it in its machine-readable payload. The strategy is disabled rather than comparing prices in different units. | — |
+| `@basis-hunter` | `cross-venue-basis` | A 24/7 perpetual and a session-based future on the same metal cannot diverge indefinitely; MOEX's persistent premium/discount to the world metal price is a documented phenomenon | Normalised basis ≥ 0.5%: Kalshi perp (`price ÷ contract_size` = USD/oz) vs MOEX front future (mid = USD/oz when the official description states quotation UNIT=USD) | Basis compresses below 0.1%, or either leg loses its verified quote or normalisation inputs |
 
-The cross-venue strategy is **disabled** and places no orders. Its first iteration compared the Kalshi
-perpetual price directly with the MOEX future price, which are quoted in different units (Kalshi per
-contract of a published size, MOEX in its own price units); the engine's own reporting surfaced the
-inconsistency and the strategy was taken out of the competition. It stays published, with its reason, so the
-correction is visible rather than hidden. Re-enabling it requires verifying the underlying quantity per
-contract for each MOEX pair from an official MOEX source.
+The cross-venue strategy was **disabled on 2026-09-22** (first iteration compared prices in different units)
+and was **re-enabled the same day** after the missing normalisation was verified from official sources:
+
+* **Kalshi leg** — the Perps API payload publishes `contract_size` per traded unit (gold 0.001, silver 0.1,
+  platinum 0.001), and the official help-centre contract specification states contract sizes in units of the
+  underlying ([help.kalshi.com perp specification](https://help.kalshi.com/en/articles/15357587-btc-perpetual-futures-contract-specifications)).
+  USD per ounce = price ÷ contract_size.
+* **MOEX leg** — the ISS description table publishes `LOT SIZE`, quotation `UNIT` and settlement `FACEUNIT`
+  per contract ([GDZ6 description](https://iss.moex.com/iss/securities/GDZ6.json?iss.meta=off&iss.only=description)).
+  Verified 2026-09-22: GDZ6 LOT SIZE=1 / UNIT=USD / FACEUNIT=USD; SVZ6 LOT SIZE=10 / UNIT=USD / FACEUNIT=USD;
+  PTZ6 LOT SIZE=1 / UNIT=USD / FACEUNIT=USD. The MOEX quote is therefore already USD per ounce.
+* **Cross-check** — on 2026-09-22 22:23Z, Kalshi gold 4,363.25 USD/oz vs MOEX GDZ6 4,433.25 (+1.6%); silver
+  67.23 vs 68.36 (+1.7%). Two independent regulated venues within ~2% corroborates the unit chain; a
+  lot-vs-unit or gram-vs-ounce error would show a 10× or ~32× gap instead. Raw evidence:
+  `data/raw-evidence/cross-venue-basis-normalisation-2026-09-22.json`.
+* **Guardrails** — the strategy refuses to trade any pair whose normalisation inputs are missing in the run,
+  and the verifier re-checks every basis trade for the recorded normalisation (`cross_venue_basis_normalisation_recorded`).
+* Palladium has **no MOEX listing** (verified in the FORTS listing on 2026-09-22), so no palladium pair exists.
 
 ## Where the ideas came from
 

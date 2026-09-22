@@ -1,0 +1,47 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": null,
+  "disabled_reason": null,
+  "display_name": "Energy Trend",
+  "enabled": true,
+  "entries": 0,
+  "equity_usd": null,
+  "exits": 0,
+  "fees_paid_usd": null,
+  "market_type": "Exchange-listed commodity future",
+  "open_positions": null,
+  "origin": {
+    "claim": "Energy futures trend on supply shocks: crude, products and gas move in multi-week runs that their own settlement history makes measurable. MOEX lists WTI, Brent, natural gas (NG/NGM/TTF), diesel and AI-92/95 gasoline contracts, all readable from the official ISS API.",
+    "kind": "market_structure",
+    "status": "hypothesis under test on contracts verified in the exchange listing on 2026-09-22"
+  },
+  "realized_pnl_usd": null,
+  "return_pct": null,
+  "rules": {
+    "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
+    "exit": "Exit when the momentum flips sign.",
+    "sizing": "Target notional, capped by published volume and open interest."
+  },
+  "slippage_paid_usd": null,
+  "strategy_id": "moex-energy-trend",
+  "thesis": "Follow the official settlement trend in MOEX energy futures - crude (WTI, Brent), products (diesel, AI-92/95 gasoline) and gas (NG, NGM, TTF) - taking the strongest movers on each side and holding while the trend persists.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": null,
+  "username": "@rig-count",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Exchange-listed commodity future markets every tick."
+  ]
+}

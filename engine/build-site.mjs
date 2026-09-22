@@ -151,8 +151,9 @@ const html = `<!doctype html>
       <a href="https://github.com/buffedlizard55-lab/FUTURESCOMMODITIES" target="_blank" rel="noopener">source repository</a>
     </p>
     <nav class="toc small" style="margin-top:12px">
-      <a href="#leaderboard">Leaderboard</a><a href="#strategies">Strategies</a><a href="#positions">Open positions</a>
+      <a href="#leaderboard">Leaderboard</a><a href="#strategies">Strategies</a><a href="#desk">Live trade desk</a><a href="#positions">Open positions</a>
       <a href="#trades">Trades</a><a href="#upcoming">Upcoming &amp; resting orders</a><a href="#universe">Market universe</a>
+      <a href="#research">Research &amp; backtests</a>
       <a href="#verification">Verification</a><a href="#methods">Method &amp; limitations</a>
     </nav>
   </div>
@@ -170,6 +171,18 @@ const html = `<!doctype html>
   <p class="lead small">Each username runs one strategy. The catalogue below states which market type the strategy trades, the
   claim it came from, its entry and exit rules, and — once it has traded — what the results actually show.</p>
   <div class="grid k2" id="strategy_cards"></div>
+
+  <h2 id="desk">Live trade desk</h2>
+  <p class="lead small">This is the simulator's own desk — the section that shows what it would take to place these trades for
+  real. Every order below is simulated against the <strong>book the exchange itself published</strong> at the moment of the
+  decision: the bid/ask/mid, the depth or volume the size was capped against, and the official URL, payload hash and retrieval
+  time of the exact response each number came from. When a strategy wants to trade and the book does not support it, the intent
+  is published with its reason instead of being filled at an invented price.</p>
+  <div id="desk_summary"></div>
+  <h3>The verified book strategies place orders against</h3>
+  <div id="desk_book"></div>
+  <h3>Order flow right now</h3>
+  <div id="desk_flow"></div>
 
   <h2 id="positions">Open positions</h2>
   <p class="lead small">Collateral model: event contracts are fully funded (the premium is the whole cost); futures and perpetuals are
@@ -196,6 +209,16 @@ const html = `<!doctype html>
   <div id="series_table"></div>
   <h3>Exchange access</h3>
   <div id="exchange_table"></div>
+
+  <h2 id="research">Research &amp; backtests</h2>
+  <p class="lead small">Strategy research runs on two tracks. Where an official daily price history exists (Kalshi
+  candlesticks, MOEX ISS settlements), the documented rule is <strong>backtested</strong> on that history — fills at
+  published daily prices, no liquidity model, every row traceable to the cited payload. Where the rule needs data that
+  no exchange publishes historically (order-book depth, tick-level books, two venues at once), the strategy is marked
+  <strong>unavailable for backtesting</strong> and is <strong>forward-tested</strong> in the live competition instead.
+  Backtests are never season trades and never a track record.</p>
+  <div id="backtests_box"></div>
+  <div id="backtest_unavailable"></div>
 
   <h2 id="verification">Verification</h2>
   <p class="lead small">A separate pass re-reads the append-only ledger and audits each trade against the provenance log of the run that
@@ -310,6 +333,108 @@ const html = `<!doctype html>
       '<dt>Thesis at entry</dt><dd>' + esc0(t.thesis || t.signal || '—') + '</dd>' +
       '</dl></details>';
   }).join('') : '<div class="card muted">No trades placed yet.</div>');
+
+  function originLinks(strategyId) {
+    var entry = (D.catalog && (D.catalog.strategies || []) || []).find(function (s) { return s.id === strategyId; });
+    var sources = (entry && entry.origin && entry.origin.sources) || [];
+    if (!sources.length) return '';
+    return sources.map(function (src) { return link(src.url, src.label || 'source'); }).join(' · ');
+  }
+
+  /* ------------------------------------------------ live trade desk */
+  var universeIndex = {};
+  (D.universe && D.universe.instruments || []).forEach(function (i) { universeIndex[i.instrument_id] = i; });
+  var quoteRows = [];
+  Object.keys((D.snapshot && D.snapshot.quotes) || {}).forEach(function (id) {
+    var q = D.snapshot.quotes[id];
+    var inst = universeIndex[id] || {};
+    var score = 0;
+    if (q.kind === 'event_contract') score = (q.depth_yes_contracts || 0) + (q.depth_no_contracts || 0);
+    else if (q.kind === 'future') score = q.volume_today || 0;
+    else score = q.volume_24h_notional_usd || 0;
+    quoteRows.push({ id: id, q: q, inst: inst, score: score });
+  });
+  quoteRows.sort(function (a, b) { return b.score - a.score; });
+  function fmtPrice(v, kind) { if (v === null || v === undefined) return '<span class="muted">—</span>'; var d = kind === 'event_contract' ? 2 : 2; return money(v, d); }
+  byId('desk_summary', '<div class="grid k4">' + [
+    ['Venues with verified quotes', Object.keys((D.snapshot && D.snapshot.venues) || {}).filter(function (v) { var s = D.snapshot.venues[v]; return s && s.status === 'ok'; }).length + ' <span class="small muted">of ' + Object.keys((D.snapshot && D.snapshot.venues) || {}).length + ' tracked</span>'],
+    ['Tradable instruments quoted', String(Object.keys((D.snapshot && D.snapshot.quotes) || {}).length)],
+    ['Resting maker orders on the book', String((D.working_orders.orders || []).filter(function (o) { return o.status === 'resting'; }).length)],
+    ['Latest intent records', String((D.intents || []).length)]
+  ].map(function (row) { return '<div class="card"><div class="muted small">' + row[0] + '</div><div class="stat">' + row[1] + '</div></div>'; }).join('') + '</div>');
+  byId('desk_book', quoteRows.length ? '<table><thead><tr><th>Instrument</th><th>Commodity</th><th>Venue</th><th class="num">Bid</th><th class="num">Ask</th><th class="num">Mid</th><th class="num">Spread</th><th class="num">Depth / volume</th><th>As of</th><th>Official source</th></tr></thead><tbody>' +
+    quoteRows.slice(0, 40).map(function (r) {
+      var q = r.q, kind = q.kind;
+      var depth = kind === 'event_contract'
+        ? 'yes ' + money(q.depth_yes_contracts, 0) + ' / no ' + money(q.depth_no_contracts, 0)
+        : kind === 'future'
+          ? 'vol ' + money(q.volume_today, 0) + ' · OI ' + money(q.open_interest, 0)
+          : '24h notional ' + usd(q.volume_24h_notional_usd, 0);
+      return '<tr><td><code>' + esc0(r.inst.ticker || r.id) + '</code><div class="tiny muted">' + esc0((r.inst.title || '')) + '</div></td>' +
+        '<td class="small">' + esc0(r.inst.commodity || '—') + '</td>' +
+        '<td class="small">' + esc0(q.venue || '') + '</td>' +
+        '<td class="num">' + fmtPrice(kind === 'event_contract' ? q.best_yes_bid : q.bid, kind) + '</td>' +
+        '<td class="num">' + fmtPrice(kind === 'event_contract' ? q.best_yes_ask : q.offer, kind) + '</td>' +
+        '<td class="num">' + fmtPrice(q.mid, kind) + '</td>' +
+        '<td class="num">' + fmtPrice(q.spread, kind) + '</td>' +
+        '<td class="num small">' + depth + '</td>' +
+        '<td class="tiny muted">' + esc0(q.source && q.source.retrieved_at ? q.source.retrieved_at : '—') + '</td>' +
+        '<td class="tiny">' + link(q.source && q.source.url, (q.source && q.source.sha256 ? 'source · sha256 ' + String(q.source.sha256).slice(0, 12) + '…' : 'source')) + '</td></tr>';
+    }).join('') + '</tbody></table><p class="small muted">Top 40 of ' + quoteRows.length + ' quoted instruments by visible size. Event-contract ladders are walking the real resting book; futures fill at the quoted bid/offer capped by exchange-published volume and open interest; perps are capped by published 24h notional.</p>'
+    : '<div class="card muted">The desk has no verified quotes yet — they are written on the next live tick.</div>');
+
+  var restingNow = (D.working_orders.orders || []).filter(function (o) { return o.status === 'resting'; });
+  var lastTrades = (D.trades || []).slice(-8).reverse();
+  byId('desk_flow',
+    (restingNow.length ? '<h4 style="margin:12px 0 4px">Resting maker orders (live on the simulated book)</h4><table><thead><tr><th>Placed</th><th>Strategy</th><th>Instrument</th><th>Side</th><th class="num">Contracts</th><th class="num">Resting price</th><th>Expires</th></tr></thead><tbody>' +
+      restingNow.map(function (o) { return '<tr><td class="small">' + esc0(o.placed_at) + '</td><td>' + esc0(o.username) + '</td><td><code>' + esc0(o.instrument_id) + '</code></td><td class="small">' + esc0(o.outcome || o.side) + '</td><td class="num">' + o.contracts + '</td><td class="num">' + money(o.resting_price, 4) + '</td><td class="small">' + esc0(o.expires_at || '—') + '</td></tr>'; }).join('') + '</tbody></table>'
+      : '<div class="card muted small">No maker orders are resting at this snapshot.</div>') +
+    '<h4 style="margin:12px 0 4px">Latest intended trades that did not execute (with the exchange-verified reason)</h4>' +
+    ((D.intents || []).length ? '<table><thead><tr><th>When</th><th>Strategy</th><th>Instrument</th><th>Wanted to</th><th>Reason</th></tr></thead><tbody>' +
+      (D.intents || []).slice(0, 14).map(function (x) { return '<tr><td class="small">' + esc0(x.created_at) + '</td><td>' + esc0(x.username) + '</td><td><code>' + esc0(x.instrument_id) + '</code></td><td class="small">' + esc0(x.action) + '</td><td class="small"><span class="muted tiny">' + esc0(x.reason) + '</span> ' + esc0(x.detail || '') + '</td></tr>'; }).join('') + '</tbody></table>'
+      : '<div class="card muted small">No recorded intents.</div>') +
+    '<h4 style="margin:12px 0 4px">Most recent executed (simulated) trades</h4>' +
+    (lastTrades.length ? '<table><thead><tr><th>When</th><th>Strategy</th><th>Instrument</th><th>Action</th><th class="num">Contracts</th><th class="num">Price</th><th class="num">Fees</th><th>Source</th></tr></thead><tbody>' +
+      lastTrades.map(function (t) { return '<tr><td class="small">' + esc0(t.created_at) + '</td><td>' + esc0(t.username) + '</td><td><code>' + esc0(t.ticker || t.instrument_id) + '</code></td><td class="small">' + esc0(t.action) + (t.outcome ? ' ' + t.outcome.toUpperCase() : '') + '</td><td class="num">' + t.contracts + '</td><td class="num">' + money(t.price, 4) + '</td><td class="num">' + usd(t.fees && t.fees.fee_usd) + '</td><td class="tiny">' + link(t.official_source, 'payload') + '</td></tr>'; }).join('') + '</tbody></table>'
+      : '<div class="card muted small">No trades yet.</div>'));
+
+  /* ------------------------------------------------ research & backtests */
+  var BT = D.backtests || {};
+  byId('backtests_box', (BT.backtests || []).length ? '<div class="grid k2">' + BT.backtests.map(function (b) {
+    var st = b.stats || {};
+    var lastTrades = (b.trades_sample || []).slice(-8).reverse();
+    var backtested = (b.series || []).filter(function (s) { return s.status === 'backtested'; }).length;
+    var noSignal = (b.series || []).filter(function (s) { return s.status === 'no_signal_in_history'; }).length;
+    var skipped = (b.series || []).filter(function (s) { return s.status === 'skipped_insufficient_official_history'; }).length;
+    return '<div class="card"><h3>' + esc0(b.name) + '</h3>' +
+      '<div class="small muted">classification: <span class="badge">' + esc0(b.classification || 'backtest') + '</span> · ' + esc0(b.market_type || '') + '</div>' +
+      '<div class="grid k4" style="margin-top:8px">' + [
+        ['Trades (daily-close fills)', String(st.trades || 0)],
+        ['Win rate', st.win_rate === null || st.win_rate === undefined ? '—' : (st.win_rate * 100).toFixed(1) + '%'],
+        ['Total PnL', usd(st.total_pnl_usd)],
+        ['Return on $10k', pct(st.return_on_10000_usd_pct)]
+      ].map(function (row) { return '<div class="card"><div class="muted small">' + row[0] + '</div><div class="stat">' + row[1] + '</div></div>'; }).join('') + '</div>' +
+      '<div class="small" style="margin-top:6px">Max drawdown ' + usd(st.max_drawdown_usd) + ' · avg trade ' + usd(st.avg_trade_pnl_usd) + ' · fees ' + usd(st.fees_paid_usd) + ' · series: ' + backtested + ' backtested, ' + noSignal + ' no signal, ' + skipped + ' skipped (insufficient official history)</div>' +
+      (lastTrades.length ? '<details><summary class="small">Last ' + lastTrades.length + ' backtest rows (every row: dates, both prices, fees, PnL — checkable against the cited payload)</summary><table><thead><tr><th>Instrument</th><th>Entry</th><th class="num">Entry px</th><th class="num">Exit px</th><th class="num">Fees</th><th class="num">PnL</th></tr></thead><tbody>' +
+        lastTrades.map(function (t) { return '<tr><td class="small"><code>' + esc0(t.series_ticker || t.ticker) + '</code> <span class="muted tiny">' + esc0(t.entry_date) + ' → ' + esc0(t.exit_date) + '</span></td><td class="tiny muted">' + esc0(t.outcome_bought || t.direction || '') + '</td><td class="num">' + money(t.entry_price, 4) + '</td><td class="num">' + money(t.exit_price, 4) + '</td><td class="num">' + usd(t.fees_usd) + '</td><td class="num ' + cls(t.pnl_usd) + '">' + usd(t.pnl_usd) + '</td></tr>'; }).join('') + '</tbody></table></details>' : '<p class="small muted" style="margin:8px 0 0">No trades in the committed official history for this rule yet. Kalshi candle caches are being re-collected after a schema fix; MOEX rules run on the committed daily settlements.</p>') +
+      '<details><summary class="small">What this backtest does and does not model</summary><ul class="tight small">' + (b.caveats || []).map(function (c) { return '<li>' + esc0(c) + '</li>'; }).join('') + '</ul></details>' +
+      '</div>';
+  }).join('') + '</div>' : '<div class="card muted">Backtests are written by <code>node engine/backtest.mjs</code>.</div>');
+
+  byId('backtest_unavailable', ((BT.unavailable || []).length ? '<h3>Marked unavailable for backtesting (forward-tested instead)</h3><div class="grid k2">' + BT.unavailable.map(function (u) {
+    return '<div class="card"><h3 class="small">' + esc0(u.username) + ' <span class="muted">(' + esc0(u.strategy_id) + ')</span></h3><div class="badge warn">unavailable_for_backtesting</div><p class="small" style="margin:8px 0 0">' + esc0(u.reason) + '</p></div>';
+  }).join('') + '</div>' : '') +
+    '<div class="note" style="margin-top:14px"><strong>Research register — documented ideas parked until a verified price feed exists</strong><ul class="tight small">' +
+    '<li><strong>Gasoline-lag relay (Kalshi AAA gasoline vs crude):</strong> documented edge — the AAA retail average is a smoothed, lagging number while crude moves in real time, so next week\\'s pump level is partly visible in today\\'s crude (<a href="https://www.botforkalshi.com/blog/how-to-trade-oil-on-kalshi" target="_blank" rel="noopener">source</a>). Not implementable here yet: the project has no verified live crude spot/futures feed to drive it (CME/ICE block automated access; MOEX WTI/Brent are exchange futures with their own basis). Parked until a verified crude input exists.</li>' +
+    '<li><strong>COT positioning (CFTC Commitments of Traders):</strong> free official data at <a href="https://publicreporting.cftc.gov/" target="_blank" rel="noopener">publicreporting.cftc.gov</a>, but it covers CME/ICE futures, which this project cannot price (blocked automated access) — a positioning signal cannot be traded against a verified price here yet.</li>' +
+    '<li><strong>Reddit multi-timeframe crude/gas scalping (r/Trading):</strong> a documented community strategy (<a href="https://www.reddit.com/r/Trading/comments/1m4ol8e/my_crude_oil_natural_gas_trading_strategy_seeking/" target="_blank" rel="noopener">thread</a>) built around 4H-bias and 15-minute pivot entries on MCX mini contracts. Not recreated: it is explicitly risk-managed (fixed rupee stop per trade), which the returns-only competition deliberately is not, and MCX data is not available from a free official API here.</li>' +
+    '<li><strong>Perp funding carry (Kalshi perps):</strong> funding exists (official help centre: 3 funding times/day, ±2%/8h cap on crypto perps) but the metals perp payloads in this project returned no funding rate, so no funding cash-flow is modelled — noted in limitations rather than guessed.</li>' +
+    '</ul></div>' +
+    '<div class="note"><strong>Design references (reverse-engineered competition structure)</strong><ul class="tight small">' +
+    '<li><a href="https://www.kalshi.com/" target="_blank" rel="noopener">kalshi.com</a> — live books, per-market depth and settlement results; this project simulates against the same published books via the official Trade API v2.</li>' +
+    '<li><a href="https://www.tradingview.com/the-leap/" target="_blank" rel="noopener">TradingView The Leap</a> — paper-trading competition pattern: starting balance, return-based leaderboard, per-participant trade history; mirrored here with verified-source requirements added.</li>' +
+    '<li><a href="https://www.trade-ideas.com/stock-trading-competition/" target="_blank" rel="noopener">Trade-Ideas trading competition</a> and <a href="https://specials.candlecharts.com/contest/" target="_blank" rel="noopener">Candlecharts contest</a> — fixed-season scoreboard patterns; here the season is one year per the brief.</li>' +
+    '</ul></div>');
 
   byId('intents_table', (D.intents || []).length ? '<table><thead><tr><th>When</th><th>Trading as</th><th>Instrument</th><th>Wanted to</th><th>Outcome</th><th>Why</th></tr></thead><tbody>' +
     D.intents.map(function (x) { return '<tr><td class="small">' + esc0(x.created_at) + '</td><td>' + esc0(x.username) + '</td><td><code>' + esc0(x.instrument_id) + '</code></td><td class="small">' + esc0(x.action) + (x.resting_price !== undefined ? ' @ ' + x.resting_price : '') + '</td><td class="small">' + badge(x.status === 'executed' ? 'executed' : 'not executed', x.status === 'executed' ? 'ok' : 'warn') + ' <span class="muted tiny">' + esc0(x.reason) + '</span></td><td class="small">' + esc0(x.detail || '') + '</td></tr>'; }).join('') + '</tbody></table>'

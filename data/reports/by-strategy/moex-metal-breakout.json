@@ -1,0 +1,53 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": null,
+  "disabled_reason": null,
+  "display_name": "Channel Breakout",
+  "enabled": true,
+  "entries": 0,
+  "equity_usd": null,
+  "exits": 0,
+  "fees_paid_usd": null,
+  "market_type": "Exchange-listed commodity future",
+  "open_positions": null,
+  "origin": {
+    "claim": "Channel (Donchian) breakout rules - buy a 20-period high, sell a 20-period low, exit on the opposite 10-period extreme - are the public-domain Turtle trading rules, among the most documented systematic futures strategies.",
+    "kind": "documented_anomaly",
+    "sources": [
+      {
+        "label": "Original Turtle Trading rules (public domain, official release by the authors)",
+        "url": "https://www.turtletrader.com/turtle/"
+      }
+    ],
+    "status": "documented rule, forward-tested here on official MOEX settlements"
+  },
+  "realized_pnl_usd": null,
+  "return_pct": null,
+  "rules": {
+    "entry": "Daily settlement CLOSE crosses above the prior 20-observation high (long) or below the prior 20-observation low (short).",
+    "exit": "Close crosses the opposite 10-observation extreme.",
+    "sizing": "Target notional, capped by published volume and open interest."
+  },
+  "slippage_paid_usd": null,
+  "strategy_id": "moex-metal-breakout",
+  "thesis": "Run the classic 20/10 channel breakout on MOEX metals futures using only the exchange's official daily settlement history: buy the 20-day high breakout, short the 20-day low breakout, exit on the opposite 10-day extreme.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": null,
+  "username": "@donchian-desk",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Exchange-listed commodity future markets every tick."
+  ]
+}

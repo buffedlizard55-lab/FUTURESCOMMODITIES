@@ -1,6 +1,6 @@
 # Competition results
 
-Generated 2026-09-22T22:23:56.034Z from the committed ledger. Season season-2026-09-22_to_2027-09-22 (2026-09-22T00:00:00Z to 2027-09-22T00:00:00Z), 2 ticks completed.
+Generated 2026-09-22T23:03:54.371Z from the committed ledger. Season season-2026-09-22_to_2027-09-22 (2026-09-22T00:00:00Z to 2027-09-22T00:00:00Z), 2 ticks completed.
 
 > Every number below is computed from data fetched from an official source. Simulated fills are labelled: `taker_walks_official_order_book` means the order walked real resting size, `quote_based_fill_at_official_bid_offer` means it filled at the exchange quote with size capped by published liquidity, and `modelled` marks resting maker orders whose queue position cannot be observed publicly.
 
@@ -143,10 +143,50 @@ Independent verification: **34/44** trades fully verified, 10 anomalies (see `da
 ### @basis-hunter - Cross-Venue Basis
 
 - **Market type:** Cross-venue: Kalshi perpetual future vs exchange-listed future
-- **Thesis:** Compare the Kalshi metal perpetual with the front MOEX future on the same metal. When the percentage spread between them is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.
-- **Rules:** entry - Basis >= 0.5% between the perpetual mid and the MOEX future mid.; exit - Exit when the basis compresses below 0.1%.
+- **Thesis:** Compare the Kalshi metal perpetual (price / contract_size = USD per ounce) with the front MOEX future on the same metal (mid = USD per ounce when UNIT=USD). When the normalised basis is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.
+- **Rules:** entry - Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).; exit - Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.
 - **Result:** 0.00% (equity 100000.00 USD), 0 entries, 0 exits, 0 blocked order attempts.
 - No trade has been placed yet. The strategy is live and evaluating Cross-venue: Kalshi perpetual future vs exchange-listed future markets every tick.
+
+### @book-watcher - Order-Book Imbalance
+
+- **Market type:** Kalshi event contract
+- **Thesis:** Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.
+- **Rules:** entry - Depth ratio >= 70% or <= 30% on visible book depth, spread <= 3 cents, YES mid between 0.15 and 0.85, at least 2 hours to close.; exit - Exit when the depth ratio crosses back through 50% or the market closes.
+- **Result:** n/a% (equity n/a USD), 0 entries, 0 exits, 0 blocked order attempts.
+- No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick.
+
+### @mark-fade - Perp Mark Fade
+
+- **Market type:** Kalshi perpetual future
+- **Thesis:** When the Kalshi perpetual mid deviates from the exchange-published mark price by 0.3% or more, trade back toward the mark; exit when the deviation decays below 0.08%. Both the deviation and its anchor come from the exchange payload in the same snapshot.
+- **Rules:** entry - |perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.; exit - Exit when the deviation decays below 0.08% or the two-sided quote disappears.
+- **Result:** n/a% (equity n/a USD), 0 entries, 0 exits, 0 blocked order attempts.
+- No trade has been placed yet. The strategy is live and evaluating Kalshi perpetual future markets every tick.
+
+### @rig-count - Energy Trend
+
+- **Market type:** Exchange-listed commodity future
+- **Thesis:** Follow the official settlement trend in MOEX energy futures - crude (WTI, Brent), products (diesel, AI-92/95 gasoline) and gas (NG, NGM, TTF) - taking the strongest movers on each side and holding while the trend persists.
+- **Rules:** entry - 15-observation settlement momentum, |momentum| >= 1.5%.; exit - Exit when the momentum flips sign.
+- **Result:** n/a% (equity n/a USD), 0 entries, 0 exits, 0 blocked order attempts.
+- No trade has been placed yet. The strategy is live and evaluating Exchange-listed commodity future markets every tick.
+
+### @donchian-desk - Channel Breakout
+
+- **Market type:** Exchange-listed commodity future
+- **Thesis:** Run the classic 20/10 channel breakout on MOEX metals futures using only the exchange's official daily settlement history: buy the 20-day high breakout, short the 20-day low breakout, exit on the opposite 10-day extreme.
+- **Rules:** entry - Daily settlement CLOSE crosses above the prior 20-observation high (long) or below the prior 20-observation low (short).; exit - Close crosses the opposite 10-observation extreme.
+- **Result:** n/a% (equity n/a USD), 0 entries, 0 exits, 0 blocked order attempts.
+- No trade has been placed yet. The strategy is live and evaluating Exchange-listed commodity future markets every tick.
+
+### @snap-fader - Jump Reversal
+
+- **Market type:** Kalshi event contract
+- **Thesis:** When a contract's official mid moves by 6 cents or more between two consecutive verified snapshots, take the opposite side: fade the jump. Deliberately distinct from @vol-crusher (which fades daily-candle extremes from the exchange candle history), this acts on tick-to-tick snapshot moves.
+- **Rules:** entry - |mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.; exit - Exit when the mid retraces half of the measured jump, or the market closes.
+- **Result:** n/a% (equity n/a USD), 0 entries, 0 exits, 0 blocked order attempts.
+- No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick.
 
 ## Execution composition
 

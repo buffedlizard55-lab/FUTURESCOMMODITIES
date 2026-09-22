@@ -75,20 +75,58 @@ lists it as covered-but-not-tradable rather than silently dropping it.
 * Rebuilding the site and committing the artifacts on every tick keeps the repository self-contained, but
   it means the published artifacts are only as fresh as the last successful workflow run.
 
-## 7. A modelling correction that is on the record
+## 7. A modelling correction that is on the record (resolved 2026-09-22)
 
-The cross-venue basis strategy (`@basis-hunter`) compared a Kalshi perpetual price directly with a MOEX
-future price. Those are quoted in different units: Kalshi's perpetual payload publishes `contract_size`
-(for example 0.001 oz on gold, 0.1 oz on silver), while the MOEX ISS payload for the matching future does
-not state the underlying quantity per contract. The comparison was therefore unit-inconsistent and the
-strategy is now **disabled** and places no orders; the paper trades it produced before the correction are
-kept in `data/ledger/archive/` and excluded from the scored season, and the reason is published on the site.
+The cross-venue basis strategy (`@basis-hunter`) originally compared a Kalshi perpetual price directly with
+a MOEX future price. Those are quoted in different units: Kalshi's perpetual payload publishes
+`contract_size` (for example 0.001 oz on gold, 0.1 oz on silver), while the MOEX quote carries its own
+price units. The comparison was therefore unit-inconsistent; the strategy was disabled, its paper trades
+archived under `data/ledger/archive/` and excluded from the season, and the reason published.
 
-Re-enabling it needs one verified figure per pair — the underlying quantity per MOEX contract from an
-official MOEX source (contract specification page, or a machine-readable field we have not yet found) —
-and no amount of inference is a substitute for it.
+**The blocker was resolved the same day with official data, and the strategy was re-enabled:**
 
-## 8. What is deliberately absent
+* The MOEX ISS `description` table publishes `LOT SIZE`, quotation `UNIT` and settlement `FACEUNIT` per
+  contract. Verified 2026-09-22: GDZ6 LOT SIZE=1 / UNIT=USD / FACEUNIT=USD; SVZ6 LOT SIZE=10 / UNIT=USD /
+  FACEUNIT=USD; PTZ6 LOT SIZE=1 / UNIT=USD / FACEUNIT=USD — the quote is USD per unit of the underlying.
+* Kalshi's perp specification documents contract sizes in units of the underlying
+  (help.kalshi.com, article 15357587), so `price ÷ contract_size` is USD per ounce.
+* Cross-check on 2026-09-22 22:23Z: gold 4,363.25 vs 4,433.25 USD/oz (+1.6%); silver 67.23 vs 68.36
+  (+1.7%) — two independent venues within ~2% corroborates the chain (a unit error would show 10×/32×).
+* Evidence file: `data/raw-evidence/cross-venue-basis-normalisation-2026-09-22.json`; the verifier now
+  requires the normalisation to be recorded on every basis trade.
+
+A related correction made the same day: the USD valuation of a USD-quoted MOEX contract now comes from the
+exchange's own `UNIT=USD` reference field (factor exactly 1.0) instead of the older `STEPPRICE ÷ MINSTEP ÷
+USD/RUB` approximation, which mixed in MOEX's RUB step valuation and a separately captured FX rate and
+understated the USD value by the fixing difference (~0.7% on gold at the time). Contracts whose quotation
+is not USD keep the STEPPRICE-derived valuation. Positions opened before the correction keep their recorded
+entry multiplier; the difference is on the record in each instrument's `usd_valuation.basis`.
+
+A second defect found and fixed the same day: the Kalshi candlestick parser read the wrong field names
+(`price.close` instead of the documented `price.close_dollars`, etc.), which had left the committed candle
+caches null and starved the candle-based strategies of signals. The parser now follows the official schema
+(docs.kalshi.com, Get Market Candlesticks), and unusable caches are re-fetched rather than trusted.
+
+## 8. Verified but not traded: MOEX non-commodity sectors
+
+The exchange's own FORTS listing (verified 2026-09-22) also contains equity-index futures (MIX, RTS, NASD,
+SPYF, DJ30, DAX, NIKK and others), interest-rate futures (RUONIA, 1MFR, RGBI), FX futures (Si, CNY, Eu and
+others), crypto futures (BTC, ETH, SOL, XRP, TRX) and perpetual-style continuous contracts (USDRUBF,
+GLDRUBF, SLVRUBF and others). The official keyless ISS API can price them, but the competition does not
+trade them yet: sector classification, contract whitelisting and strategy rules are pending (see
+`docs/ROADMAP.md`). They are recorded in `engine/universe/futures-registry.json` as `listed_only` so the
+universe statement stays accurate: listed, verified, not traded.
+
+## 9. Provenance retention
+
+Run manifests (`data/manifest/run-*.json`, one per tick, with the URL/status/SHA-256 of every response the
+run received) are pruned to the most recent runs so the repository stays small. A ledger trade from a pruned
+run therefore cannot be hash-matched anymore and fails
+`payload_hash_present_in_that_runs_provenance_log`; `data/verification/report.json` discloses this as a
+retention limit and breaks anomalies down per check. The price itself is still checkable: every trade also
+carries the source URL and the response hash, so any number can be re-derived against the venue at any time.
+
+## 10. What is deliberately absent
 
 Risk management, position limits, drawdown controls and portfolio-level hedging are intentionally **not**
 implemented: the competition is scored on returns only. A strategy that takes a large, unhedged position

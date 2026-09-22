@@ -1,0 +1,47 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": null,
+  "disabled_reason": null,
+  "display_name": "Perp Mark Fade",
+  "enabled": true,
+  "entries": 0,
+  "equity_usd": null,
+  "exits": 0,
+  "fees_paid_usd": null,
+  "market_type": "Kalshi perpetual future",
+  "open_positions": null,
+  "origin": {
+    "claim": "A perpetual's book is anchored to the exchange-published mark/index price: deviations are driven by transient order flow and tend to decay back toward the mark. Kalshi publishes the mark (settlement mark price) for every perpetual in the same payload as the book.",
+    "kind": "market_structure",
+    "status": "structural - the anchor is published by the exchange itself"
+  },
+  "realized_pnl_usd": null,
+  "return_pct": null,
+  "rules": {
+    "entry": "|perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.",
+    "exit": "Exit when the deviation decays below 0.08% or the two-sided quote disappears.",
+    "sizing": "Target notional, capped by a share of published 24h notional volume."
+  },
+  "slippage_paid_usd": null,
+  "strategy_id": "kalshi-perp-mark-fade",
+  "thesis": "When the Kalshi perpetual mid deviates from the exchange-published mark price by 0.3% or more, trade back toward the mark; exit when the deviation decays below 0.08%. Both the deviation and its anchor come from the exchange payload in the same snapshot.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": null,
+  "username": "@mark-fade",
+  "venues": [
+    "kalshi_margin"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Kalshi perpetual future markets every tick."
+  ]
+}

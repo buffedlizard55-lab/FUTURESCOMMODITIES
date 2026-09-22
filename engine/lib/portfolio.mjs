@@ -254,6 +254,7 @@ export function applyFill(portfolio, trade) {
       entry_ts: trade.created_at,
       entry_trade_id: trade.id,
       entry_fee_usd: fee,
+      entry_signal: trade.signal ?? null,
       usd_per_price_unit: multiplier,
       margin_usd: margin,
       margin_model: trade.margin_model ?? null,
