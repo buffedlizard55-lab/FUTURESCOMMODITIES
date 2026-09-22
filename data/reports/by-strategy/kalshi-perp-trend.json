@@ -1,10 +1,46 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "Gold": {
+        "fees_usd": 0,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.05725,
+        "trades": 1
+      },
+      "Silver": {
+        "fees_usd": 0,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.48295,
+        "trades": 1
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 1145,
+        "entry_price": 4.3632,
+        "instrument_id": "kalshiperp:KXGOLDPERP",
+        "mark_price": 4.3633,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "KXGOLDPERP",
+        "unrealized_pnl_usd": -0.1145
+      },
+      {
+        "contracts": 743,
+        "entry_price": 6.7219,
+        "instrument_id": "kalshiperp:KXSILVERPERP",
+        "mark_price": 6.7232,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "KXSILVERPERP",
+        "unrealized_pnl_usd": -0.9659
+      }
+    ],
+    "trades_by_venue": {
+      "kalshi_margin": 2
+    },
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
@@ -13,35 +49,40 @@
   "disabled_reason": null,
   "display_name": "Perp Surfer",
   "enabled": true,
-  "entries": 0,
-  "equity_usd": 100000,
+  "entries": 2,
+  "equity_usd": 99998.9196,
   "exits": 0,
   "fees_paid_usd": 0,
   "market_type": "Kalshi perpetual future",
-  "open_positions": 0,
+  "open_positions": 2,
   "origin": {
     "claim": "Listed metal perpetuals trend after their own mark price moves when the underlying spot market is closed, because the perpetual must carry the overnight move.",
     "kind": "market_structure",
     "status": "hypothesis under test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "return_pct": -0.0011,
   "rules": {
     "entry": "Price changed since the previous committed snapshot, with a live two-sided quote.",
     "exit": "Exit when the direction of the last change flips.",
     "sizing": "Target notional, capped by a share of published 24h notional volume."
   },
-  "slippage_paid_usd": 0,
+  "slippage_paid_usd": 0.5402,
   "strategy_id": "kalshi-perp-trend",
   "thesis": "Take the direction of the last verified move in each Kalshi metal perpetual and hold it, re-evaluating on every snapshot. The perpetual is the only instrument in this project that trades continuously, so it is where an overnight trend can actually be captured.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": 0,
+  "traded_market_types": [
+    "Kalshi perpetual future"
+  ],
+  "trades": 2,
+  "unrealized_pnl_usd": -1.0804,
   "username": "@perp-surfer",
   "venues": [
     "kalshi_margin"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Kalshi perpetual future markets every tick."
+    "2 ledger records so far: 2 distinct commodity exposures across kalshi_margin.",
+    "Closed-trade P&L is 0.00 USD against 0.00 USD of fees and 0.54 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -1.08 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
