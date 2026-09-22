@@ -2,7 +2,7 @@ name: competition tick
 
 on:
   schedule:
-    # Every 30 minutes. Each tick is one "market moment": fetch -> decide -> fill -> mark -> publish.
+    # Every 30 minutes: one "market moment" per tick — fetch, decide, fill, mark, publish.
     - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
@@ -16,6 +16,7 @@ on:
       - 'data/**'
       - 'docs/**'
       - 'README.md'
+      - 'index.html'
 
 permissions:
   contents: write
@@ -27,7 +28,7 @@ concurrency:
 jobs:
   tick:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -35,22 +36,29 @@ jobs:
         with:
           node-version: '22'
 
+      # The engine has no dependencies; it runs on the Node standard library and fetch().
       - name: Run competition tick
         run: node engine/tick.mjs --max-requests=${{ github.event.inputs.max_requests || '400' }}
 
-      - name: Verify ledger against provenance
+      - name: Verify every ledger trade against its run's provenance
         run: node engine/verify.mjs
 
-      - name: Commit published data
+      - name: Build strategy result reports
+        run: node engine/report.mjs
+
+      - name: Rebuild the public site from committed artifacts
+        run: node engine/build-site.mjs
+
+      - name: Commit published data and the site
         run: |
           set -e
           git config user.name "competition-bot"
           git config user.email "competition-bot@users.noreply.github.com"
-          git add data
+          git add data index.html
           if git diff --cached --quiet; then
             echo "no data changes this tick"
           else
-            git commit -m "tick: $(date -u +%Y-%m-%dT%H:%MZ) market snapshot, ledger and leaderboard [skip ci]"
+            git commit -m "tick: $(date -u +%Y-%m-%dT%H:%MZ) market snapshot, ledger, leaderboard and site [skip ci]"
             git push
           fi
 
@@ -61,17 +69,14 @@ jobs:
             echo "## Competition tick"
             echo ""
             if [ -f data/state/leaderboard.json ]; then
-              echo "| Strategy | Market type | Equity (USD) | Return % | Open | Closed |"
-              echo "| --- | --- | --- | --- | --- | --- |"
-              node -e "const l=require('./data/state/leaderboard.json');for(const r of l.leaderboard)console.log('| '+r.username+' | '+r.market_type+' | '+r.equity_usd+' | '+r.return_pct+' | '+r.open_positions+' | '+r.closed_trades+' |')"
+              echo "| Trading as | Strategy | Market type | Equity (USD) | Return % | Open | Closed |"
+              echo "| --- | --- | --- | --- | --- | --- | --- |"
+              node -e "const l=require('./data/state/leaderboard.json');for(const r of l.leaderboard)console.log('| '+r.username+' | '+r.strategy_id+' | '+r.market_type+' | '+r.equity_usd+' | '+r.return_pct+' | '+r.open_positions+' | '+r.closed_trades+' |')"
             fi
             echo ""
-            if [ -f data/state/competition.json ]; then
-              echo '```'
-              node -e "const c=require('./data/state/competition.json');console.log(JSON.stringify(c.last_tick,null,1))"
-              echo '```'
-            fi
             if [ -f data/verification/report.json ]; then
-              echo "Verification: $(node -e "const v=require('./data/verification/report.json');console.log(v.checks_passed+'/'+v.trades_checked+' trades verified, '+v.anomaly_count+' anomalies')")"
+              echo "### Verification"
+              echo ""
+              node -e "const v=require('./data/verification/report.json');console.log(v.fully_verified+' of '+v.trades_checked+' trades fully verified; '+v.anomaly_count+' anomalies.')"
             fi
-          } >> $GITHUB_STEP_SUMMARY
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -575,7 +575,7 @@ export const STRATEGIES = [
         if (closes.length < 10) continue;
         const momentum = (closes[closes.length - 1] - closes[0]) / closes[0];
         if (Math.abs(momentum) < this.sizing.min_momentum) continue;
-        candidates.push({ inst, q, momentum });
+        candidates.push({ inst, q, momentum, observations: closes.length });
       }
       candidates.sort((a, b) => b.momentum - a.momentum);
       for (const candidate of candidates) {
@@ -598,7 +598,7 @@ export const STRATEGIES = [
           limit_price: price,
           order_type: 'taker',
           thesis: `${(momentum * 100).toFixed(1)}% settlement momentum over ${candidate.settlements ?? 'the cached history'} in ${inst.ticker}.`,
-          signal: { name: 'settlement_momentum', momentum: Number(momentum.toFixed(4)), observations: closes.length, usd_per_price_unit: usdPerPoint },
+          signal: { name: 'settlement_momentum', momentum: Number(momentum.toFixed(4)), observations: candidate.observations, usd_per_price_unit: usdPerPoint },
         });
       }
       return { notes: [] };
@@ -642,10 +642,10 @@ export const STRATEGIES = [
         if (!byAsset.has(inst.asset_code)) byAsset.set(inst.asset_code, []);
         byAsset.get(inst.asset_code).push(inst);
       }
-      for (const [assetCode, contracts] of byAsset) {
+      for (const [assetCode, legs] of byAsset) {
         if (orders >= 2) break;
-        if (contracts.length < 2) continue;
-        const sorted = [...contracts].sort((a, b) => String(a.last_trade_date ?? '').localeCompare(String(b.last_trade_date ?? '')));
+        if (legs.length < 2) continue;
+        const sorted = [...legs].sort((a, b) => String(a.last_trade_date ?? '').localeCompare(String(b.last_trade_date ?? '')));
         const near = sorted[0];
         const far = sorted[sorted.length - 1];
         const qn = ctx.quote(near.instrument_id);
