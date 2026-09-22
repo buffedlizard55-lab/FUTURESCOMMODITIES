@@ -576,8 +576,8 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
   }
   // Kalshi contracts trade in whole contracts in the markets this platform trades; orders are
   // floored to whole contracts (fractional_trading_enabled is false for the contracts tracked).
-  const requested = Math.floor(ord.contracts);
-  if (requested < 1) {
+  const requestedRaw = Math.floor(ord.contracts);
+  if (requestedRaw < 1) {
     intents.push(intentRecord(ord, runId, 'size_below_one_contract', 'Sized order was smaller than a single contract.'));
     return { executed: false, reason: 'size_below_one_contract' };
   }
@@ -595,6 +595,46 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
     yesDepthContracts: q.depth_yes_contracts ?? 0,
     noDepthContracts: q.depth_no_contracts ?? 0,
   };
+  // Realistic size limits. A taker order may only consume liquidity that is actually resting
+  // within a documented price tolerance of the best offer, and only a fraction of that depth -
+  // otherwise the "fill" is an artefact of walking an empty ladder rather than a trade size the
+  // market could absorb.
+  const bestOffer = ord.outcome === 'yes' ? q.best_yes_ask : q.best_no_ask;
+  const ladder = (ord.outcome === 'yes' ? q.buy_yes_levels : q.buy_no_levels) ?? [];
+  const tolerance = KC.event_contract_price_tolerance ?? 0.02;
+  const participation = KC.taker_participation_of_visible_depth ?? 0.25;
+  const maxPrice = bestOffer != null ? bestOffer + tolerance : null;
+  let allowedContracts = requestedRaw;
+  let capacity = null;
+  if (maxPrice != null) {
+    const usable = ladder.filter((l) => l.price <= maxPrice + 1e-9);
+    const visibleWithinTolerance = usable.reduce((sum, l) => sum + l.contracts, 0);
+    capacity = {
+      best_offer: bestOffer,
+      price_tolerance: tolerance,
+      max_acceptable_price: Number(maxPrice.toFixed(6)),
+      visible_contracts_within_tolerance: Number(visibleWithinTolerance.toFixed(2)),
+      participation_rate: participation,
+      levels_within_tolerance: usable.length,
+      total_visible_contracts_on_this_side: Number(ladder.reduce((sum, l) => sum + l.contracts, 0).toFixed(2)),
+    };
+    allowedContracts = Math.min(requestedRaw, Math.floor(visibleWithinTolerance * participation));
+    if (allowedContracts < 1) {
+      intents.push(
+        intentRecord(
+          ord,
+          runId,
+          'insufficient_depth_within_price_tolerance',
+          `Only ${visibleWithinTolerance.toFixed(2)} contracts were resting within ${tolerance} of the best offer ${bestOffer}; at a ${(participation * 100).toFixed(0)}% participation rate no fill was possible.`,
+        ),
+      );
+      return { executed: false, reason: 'insufficient_depth_within_price_tolerance', capacity };
+    }
+  } else {
+    intents.push(intentRecord(ord, runId, 'no_offer_side_in_book', 'No offer was resting on the side this order needs, so no fill could have occurred at this moment.'));
+    return { executed: false, reason: 'no_offer_side_in_book' };
+  }
+
   const feeMultiplier = inst.fee_multiplier ?? 1;
   // Official rule: maker multiplier defaults to 0 (no maker fee) unless the series charges one.
   // The exchange tells us via series field fee_type (e.g. 'quadratic_with_maker_fees').
@@ -625,8 +665,8 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
       book,
       outcome: ord.outcome,
       action: ord.action,
-      contracts: requested,
-      limitPrice: ord.limit_price,
+      contracts: allowedContracts,
+      limitPrice: ord.limit_price != null ? Math.min(ord.limit_price, capacity?.max_acceptable_price ?? ord.limit_price) : capacity?.max_acceptable_price ?? null,
       feeMultiplier,
       walkBookForTaker,
     });
@@ -903,6 +943,30 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
     );
     return { executed: false, reason: 'valuation_inputs_missing' };
   }
+  // Venue liquidity screen, taken from the exchange's own published figures for this contract.
+  const minVolume = KC.moex_min_volume_today ?? 10;
+  const minOi = KC.moex_min_open_interest ?? 20;
+  const volumeToday = q.volume_today ?? null;
+  const openInterest = q.open_interest ?? null;
+  if (volumeToday == null || volumeToday < minVolume || (openInterest != null && openInterest < minOi)) {
+    intents.push(
+      intentRecord(
+        ord,
+        runId,
+        'insufficient_exchange_liquidity',
+        `MOEX published volume ${volumeToday ?? 'n/a'} and open interest ${openInterest ?? 'n/a'} for this contract, below the screen of ${minVolume} traded contracts / ${minOi} open interest; the simulation does not assume liquidity the exchange does not show.`,
+      ),
+    );
+    return { executed: false, reason: 'insufficient_exchange_liquidity' };
+  }
+  const maxByVolume = Math.max(1, Math.floor(volumeToday * (KC.moex_max_volume_share ?? 0.02)));
+  const maxByOi = openInterest != null ? Math.max(1, Math.floor(openInterest * (KC.moex_max_oi_share ?? 0.05))) : Infinity;
+  const contracts = Math.max(1, Math.min(Math.floor(ord.contracts), maxByVolume, maxByOi));
+  if (contracts < 1) {
+    intents.push(intentRecord(ord, runId, 'below_liquidity_cap', 'Sized order fell below one contract after the exchange-liquidity cap.'));
+    return { executed: false, reason: 'below_liquidity_cap' };
+  }
+  ord = { ...ord, contracts };
   const feePerContractRub = inst.fees_reported?.buy_sell_fee_rub ?? null;
   const usdRub = ctx.fx?.rate ?? null;
   const feePerContractUsd = feePerContractRub != null && usdRub ? Number((feePerContractRub / usdRub).toFixed(6)) : null;
@@ -928,7 +992,8 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
     market_type: 'Exchange-listed commodity future',
     venue: 'Moscow Exchange (MOEX) FORTS',
     venue_id: 'moex_forts',
-    official_source: q.source?.url ?? null,
+    official_source: q.source?.url ?? q.source?.endpoint ?? null,
+    venue_terms_url: 'https://www.moex.com/en/terms',
     exchange: 'Moscow Exchange (MOEX), FORTS derivatives market',
     ticker: inst.ticker,
     instrument_title: inst.title,
@@ -946,6 +1011,19 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
       valuation_note: inst.valuation_note ?? null,
     },
     market_dates: { last_trade_date: inst.last_trade_date, trade_date: q.trade_date },
+    market_at_decision: {
+      bid: q.bid,
+      offer: q.offer,
+      mid: q.mid,
+      spread: q.spread,
+      settle_price: q.settle_price,
+      volume_today: volumeToday,
+      open_interest: openInterest,
+      source_url: q.source?.url ?? q.source?.endpoint ?? null,
+      retrieved_at: q.source?.retrieved_at ?? null,
+      sha256: q.source?.sha256 ?? null,
+      note: 'MOEX ISS publishes best bid/offer (aggregate book), last price, settlement price, volume and open interest. It does not publish per-level depth.',
+    },
     action: ord.action,
     side: ord.side,
     contracts: ord.contracts,

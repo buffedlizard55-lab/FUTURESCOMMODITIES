@@ -30,6 +30,7 @@ const REQUIRED_TRADE_FIELDS = [
   'venue',
   'official_source',
   'exchange',
+  'market_at_decision',
   'ticker',
   'contract_specification',
   'market_dates',
@@ -78,6 +79,15 @@ function main() {
     const provMissing = REQUIRED_PROVENANCE_FIELDS.filter((f) => t.provenance?.[f] === undefined || t.provenance?.[f] === null);
     checks.push({ check: 'provenance_fields_present', ok: provMissing.length === 0, missing: provMissing });
 
+    // A trade must point at the exact official payload it was priced from: either the endpoint
+    // recorded on the trade itself or the one carried by its provenance block.
+    const sourceUrl = t.official_source ?? t.provenance?.source_url ?? t.provenance?.endpoint ?? null;
+    checks.push({
+      check: 'official_source_recorded',
+      ok: typeof sourceUrl === 'string' && sourceUrl.startsWith('http'),
+      source_url: sourceUrl,
+    });
+
     const manifest = manifestById[t.run_id];
     checks.push({ check: 'run_manifest_exists', ok: !!manifest, run_id: t.run_id });
 
@@ -94,7 +104,7 @@ function main() {
         : 'The hash was not found in that run manifest. Treat this trade as unverified.',
     });
 
-    const instrumentPresent = !!instrumentsById[t.instrument_id ?? `kalshi:${t.ticker}`] || !!instrumentsById[t.instrument_id];
+    const instrumentPresent = !!instrumentsById[t.instrument_id ?? `kalshi:${t.ticker}`];
     checks.push({
       check: 'instrument_listed_with_its_own_provenance',
       ok: instrumentPresent,
@@ -123,6 +133,18 @@ function main() {
         order_type: t.fill?.order_type ?? 'taker',
         note: 'Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).',
       });
+    }
+
+    // Fill arithmetic: the recorded VWAP and level total must be internally consistent with the
+    // per-level detail the ledger stores, so a fill can be re-derived from the ledger alone.
+    if (Array.isArray(t.fill?.levels) && t.fill.levels.length) {
+      const levelContracts = t.fill.levels.reduce((sum, l) => sum + (Number(l.contracts) || 0), 0);
+      const levelNotional = t.fill.levels.reduce((sum, l) => sum + (Number(l.contracts) || 0) * (Number(l.price) || 0), 0);
+      const levelVwap = levelContracts ? levelNotional / levelContracts : null;
+      const contractsOk = Math.abs(levelContracts - (Number(t.fill.filled ?? t.contracts) || 0)) < 0.51;
+      const vwapOk = levelVwap != null && t.fill.vwap_price != null && Math.abs(levelVwap - t.fill.vwap_price) < 1e-6;
+      checks.push({ check: 'fill_levels_sum_to_filled_contracts', ok: contractsOk, level_contracts: levelContracts, recorded: t.fill.filled ?? t.contracts });
+      checks.push({ check: 'fill_vwap_matches_levels', ok: vwapOk, recomputed: levelVwap, recorded: t.fill.vwap_price });
     }
 
     // Settlement fee must be zero (official: no settlement fee).

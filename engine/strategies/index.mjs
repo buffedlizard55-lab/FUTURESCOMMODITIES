@@ -520,7 +520,8 @@ export const STRATEGIES = [
     decide(ctx) {
       const orders = [];
       const notes = [];
-      for (const inst of ctx.listInstruments({ venue: 'moex_forts' })) {
+      const groups = ['Precious Metals', 'Industrial Metals'];
+      for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups })) {
         if (!inst.pnl_currency_ready || !(inst.usd_per_price_unit > 0)) {
           notes.push({ instrument_id: inst.instrument_id, skipped: 'USD valuation unavailable this snapshot', valuation_note: inst.valuation_note ?? null });
           continue;
@@ -588,8 +589,9 @@ export const STRATEGIES = [
       const orders = [];
       const notes = [];
       const byAsset = new Map();
-      for (const inst of ctx.listInstruments({ venue: 'moex_forts' })) {
-        if (!inst.pnl_currency_ready) continue;
+      const groups = ['Precious Metals', 'Industrial Metals', 'Soft Commodities', 'Grains & Oilseeds'];
+      for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups })) {
+        if (!inst.pnl_currency_ready || !(inst.usd_per_price_unit > 0)) continue;
         const list = byAsset.get(inst.asset_code) ?? [];
         list.push(inst);
         byAsset.set(inst.asset_code, list);
