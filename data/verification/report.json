@@ -1,0 +1,262 @@
+{
+  "anomalies": [],
+  "anomaly_count": 0,
+  "coverage": {
+    "instruments": 74,
+    "instruments_by_venue": {
+      "kalshi": 45,
+      "kalshi_margin": 4,
+      "moex_forts": 25
+    },
+    "intents": 0,
+    "season": {
+      "ends_at": "2027-09-22T00:00:00Z",
+      "season_id": "season-2026-09-22_to_2027-09-22",
+      "starting_cash_usd": 100000,
+      "starts_at": "2026-09-22T00:00:00Z"
+    },
+    "strategies": 12,
+    "tiers": {
+      "modelled_maker_fills": 0,
+      "quote_based_fills": 5,
+      "taker_fills_from_published_ladders": 0
+    },
+    "trades": 5,
+    "trades_by_strategy": {
+      "cross-venue-basis": 2,
+      "moex-agri-trend": 3
+    },
+    "trades_by_venue": {
+      "kalshi_margin": 1,
+      "moex_forts": 4
+    },
+    "unclassified_series": 1
+  },
+  "fully_verified": 5,
+  "generated_at": "2026-09-22T19:21:22.772Z",
+  "methodology": [
+    "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
+    "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula, and its instrument is still published with its own provenance.",
+    "Simulated maker fills are counted separately and are never presented as observed executions.",
+    "Anomalies are reported, never silently corrected."
+  ],
+  "results": [
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCX6.json?iss.meta=off"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "3f36b09da59158f57d1d4c045db658d01af7cba31a6aa98950f5141e4c622598"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 90,
+          "ok": true,
+          "recomputed_vwap": 468.6,
+          "recorded_contracts": 90,
+          "recorded_vwap": 468.6
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-09-22T19-20-25-288Z",
+      "strategy_id": "moex-agri-trend",
+      "ticker": "CCX6",
+      "trade_id": "4087b16b9e425ed7b3bc"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "5d17a6be4b8dc4394403f13d76474f655c5ed036611e53cd62566a85f7d201b6"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 86,
+          "ok": true,
+          "recomputed_vwap": 487.3,
+          "recorded_contracts": 86,
+          "recorded_vwap": 487.3
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-09-22T19-20-25-288Z",
+      "strategy_id": "moex-agri-trend",
+      "ticker": "CCG7",
+      "trade_id": "e99a4a01bb945b065444"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/KCX6.json?iss.meta=off"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "f309932e9901f229945ac356c2e601256bf719851a97102aafdaf41f88b6151c"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 181,
+          "ok": true,
+          "recomputed_vwap": 2.78,
+          "recorded_contracts": 181,
+          "recorded_vwap": 2.78
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-09-22T19-20-25-288Z",
+      "strategy_id": "moex-agri-trend",
+      "ticker": "KCX6",
+      "trade_id": "38c8e7d1f9c5485150a5"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "34a8dcae48687dc251c321c2b1830e30cf36a9473dd86cfb68f6e8fd3572f32e"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 5,
+          "ok": true,
+          "recomputed_vwap": 6.702499999999999,
+          "recorded_contracts": 5,
+          "recorded_vwap": 6.7025
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-09-22T19-20-25-288Z",
+      "strategy_id": "cross-venue-basis",
+      "ticker": "KXSILVERPERP",
+      "trade_id": "26a2f35b9b1f1a6ffd5d"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SVZ6.json?iss.meta=off"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "b2c53629a8175011e2a8cbe65b6d338d9927937338b68e7236419a6b9e017780"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 5,
+          "ok": true,
+          "recomputed_vwap": 68.21,
+          "recorded_contracts": 5,
+          "recorded_vwap": 68.21
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-09-22T19-20-25-288Z",
+      "strategy_id": "cross-venue-basis",
+      "ticker": "SVZ6",
+      "trade_id": "42662cc420ae839b3d48"
+    }
+  ],
+  "trades_checked": 5,
+  "with_anomalies": 0
+}

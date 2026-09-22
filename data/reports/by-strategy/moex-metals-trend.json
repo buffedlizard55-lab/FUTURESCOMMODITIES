@@ -1,0 +1,45 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "display_name": "Metals Trend",
+  "entries": 0,
+  "equity_usd": 100000,
+  "exits": 0,
+  "fees_paid_usd": 0,
+  "market_type": "Exchange-listed commodity future",
+  "open_positions": 0,
+  "origin": {
+    "claim": "Cross-sectional momentum in metals futures is a long-documented effect; this strategy simply buys the strongest and shorts the weakest contract it can actually price.",
+    "kind": "market_structure",
+    "status": "hypothesis under test with a verified, free official data feed"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": 0,
+  "rules": {
+    "entry": "20-observation settlement momentum, long the top mover and short the bottom mover on each side when |momentum| >= 1%.",
+    "exit": "Exit when the momentum flips sign.",
+    "sizing": "Target notional, capped by published volume and open interest."
+  },
+  "slippage_paid_usd": 0,
+  "strategy_id": "moex-metals-trend",
+  "thesis": "Rank the MOEX metal futures by their official settlement momentum over the cached history window and take the extremes, long the strongest and short the weakest. Trades only when the exchange publishes both a live quote and USD valuation inputs.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": 0,
+  "username": "@metal-trend",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Exchange-listed commodity future markets every tick."
+  ]
+}

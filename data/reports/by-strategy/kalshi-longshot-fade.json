@@ -1,0 +1,45 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "display_name": "Longshot Fade",
+  "entries": 0,
+  "equity_usd": 100000,
+  "exits": 0,
+  "fees_paid_usd": 0,
+  "market_type": "Kalshi event contract",
+  "open_positions": 0,
+  "origin": {
+    "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
+    "kind": "documented_anomaly",
+    "status": "hypothesis under test - the competition is the test"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": 0,
+  "rules": {
+    "entry": "YES mid <= 0.10, spread <= 3 cents, at least 2 hours to close, top-3 liquidity strikes only.",
+    "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
+    "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
+  },
+  "slippage_paid_usd": 0,
+  "strategy_id": "kalshi-longshot-fade",
+  "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": 0,
+  "username": "@fade-the-crowd",
+  "venues": [
+    "kalshi"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick."
+  ]
+}
