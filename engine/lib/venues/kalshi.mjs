@@ -24,7 +24,7 @@ export const KALSHI_DOCS = 'https://docs.kalshi.com/';
 export const KALSHI_TERMS = 'https://kalshi.com/terms';
 
 export class KalshiClient {
-  constructor({ host = KALSHI_HOSTS[0], maxRequests = 400, spacingMs = 120, notes = [] } = {}) {
+  constructor({ host = KALSHI_HOSTS[0], maxRequests = 400, spacingMs = 220, notes = [] } = {}) {
     this.host = host;
     this.maxRequests = maxRequests;
     this.spacingMs = spacingMs;
@@ -45,6 +45,15 @@ export class KalshiClient {
 
     const url = `${this.host}${path}`;
     let res = await get(url, { note, expect });
+    // The public API documents rate limiting. When it answers 429, wait and retry once rather
+    // than treating the market as unavailable - but never invent a value.
+    if (res.provenance?.http_status === 429) {
+      const retryAfter = Number(res.provenance?.retry_after ?? 0);
+      const waitMs = Math.max(1000, Number.isFinite(retryAfter) ? retryAfter * 1000 : 0);
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+      res = await get(url, { note: `${note ?? path} (retry after 429)`, expect });
+      if (res.ok) this.notes.push({ endpoint: url, ok: true, http_status: res.provenance.http_status, note: 'succeeded on retry after 429' });
+    }
     if (!res.ok && allowFallback && this.host !== KALSHI_HOSTS[1] && (res.status === null || res.status >= 500)) {
       const fallbackHost = KALSHI_HOSTS[1];
       const fallbackUrl = `${fallbackHost}${path}`;

@@ -93,32 +93,43 @@ async function main() {
 
     const seriesList = await kalshi.seriesByCategory(watchlist.kalshi?.category ?? 'Commodities');
     if (!seriesList.ok) degraded.push({ venue: 'kalshi', step: 'series', error: 'series listing failed' });
-    series = (seriesList.series ?? []).slice(0, watchlist.kalshi?.max_series ?? 60);
+    const allSeries = seriesList.series ?? [];
+    const rules = watchlist.kalshi?.classification_rules ?? [];
+    // Classify first, then keep the matched series: slicing before classification would drop
+    // commodities that happen to sit later in the exchange's listing order.
+    const matchedSeries = allSeries.filter((series) =>
+      rules.some((rule) => new RegExp(rule.pattern, 'i').test(`${series.ticker ?? series.series_ticker} ${series.title ?? ''}`)),
+    );
+    series = matchedSeries;
     for (const s of series) {
       s.__source_url = `${kalshi.host}/series?category=${encodeURIComponent(watchlist.kalshi?.category ?? 'Commodities')}`;
     }
-    console.log(`   kalshi series fetched: ${series.length}`);
+    console.log(`   kalshi series fetched: ${allSeries.length} total, ${series.length} commodity series matched`);
 
-    const selectedSeries = series.filter((s) => {
-      const ticker = s.ticker ?? s.series_ticker;
-      const rules = watchlist.kalshi?.classification_rules ?? [];
-      const haystack = `${ticker} ${s.title ?? ''}`;
-      return rules.some((r) => new RegExp(r.pattern, 'i').test(haystack));
+    // One paginated sweep of open markets instead of one request per series: the market records
+    // carry their series ticker, so no per-series call is needed.
+    const openMarkets = await kalshi.markets({
+      status: 'open',
+      limit: 200,
+      maxPages: watchlist.kalshi?.max_market_pages ?? 8,
     });
-    for (const s of selectedSeries) {
-      const ticker = s.ticker ?? s.series_ticker;
-      const res = await kalshi.markets({ seriesTicker: ticker, status: 'open', limit: 200, maxPages: watchlist.kalshi?.max_pages_per_series ?? 2 });
-      if (!res.ok) {
-        degraded.push({ venue: 'kalshi', step: 'markets', series: ticker, error: describe(res) });
-        continue;
-      }
-      for (const m of res.markets) {
-        m.__source_url = `${kalshi.host}/markets?status=open&series_ticker=${ticker}`;
-        m.__sha256 = res.provenance?.sha256 ?? null;
-      }
-      marketsBySeries[ticker] = res.markets;
+    if (!openMarkets.ok) degraded.push({ venue: 'kalshi', step: 'markets', error: describe(openMarkets) });
+    const matchedTickers = new Set(series.map((s) => s.ticker ?? s.series_ticker));
+    const seriesLookup = new Map(series.map((s) => [s.ticker ?? s.series_ticker, s]));
+    for (const m of openMarkets.markets ?? []) {
+      const seriesTicker = m.series_ticker ?? String(m.ticker ?? '').split('-')[0];
+      if (!matchedTickers.has(seriesTicker)) continue;
+      m.__source_url = `${kalshi.host}/markets?status=open`;
+      m.__sha256 = openMarkets.provenance?.sha256 ?? null;
+      m.__series_ticker = seriesTicker;
+      marketsBySeries[seriesTicker] = marketsBySeries[seriesTicker] ?? [];
+      marketsBySeries[seriesTicker].push(m);
     }
+    console.log(`   kalshi open markets scanned: ${(openMarkets.markets ?? []).length}, kept: ${Object.values(marketsBySeries).reduce((n, list) => n + list.length, 0)}`);
 
+    for (const list of Object.values(marketsBySeries)) {
+      for (const m of list) m.series_ticker = m.series_ticker ?? m.__series_ticker;
+    }
     const built = buildKalshiInstruments({
       series,
       marketsBySeries,
@@ -192,10 +203,21 @@ async function main() {
       const klass = classifyMoexContract(row);
       if (klass) classified.push({ row, klass });
     }
-    const limited = classified
-      .sort((a, b) => String(a.row.LASTTRADEDATE ?? '').localeCompare(String(b.row.LASTTRADEDATE ?? '')))
-      .slice(0, watchlist.moex?.max_contracts ?? 30);
-    console.log(`   moex commodity contracts discovered: ${classified.length}, tracking ${limited.length}`);
+    // Diversify: the nearest two expiries of every commodity the exchange lists, so one busy
+    // contract cannot crowd the universe out of the request budget.
+    const byAsset = new Map();
+    for (const item of classified) {
+      const key = item.klass.asset_code;
+      if (!byAsset.has(key)) byAsset.set(key, []);
+      byAsset.get(key).push(item);
+    }
+    const limited = [];
+    for (const [, items] of byAsset) {
+      items.sort((a, b) => String(a.row.LASTTRADEDATE ?? '').localeCompare(String(b.row.LASTTRADEDATE ?? '')));
+      limited.push(...items.slice(0, 2));
+    }
+    limited.splice(watchlist.moex?.max_contracts ?? 30);
+    console.log(`   moex commodity contracts discovered: ${classified.length} across ${byAsset.size} commodities, tracking ${limited.length}`);
 
     const usdRub = await fetchUsdRub();
     if (usdRub.ok) {
@@ -428,7 +450,7 @@ async function main() {
   const activity = [];
 
   // 5a. Resting maker orders are resolved first (they can only fill when the market trades through).
-  const makerFills = processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTrades, intents });
+  const makerFills = processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTrades, intents, competition });
   if (makerFills.length) activity.push({ step: 'working_orders', fills: makerFills });
 
   // 5b. Exits, then entries.
@@ -546,7 +568,7 @@ async function main() {
 
     for (const ord of ctx.orders) {
       if (ord.order_type === 'maker') {
-        const registered = registerWorkingOrder({ ord, instrumentById, quotes, workingOrders, intents, runId });
+        const registered = registerWorkingOrder({ ord, instrumentById, quotes, workingOrders, intents, runId, competition });
         if (!registered) continue;
         continue;
       }
@@ -910,7 +932,7 @@ function executeQuoteOrder({ ord, inst, quote, portfolio, runId, newTrades, inte
 /* working orders                                                     */
 /* ------------------------------------------------------------------ */
 
-function registerWorkingOrder({ ord, instrumentById, quotes, workingOrders, intents, runId }) {
+function registerWorkingOrder({ ord, instrumentById, quotes, workingOrders, intents, runId, competition }) {
   const inst = instrumentById[ord.instrument_id];
   const quote = quotes[ord.instrument_id];
   if (!inst || !quote) {
@@ -966,7 +988,7 @@ function registerWorkingOrder({ ord, instrumentById, quotes, workingOrders, inte
   return entry;
 }
 
-function processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTrades, intents }) {
+function processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTrades, intents, competition }) {
   const fills = [];
   for (const wo of workingOrders.orders) {
     if (wo.status !== 'resting') continue;
@@ -985,7 +1007,7 @@ function processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTr
     }
     if (wo.expires_at && new Date(wo.expires_at).getTime() <= Date.now()) {
       wo.status = 'expired';
-      wo.expired_reason = `resting TTL of ${ctxBase.competition.maker_order_ttl_hours ?? 6}h elapsed without the market trading through the resting price`;
+      wo.expired_reason = `resting TTL of ${competition.maker_order_ttl_hours ?? 6}h elapsed without the market trading through the resting price`;
       continue;
     }
     const opposingBest = wo.outcome === 'yes' ? quote.best_yes_ask : quote.best_no_ask;

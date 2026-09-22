@@ -18,7 +18,12 @@ jobs:
           set +e
           mkdir -p data
           {
-            echo "=== $(date -u +%FT%TZ) tick"
+            echo "=== $(date -u +%FT%TZ) egress probe"
+            curl -sS -o /tmp/fred.csv -w "fred http=%{http_code} bytes=%{size_download}\n" --max-time 20 "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"
+            head -2 /tmp/fred.csv
+            echo "--- eia bulk"
+            curl -sS -o /tmp/pet.zip -w "eia_bulk http=%{http_code} bytes=%{size_download}\n" --max-time 25 "https://api.eia.gov/bulk/PET.zip"
+            echo "=== tick"
             node engine/tick.mjs --max-requests=400
             echo "tick_exit=$?"
             node engine/verify.mjs

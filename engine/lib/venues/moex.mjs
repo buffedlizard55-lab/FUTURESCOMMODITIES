@@ -50,7 +50,17 @@ export async function fetchFortsSecurities({ assetCodes = null, limit = 100 } = 
     if (page_rows.length < limit) break;
     start += limit;
   }
-  return { ok: true, rows, provenance };
+  // The FORTS listing contains several rows per contract (one per board) and rows for options
+  // and other instrument types. Only RFUD futures rows are kept, de-duplicated by SECID, so the
+  // universe cannot contain the same contract twice or a non-futures instrument.
+  const futures = rows.filter((r) => (r.SECTYPE ? r.SECTYPE === 'RFUD' : true));
+  const bySecid = new Map();
+  for (const row of futures) {
+    const existing = bySecid.get(row.SECID);
+    if (!existing) bySecid.set(row.SECID, row);
+    else if (row.BOARDID === 'RFUD' && existing.BOARDID !== 'RFUD') bySecid.set(row.SECID, row);
+  }
+  return { ok: true, rows: [...bySecid.values()], provenance, duplicates_removed: rows.length - bySecid.size };
 }
 
 /** Current quote + reference data for one contract. */
@@ -121,11 +131,12 @@ export const MOEX_COMMODITY_ASSETS = [
 export function classifyMoexContract(row) {
   const assetCode = row.ASSETCODE ?? null;
   const name = String(row.SHORTNAME ?? '').toLowerCase();
-  const secid = String(row.SECID ?? '');
   if (!assetCode) return null;
   const entry = MOEX_COMMODITY_ASSETS.find((a) => a.asset_code === assetCode);
   if (!entry) return null;
-  const nameMatches = entry.keywords.some((k) => name.includes(k)) || secid.toLowerCase().startsWith(entry.asset_code.toLowerCase().slice(0, 2));
+  // The contract name must agree with the asset code. The exchange's own naming is the second
+  // check that prevents a mis-mapped asset code from entering the universe.
+  const nameMatches = entry.keywords.some((k) => name.includes(k));
   if (!nameMatches) return null;
   return entry;
 }
