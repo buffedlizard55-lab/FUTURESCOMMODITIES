@@ -1,0 +1,48 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "disabled_reason": "Unavailable: comparing the Kalshi perpetual price with the MOEX future price requires the underlying quantity per contract on both venues. Kalshi publishes contract_size in its payload; the MOEX machine-readable payload does not, so the legs cannot be normalised without assuming a contract size. The strategy therefore places no orders until that figure is verified from an official MOEX source.",
+  "display_name": "Cross-Venue Basis",
+  "enabled": false,
+  "entries": 0,
+  "equity_usd": 100000,
+  "exits": 0,
+  "fees_paid_usd": 0,
+  "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
+  "open_positions": 0,
+  "origin": {
+    "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge.",
+    "kind": "market_structure",
+    "status": "structural - two real legs on two real venues"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": 0,
+  "rules": {
+    "entry": "Basis >= 0.5% between the perpetual mid and the MOEX future mid.",
+    "exit": "Exit when the basis compresses below 0.1%.",
+    "sizing": "Target notional per leg, capped by each venue published liquidity."
+  },
+  "slippage_paid_usd": 0,
+  "strategy_id": "cross-venue-basis",
+  "thesis": "Compare the Kalshi metal perpetual with the front MOEX future on the same metal. When the percentage spread between them is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": 0,
+  "username": "@basis-hunter",
+  "venues": [
+    "kalshi_margin",
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Cross-venue: Kalshi perpetual future vs exchange-listed future markets every tick."
+  ]
+}

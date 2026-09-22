@@ -1,0 +1,47 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "disabled_reason": null,
+  "display_name": "Extreme Reversion",
+  "enabled": true,
+  "entries": 0,
+  "equity_usd": 100000,
+  "exits": 0,
+  "fees_paid_usd": 0,
+  "market_type": "Kalshi event contract",
+  "open_positions": 0,
+  "origin": {
+    "claim": "Single-day price gaps in thin commodity ladders often overshoot and partially retrace, because the gap is driven by order-flow rather than information.",
+    "kind": "market_structure",
+    "status": "hypothesis under test"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": 0,
+  "rules": {
+    "entry": "Last completed daily candle change >= 4 standard deviations of the series history, trade the opposite direction.",
+    "exit": "Exit when the mid returns to within half the gap, or when the market closes.",
+    "sizing": "Target notional, capped by verified depth."
+  },
+  "slippage_paid_usd": 0,
+  "strategy_id": "kalshi-extreme-reversion",
+  "thesis": "When a series candle history shows a move of more than four standard deviations of its own daily changes, take the opposite side of that move in the front ladder. Measured entirely from Kalshi's own official candle payload.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": 0,
+  "username": "@vol-crusher",
+  "venues": [
+    "kalshi"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick."
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {
+      "Copper": {
+        "fees_usd": 0.7696,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 160,
+        "trades": 1
+      },
+      "Gold": {
+        "fees_usd": 0.57932,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.05,
+        "trades": 1
+      },
+      "Zinc": {
+        "fees_usd": 0.5687,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 121,
+        "trades": 1
+      }
+    },
+    "closed_trades": 0,
+    "open_position_marks": [
+      {
+        "contracts": 40,
+        "entry_price": 14872,
+        "instrument_id": "moex:CEZ6",
+        "mark_price": 14864,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CEZ6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "CEZ6",
+        "unrealized_pnl_usd": -3.176394
+      },
+      {
+        "contracts": 1,
+        "entry_price": 4429,
+        "instrument_id": "moex:GDZ6",
+        "mark_price": 4429.1,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "GDZ6",
+        "unrealized_pnl_usd": -0.099263
+      },
+      {
+        "contracts": 11,
+        "entry_price": 3929,
+        "instrument_id": "moex:ZCZ6",
+        "mark_price": 3907,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/ZCZ6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "ZCZ6",
+        "unrealized_pnl_usd": -24.021586
+      }
+    ],
+    "trades_by_venue": {
+      "moex_forts": 3
+    },
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "disabled_reason": null,
+  "display_name": "Metals Trend",
+  "enabled": true,
+  "entries": 3,
+  "equity_usd": 99970.785138,
+  "exits": 0,
+  "fees_paid_usd": 1.91762,
+  "market_type": "Exchange-listed commodity future",
+  "open_positions": 3,
+  "origin": {
+    "claim": "Cross-sectional momentum in metals futures is a long-documented effect; this strategy simply buys the strongest and shorts the weakest contract it can actually price.",
+    "kind": "market_structure",
+    "status": "hypothesis under test with a verified, free official data feed"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": -0.0292,
+  "rules": {
+    "entry": "20-observation settlement momentum, long the top mover and short the bottom mover on each side when |momentum| >= 1%.",
+    "exit": "Exit when the momentum flips sign.",
+    "sizing": "Target notional, capped by published volume and open interest."
+  },
+  "slippage_paid_usd": 281.05,
+  "strategy_id": "moex-metals-trend",
+  "thesis": "Rank the MOEX metal futures by their official settlement momentum over the cached history window and take the extremes, long the strongest and short the weakest. Trades only when the exchange publishes both a live quote and USD valuation inputs.",
+  "traded_market_types": [
+    "Exchange-listed commodity future"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -27.297242,
+  "username": "@metal-trend",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "3 ledger records so far: 3 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 1.92 USD of fees and 281.05 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -27.30 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
+  ]
+}
