@@ -1,0 +1,63 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {
+      "KXGOLDD-26SEP2217-T4365": {
+        "fees_usd": 0.42,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.424985,
+        "trades": 1
+      }
+    },
+    "closed_trades": 0,
+    "open_position_marks": [
+      {
+        "contracts": 55,
+        "entry_price": 0.122727
+      }
+    ],
+    "trades_by_venue": {
+      "kalshi": 1
+    },
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": null,
+  "display_name": "Cheap Momentum",
+  "entries": 1,
+  "equity_usd": 99998.880015,
+  "exits": 0,
+  "fees_paid_usd": 0.42,
+  "market_type": "Kalshi event contract",
+  "open_positions": null,
+  "origin": {
+    "claim": "Cheap YES contracts that are already trending up can keep trending when the underlying commodity is moving, giving convex payoffs; this is the explicit counter-hypothesis to the longshot fade.",
+    "kind": "market_structure",
+    "status": "hypothesis under test"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": -0.0011,
+  "rules": {
+    "entry": "YES mid <= 0.10, 5-day candle momentum > 0, spread <= 3 cents.",
+    "exit": "Exit when 5-day momentum turns negative or the market closes.",
+    "sizing": "Target notional, capped by depth."
+  },
+  "slippage_paid_usd": null,
+  "strategy_id": "kalshi-cheap-momentum",
+  "thesis": "Buy YES at 10 cents or less only when the series own official candle history is trending up. This strategy is deliberately the opposite bet to @fade-the-crowd, so the leaderboard measures which view of cheap contracts is right.",
+  "traded_market_types": [
+    "Kalshi event contract"
+  ],
+  "trades": 1,
+  "unrealized_pnl_usd": -0.699985,
+  "username": "@tail-rider",
+  "venues": [
+    "kalshi"
+  ],
+  "what_it_means": [
+    "1 ledger records so far: 1 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 0.42 USD of fees and 0.42 USD of measured slippage against the mid.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
+  ]
+}

@@ -1,8 +1,8 @@
-=== 2026-09-22T18:53:10Z tick
+=== 2026-09-22T18:55:08Z tick
 file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/tick.mjs:26
 import { get as httpGet, nowIso, provenanceSnapshot } from './lib/http.mjs';
-                         ^^^^^^
-SyntaxError: The requested module './lib/http.mjs' does not provide an export named 'nowIso'
+                                 ^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module './lib/http.mjs' does not provide an export named 'provenanceSnapshot'
     at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
     at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
@@ -10,25 +10,22 @@ SyntaxError: The requested module './lib/http.mjs' does not provide an export na
 
 Node.js v22.23.2
 tick_exit=1
-file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/verify.mjs:18
-import { nowIso } from './lib/http.mjs';
-         ^^^^^^
-SyntaxError: The requested module './lib/http.mjs' does not provide an export named 'nowIso'
-    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
-    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
-
-Node.js v22.23.2
-verify_exit=1
-file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/report.mjs:14
-import { nowIso } from './lib/http.mjs';
-         ^^^^^^
-SyntaxError: The requested module './lib/http.mjs' does not provide an export named 'nowIso'
-    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
-    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
-
-Node.js v22.23.2
-report_exit=1
+verification: 0/26 trades fully verified, 111 anomalies
+  - KXWTI-26NOV03-T72.99: mandatory_fields_present
+  - KXWTI-26NOV03-T72.99: payload_hash_present_in_that_runs_provenance_log
+  - KXWTI-26NOV03-T72.99: fill_levels_reproduce_contracts_and_vwap
+  - KXWTI-26NOV03-T72.99: kalshi_fee_matches_official_formula
+  - KXWTI-26NOV03-T72.99: instrument_present_in_published_universe
+  - KXWTI-26NOV03-T76.99: mandatory_fields_present
+  - KXWTI-26NOV03-T76.99: payload_hash_present_in_that_runs_provenance_log
+  - KXWTI-26NOV03-T76.99: fill_levels_reproduce_contracts_and_vwap
+  - KXWTI-26NOV03-T76.99: kalshi_fee_matches_official_formula
+  - KXWTI-26NOV03-T76.99: instrument_present_in_published_universe
+  - KXWTI-26NOV03-T79.99: mandatory_fields_present
+  - KXWTI-26NOV03-T79.99: payload_hash_present_in_that_runs_provenance_log
+  - KXWTI-26NOV03-T79.99: fill_levels_reproduce_contracts_and_vwap
+  - KXWTI-26NOV03-T79.99: kalshi_fee_matches_official_formula
+  - KXWTI-26NOV03-T79.99: instrument_present_in_published_universe
+verify_exit=0
+report: 12 strategies analysed, 26 trades
+report_exit=0

@@ -1,0 +1,163 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {
+      "ANZ6": {
+        "fees_usd": 1.516165,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "CEZ6": {
+        "fees_usd": 3.25156,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "GDH7": {
+        "fees_usd": 2.93437,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "GDZ6": {
+        "fees_usd": 2.8966,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "LTH7": {
+        "fees_usd": 0.024433,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "LTZ6": {
+        "fees_usd": 2.036685,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "NCZ6": {
+        "fees_usd": 0.10682,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "PTH7": {
+        "fees_usd": 0.24339,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "PTZ6": {
+        "fees_usd": 3.107299,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "SVH7": {
+        "fees_usd": 1.80122,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      },
+      "SVZ6": {
+        "fees_usd": 3.178476,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0,
+        "trades": 1
+      }
+    },
+    "closed_trades": 0,
+    "open_position_marks": [
+      {
+        "contracts": 35,
+        "entry_price": 3318
+      },
+      {
+        "contracts": 169,
+        "entry_price": 14859
+      },
+      {
+        "contracts": 5,
+        "entry_price": 4485.1
+      },
+      {
+        "contracts": 5,
+        "entry_price": 4427.6
+      },
+      {
+        "contracts": 1,
+        "entry_price": 1886.3
+      },
+      {
+        "contracts": 85,
+        "entry_price": 1852.8
+      },
+      {
+        "contracts": 5,
+        "entry_price": 16485
+      },
+      {
+        "contracts": 1,
+        "entry_price": 1886.2
+      },
+      {
+        "contracts": 13,
+        "entry_price": 1853.3
+      },
+      {
+        "contracts": 20,
+        "entry_price": 69.59
+      },
+      {
+        "contracts": 36,
+        "entry_price": 68.2
+      }
+    ],
+    "trades_by_venue": {
+      "moex_forts": 11
+    },
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": null,
+  "display_name": "Metals Trend",
+  "entries": 11,
+  "equity_usd": 99929.473971,
+  "exits": 0,
+  "fees_paid_usd": 0,
+  "market_type": "Exchange-listed commodity future",
+  "open_positions": null,
+  "origin": {
+    "claim": "Cross-sectional momentum in metals futures is a long-documented effect; this strategy simply buys the strongest and shorts the weakest contract it can actually price.",
+    "kind": "market_structure",
+    "status": "hypothesis under test with a verified, free official data feed"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": -0.0705,
+  "rules": {
+    "entry": "20-observation settlement momentum, long the top mover and short the bottom mover on each side when |momentum| >= 1%.",
+    "exit": "Exit when the momentum flips sign.",
+    "sizing": "Target notional, capped by published volume and open interest."
+  },
+  "slippage_paid_usd": null,
+  "strategy_id": "moex-metals-trend",
+  "thesis": "Rank the MOEX metal futures by their official settlement momentum over the cached history window and take the extremes, long the strongest and short the weakest. Trades only when the exchange publishes both a live quote and USD valuation inputs.",
+  "traded_market_types": [
+    "Exchange-listed commodity future"
+  ],
+  "trades": 11,
+  "unrealized_pnl_usd": -70.526028,
+  "username": "@metal-trend",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "11 ledger records so far: 11 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 21.10 USD of fees and 0.00 USD of measured slippage against the mid.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
+  ]
+}
