@@ -13,32 +13,39 @@ jobs:
       - name: probe official endpoints
         run: |
           mkdir -p probe
-          OUT=probe/results.txt
+          OUT=probe/results2.txt
           : > $OUT
           probe () {
             echo "===== $1" >> $OUT
             code=$(curl -s -o /tmp/o -w "%{http_code}" -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36" -H "Accept: application/json,text/html,*/*" --max-time 25 "$1" || echo ERR)
             echo "HTTP $code bytes=$(wc -c </tmp/o 2>/dev/null || echo 0)" >> $OUT
-            head -c 400 /tmp/o >> $OUT 2>/dev/null || true
+            head -c 350 /tmp/o >> $OUT 2>/dev/null || true
             echo >> $OUT; echo >> $OUT
           }
-          probe "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/425/FUT?tradeDate=09/21/2026"
-          probe "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/CL/FUT"
-          probe "https://www.cmegroup.com/ftp/pub/settle/stlcur"
-          probe "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=3"
-          probe "https://api.elections.kalshi.com/trade-api/v2/markets?series_ticker=KXWTI&status=open&limit=2"
-          probe "https://stooq.com/q/d/l/?s=cl.f&i=d"
-          echo "===== CME CL page grep" >> $OUT
-          curl -s -A "Mozilla/5.0" --max-time 30 "https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html" -o /tmp/cl.html || true
-          echo "bytes=$(wc -c </tmp/cl.html)" >> $OUT
-          grep -o -i -E 'productId[^,]{0,40}' /tmp/cl.html | head -10 >> $OUT || true
-          grep -o -i -E 'data-product-id="[^"]*"' /tmp/cl.html | head -10 >> $OUT || true
-          echo "===== products page grep" >> $OUT
-          curl -s -A "Mozilla/5.0" --max-time 30 "https://www.cmegroup.com/markets/products.html" -o /tmp/p.html || true
-          echo "bytes=$(wc -c </tmp/p.html)" >> $OUT
-          grep -o -i -E 'productId[^,]{0,40}' /tmp/p.html | head -10 >> $OUT || true
+          # --- official futures / commodity exchanges & government sources ---
+          probe "https://arquivos.b3.com.br/apinegocios/tickers"
+          probe "https://www.shfe.com.cn/data/dailydata/kx/kx20260922.dat"
+          probe "http://www.czce.com.cn/cn/DFSStaticFiles/Future/2026/20260922/FutureDataDaily.json"
+          probe "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json?iss.meta=off&iss.only=securities&securities.columns=SECID,SHORTNAME,LASTPRICE"
+          probe "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"
+          probe "https://api.sgx.com/derivatives/v1.0/contracts"
+          probe "https://www.eurex.com/api/v1/derivatives-daily-prices?limit=1"
+          probe "https://www.lme.com/api/prices"
+          probe "https://www.jpx.co.jp/english/markets/statistics-derivatives/futures/01.html"
+          # --- kalshi public data surfaces ---
+          probe "https://api.elections.kalshi.com/trade-api/v2/exchange/schedule"
+          probe "https://api.elections.kalshi.com/trade-api/v2/historical/markets?limit=2"
+          probe "https://api.elections.kalshi.com/trade-api/v2/series/KXWTI"
+          probe "https://api.elections.kalshi.com/trade-api/v2/markets/trades?limit=2"
+          TICK=$(curl -s --max-time 20 "https://api.elections.kalshi.com/trade-api/v2/markets?status=open&limit=1&series_ticker=KXWTI" | python3 -c "import sys,json;print(json.load(sys.stdin)['markets'][0]['ticker'])" 2>/dev/null || echo "")
+          echo "ticker=$TICK" >> $OUT
+          if [ -n "$TICK" ]; then
+            probe "https://api.elections.kalshi.com/trade-api/v2/markets/$TICK/orderbook"
+            probe "https://api.elections.kalshi.com/trade-api/v2/markets/$TICK/candlesticks?start_ts=1789000000&end_ts=1791000000&period_interval=60"
+          fi
+          probe "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=50"
           git config user.name "probe-bot"
           git config user.email "probe@users.noreply.github.com"
-          git add probe/results.txt
-          git commit -m "probe: endpoint results [skip ci]" || true
+          git add probe/results2.txt
+          git commit -m "probe: results2 [skip ci]" || true
           git push || true
