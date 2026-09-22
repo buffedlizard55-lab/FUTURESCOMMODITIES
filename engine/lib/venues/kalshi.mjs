@@ -76,22 +76,25 @@ export class KalshiClient {
   async seriesByCategory(category) {
     const out = [];
     let cursor = null;
+    let provenance = null;
     for (let page = 0; page < 20; page += 1) {
       const qs = new URLSearchParams({ category, include_product_metadata: 'true' });
       if (cursor) qs.set('cursor', cursor);
       const res = await this.request(`/series?${qs.toString()}`, { note: `Kalshi series list for category ${category}` });
       if (!res.ok || !res.json) return { ok: false, series: out, provenance: res.provenance };
+      provenance = res.provenance;
       out.push(...(res.json.series ?? []));
       cursor = res.json.cursor ?? null;
       if (!cursor) break;
     }
-    return { ok: true, series: out };
+    return { ok: true, series: out, provenance };
   }
 
   /** Open markets for a series (markets endpoint supports series_ticker + cursor). */
   async markets({ seriesTicker = null, status = 'open', tickers = null, limit = 200, maxPages = 5 } = {}) {
     const out = [];
     let cursor = null;
+    let provenance = null;
     for (let page = 0; page < maxPages; page += 1) {
       const qs = new URLSearchParams({ limit: String(limit) });
       if (status) qs.set('status', status);
@@ -100,11 +103,12 @@ export class KalshiClient {
       if (cursor) qs.set('cursor', cursor);
       const res = await this.request(`/markets?${qs.toString()}`, { note: `Kalshi markets (series=${seriesTicker ?? 'all'}, status=${status})` });
       if (!res.ok || !res.json) return { ok: false, markets: out, provenance: res.provenance };
+      provenance = res.provenance;
       out.push(...(res.json.markets ?? []));
       cursor = res.json.cursor ?? null;
       if (!cursor) break;
     }
-    return { ok: true, markets: out };
+    return { ok: true, markets: out, provenance, pages: Math.min(maxPages, out.length ? 1 : 0) };
   }
 
   async market(ticker) {
@@ -143,16 +147,18 @@ export class KalshiClient {
   async marginMarkets({ limit = 200, maxPages = 3 } = {}) {
     const out = [];
     let cursor = null;
+    let provenance = null;
     for (let page = 0; page < maxPages; page += 1) {
       const qs = new URLSearchParams({ limit: String(limit) });
       if (cursor) qs.set('cursor', cursor);
       const res = await this.request(`/margin/markets?${qs.toString()}`, { note: 'Kalshi perpetual futures market list (/margin namespace)' });
       if (!res.ok || !res.json) return { ok: false, markets: out, provenance: res.provenance };
+      provenance = res.provenance;
       out.push(...(res.json.markets ?? []));
       cursor = res.json.cursor ?? null;
       if (!cursor) break;
     }
-    return { ok: true, markets: out };
+    return { ok: true, markets: out, provenance, pages: Math.min(maxPages, out.length ? 1 : 0) };
   }
 
   async marginMarket(ticker) {

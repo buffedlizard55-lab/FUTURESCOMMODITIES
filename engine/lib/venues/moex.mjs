@@ -34,13 +34,12 @@ function num(value) {
 }
 
 /** All FORTS contracts, optionally filtered by asset code. */
-export async function fetchFortsSecurities({ assetCodes = null, limit = 100 } = {}) {
+export async function fetchFortsSecurities({ limit = 100 } = {}) {
   const rows = [];
   const provenance = [];
   let start = 0;
   for (let page = 0; page < 12; page += 1) {
     const qs = new URLSearchParams({ 'iss.meta': 'off', 'iss.only': 'securities', limit: String(limit), start: String(start) });
-    if (assetCodes?.length) qs.set('assetcode', assetCodes.join(','));
     const url = `${MOEX_ISS}/engines/futures/markets/forts/securities.json?${qs.toString()}`;
     const res = await get(url, { note: 'MOEX ISS FORTS contract list (official exchange listing)', expect: 'json' });
     if (!res.ok || !res.json) return { ok: false, rows, provenance: [...provenance, res.provenance] };
@@ -53,14 +52,24 @@ export async function fetchFortsSecurities({ assetCodes = null, limit = 100 } = 
   // The FORTS listing contains several rows per contract (one per board) and rows for options
   // and other instrument types. Only RFUD futures rows are kept, de-duplicated by SECID, so the
   // universe cannot contain the same contract twice or a non-futures instrument.
-  const futures = rows.filter((r) => (r.SECTYPE ? r.SECTYPE === 'RFUD' : true));
+  const futures = rows.filter((r) => {
+    const type = String(r.SECTYPE ?? '').toUpperCase();
+    const board = String(r.BOARDID ?? '').toUpperCase();
+    if (type) return ['RFUD', 'FU', 'FUTURES'].includes(type) || board === 'RFUD';
+    return board === 'RFUD';
+  });
   const bySecid = new Map();
   for (const row of futures) {
     const existing = bySecid.get(row.SECID);
     if (!existing) bySecid.set(row.SECID, row);
     else if (row.BOARDID === 'RFUD' && existing.BOARDID !== 'RFUD') bySecid.set(row.SECID, row);
   }
-  return { ok: true, rows: [...bySecid.values()], provenance, duplicates_removed: rows.length - bySecid.size };
+  const instrumentTypes = {};
+  for (const row of rows) {
+    const key = `${row.SECTYPE ?? 'none'}/${row.BOARDID ?? 'none'}`;
+    instrumentTypes[key] = (instrumentTypes[key] ?? 0) + 1;
+  }
+  return { ok: true, rows: [...bySecid.values()], provenance, duplicates_removed: rows.length - bySecid.size, instrument_types: instrumentTypes };
 }
 
 /** Current quote + reference data for one contract. */

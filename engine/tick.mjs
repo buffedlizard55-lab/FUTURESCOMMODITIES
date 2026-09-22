@@ -106,30 +106,24 @@ async function main() {
     }
     console.log(`   kalshi series fetched: ${allSeries.length} total, ${series.length} commodity series matched`);
 
-    // One paginated sweep of open markets instead of one request per series: the market records
-    // carry their series ticker, so no per-series call is needed.
-    const openMarkets = await kalshi.markets({
-      status: 'open',
-      limit: 200,
-      maxPages: watchlist.kalshi?.max_market_pages ?? 8,
-    });
-    if (!openMarkets.ok) degraded.push({ venue: 'kalshi', step: 'markets', error: describe(openMarkets) });
-    const matchedTickers = new Set(series.map((s) => s.ticker ?? s.series_ticker));
-    const seriesLookup = new Map(series.map((s) => [s.ticker ?? s.series_ticker, s]));
-    for (const m of openMarkets.markets ?? []) {
-      const seriesTicker = m.series_ticker ?? String(m.ticker ?? '').split('-')[0];
-      if (!matchedTickers.has(seriesTicker)) continue;
-      m.__source_url = `${kalshi.host}/markets?status=open`;
-      m.__sha256 = openMarkets.provenance?.sha256 ?? null;
-      m.__series_ticker = seriesTicker;
-      marketsBySeries[seriesTicker] = marketsBySeries[seriesTicker] ?? [];
-      marketsBySeries[seriesTicker].push(m);
+    // Open markets are pulled per matched series: a global sweep would spend the whole request
+    // budget on the exchange's non-commodity markets before reaching these.
+    for (const s of series) {
+      const ticker = s.ticker ?? s.series_ticker;
+      const res = await kalshi.markets({ seriesTicker: ticker, status: 'open', limit: 100, maxPages: 1 });
+      if (!res.ok) {
+        degraded.push({ venue: 'kalshi', step: 'markets', series: ticker, error: describe(res) });
+        continue;
+      }
+      for (const m of res.markets) {
+        m.__source_url = `${kalshi.host}/markets?status=open&series_ticker=${ticker}`;
+        m.__sha256 = res.provenance?.sha256 ?? null;
+        m.series_ticker = m.series_ticker ?? ticker;
+      }
+      marketsBySeries[ticker] = res.markets;
     }
-    console.log(`   kalshi open markets scanned: ${(openMarkets.markets ?? []).length}, kept: ${Object.values(marketsBySeries).reduce((n, list) => n + list.length, 0)}`);
+    console.log(`   kalshi open markets kept: ${Object.values(marketsBySeries).reduce((n, list) => n + list.length, 0)} across ${Object.keys(marketsBySeries).length} series`);
 
-    for (const list of Object.values(marketsBySeries)) {
-      for (const m of list) m.series_ticker = m.series_ticker ?? m.__series_ticker;
-    }
     const built = buildKalshiInstruments({
       series,
       marketsBySeries,
@@ -218,6 +212,7 @@ async function main() {
     }
     limited.splice(watchlist.moex?.max_contracts ?? 30);
     console.log(`   moex commodity contracts discovered: ${classified.length} across ${byAsset.size} commodities, tracking ${limited.length}`);
+    notes.push({ moex_listing_instrument_types: listing.instrument_types ?? null, duplicates_removed: listing.duplicates_removed ?? null });
 
     const usdRub = await fetchUsdRub();
     if (usdRub.ok) {
