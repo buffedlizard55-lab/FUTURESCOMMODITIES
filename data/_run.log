@@ -1,31 +1,18 @@
-=== 2026-09-22T18:55:08Z tick
-file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/tick.mjs:26
-import { get as httpGet, nowIso, provenanceSnapshot } from './lib/http.mjs';
-                                 ^^^^^^^^^^^^^^^^^^
-SyntaxError: The requested module './lib/http.mjs' does not provide an export named 'provenanceSnapshot'
-    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
-    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
-    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
-    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
-
-Node.js v22.23.2
+=== 2026-09-22T18:56:59Z tick
+== FUTURESCOMMODITIES tick run-2026-09-22T18-56-59-205Z
+   kalshi series fetched: 60
+   kalshi markets: 694 listed, 45 quoted
+   kalshi perps: 4 tracked
+   moex commodity contracts discovered: 576, tracking 30
+   moex instruments tradable this tick: 18
+   kalshi candle series cached: 30
+   moex history series cached: 2
+tick failed: ReferenceError: competition is not defined
+    at registerWorkingOrder (file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/tick.mjs:935:20)
+    at main (file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/tick.mjs:549:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
 tick_exit=1
-verification: 0/26 trades fully verified, 111 anomalies
-  - KXWTI-26NOV03-T72.99: mandatory_fields_present
-  - KXWTI-26NOV03-T72.99: payload_hash_present_in_that_runs_provenance_log
-  - KXWTI-26NOV03-T72.99: fill_levels_reproduce_contracts_and_vwap
-  - KXWTI-26NOV03-T72.99: kalshi_fee_matches_official_formula
-  - KXWTI-26NOV03-T72.99: instrument_present_in_published_universe
-  - KXWTI-26NOV03-T76.99: mandatory_fields_present
-  - KXWTI-26NOV03-T76.99: payload_hash_present_in_that_runs_provenance_log
-  - KXWTI-26NOV03-T76.99: fill_levels_reproduce_contracts_and_vwap
-  - KXWTI-26NOV03-T76.99: kalshi_fee_matches_official_formula
-  - KXWTI-26NOV03-T76.99: instrument_present_in_published_universe
-  - KXWTI-26NOV03-T79.99: mandatory_fields_present
-  - KXWTI-26NOV03-T79.99: payload_hash_present_in_that_runs_provenance_log
-  - KXWTI-26NOV03-T79.99: fill_levels_reproduce_contracts_and_vwap
-  - KXWTI-26NOV03-T79.99: kalshi_fee_matches_official_formula
-  - KXWTI-26NOV03-T79.99: instrument_present_in_published_universe
+verification: 0/0 trades fully verified, 0 anomalies
 verify_exit=0
-report: 12 strategies analysed, 26 trades
+report: 12 strategies analysed, 0 trades
 report_exit=0

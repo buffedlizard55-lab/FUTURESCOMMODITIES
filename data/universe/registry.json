@@ -1,0 +1,906 @@
+{
+  "exchanges": {
+    "b3": {
+      "automated_access": "endpoint_unresolved",
+      "automated_access_evidence": "https://arquivos.b3.com.br/apinegocios/ticker/DI1 returned HTTP 404 (verified 2026-09-22).",
+      "name": "B3 (Brasil, Bolsa, Balcão)",
+      "products_page": "https://www.b3.com.br/en_us/market-data-and-indices/"
+    },
+    "cme": {
+      "automated_access": "blocked",
+      "automated_access_evidence": "Automated requests from GitHub Actions receive HTTP 403: 'This IP address is blocked due to suspected web scraping activity... Use of scripts, software, spiders, robots, avatars, agents, tools or other scraping mechanisms is strictly prohibited by CME Group's website Data Terms of Use.' (verified 2026-09-22)",
+      "data_terms": "https://www.cmegroup.com/trading/market-data-explanation-disclaimer.html",
+      "name": "CME Group",
+      "note": "Contract specifications below were read from official CME Group product pages. Prices are not automated: a CME-licensed feed is required for that, so no CME market is priced in the simulation.",
+      "products_page": "https://www.cmegroup.com/markets/products.html",
+      "venues": [
+        "CME (Globex)",
+        "CBOT",
+        "NYMEX",
+        "COMEX"
+      ]
+    },
+    "dme": {
+      "automated_access": "unverified",
+      "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed.",
+      "name": "Dubai Mercantile Exchange (DME)",
+      "products_page": "https://www.theice.com/"
+    },
+    "eurex": {
+      "automated_access": "endpoint_unresolved",
+      "automated_access_evidence": "The API-shaped endpoint tried returned HTTP 404 (verified 2026-09-22); no public keyless price interface was confirmed.",
+      "name": "Eurex",
+      "products_page": "https://www.eurex.com/ex-en/markets"
+    },
+    "euronext": {
+      "automated_access": "unverified",
+      "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed.",
+      "name": "Euronext",
+      "products_page": "https://www.euronext.com/en/products/commodities"
+    },
+    "hkex": {
+      "automated_access": "unverified",
+      "automated_access_evidence": "No endpoint was tested in this session; nothing is claimed.",
+      "name": "Hong Kong Exchanges and Clearing",
+      "products_page": "https://www.hkex.com.hk/Products/Listed-Derivatives"
+    },
+    "ice": {
+      "automated_access": "blocked",
+      "automated_access_evidence": "https://www.ice.com/report/10 returned a click-through page stating end-of-day report packages in .csv format are available for purchase on a subscription basis (verified 2026-09-22).",
+      "name": "ICE (Intercontinental Exchange)",
+      "note": "Soft commodities (coffee, cocoa, sugar, cotton, FCOJ) and Brent crude are ICE-listed. No free official price API was found, so these markets are catalogued but not priced.",
+      "report_center": "https://www.ice.com/report-center",
+      "venues": [
+        "ICE Futures U.S.",
+        "ICE Futures Europe",
+        "ICE Futures Canada"
+      ]
+    },
+    "jpx": {
+      "automated_access": "endpoint_unresolved",
+      "automated_access_evidence": "The attempted statistics endpoint returned HTTP 404 (verified 2026-09-22).",
+      "name": "Japan Exchange Group (JPX / TOCOM)",
+      "products_page": "https://www.jpx.co.jp/english/derivatives/"
+    },
+    "lme": {
+      "automated_access": "blocked",
+      "automated_access_evidence": "https://www.lme.com/api/prices returned HTTP 403 with a Cloudflare 'Just a moment...' challenge (verified 2026-09-22).",
+      "name": "London Metal Exchange",
+      "products_page": "https://www.lme.com/en/Metals"
+    },
+    "moex": {
+      "automated_access": "open",
+      "automated_access_evidence": "Keyless ISS endpoints returned HTTP 200 for the contract list (503 contracts), individual contract quotes and daily history (verified 2026-09-22).",
+      "documentation": "https://iss.moex.com/iss/reference/",
+      "name": "Moscow Exchange (MOEX), FORTS derivatives market",
+      "note": "This is the only futures exchange besides Kalshi whose live quotes this project can price trades from. Contracts are discovered live from the exchange listing; the codes below are the ones the exchange actually publishes."
+    },
+    "sgx": {
+      "automated_access": "endpoint_unresolved",
+      "automated_access_evidence": "https://api.sgx.com/derivatives/v1.0/contracts returned HTTP 200 with {\"meta\":{\"code\":\"SGX_4020\",\"message\":\"Invalid or empty kind parameter.\"}} for every parameter combination tried (verified 2026-09-22).",
+      "name": "Singapore Exchange",
+      "products_page": "https://www.sgx.com/derivatives"
+    }
+  },
+  "generated_at": "2026-09-22T18:57:30.661Z",
+  "live_venues": {
+    "eia": {
+      "note": "NYMEX futures series discontinued after 2024-04-05; spot benchmarks verified separately.",
+      "status": "historical_only"
+    },
+    "kalshi_event_contracts": {
+      "instruments": 694,
+      "quoted": 45,
+      "status": "automated"
+    },
+    "kalshi_perps": {
+      "instruments": 4,
+      "quoted": 4,
+      "status": "automated"
+    },
+    "moex_futures": {
+      "instruments": 18,
+      "status": "automated"
+    }
+  },
+  "products": [
+    {
+      "category": "Energy",
+      "code": "CL",
+      "commodity": "WTI Crude Oil",
+      "contract_unit": "1,000 barrels",
+      "exchange": "cme",
+      "id": "cme-cl",
+      "live_in_this_competition": false,
+      "min_tick": "0.01 per barrel",
+      "name": "Crude Oil (Light Sweet) Futures",
+      "price_data": {
+        "note": "CME blocks automated access; the product page shows a delayed quote only.",
+        "status": "licensed_feed_required"
+      },
+      "price_quotation": "U.S. dollars and cents per barrel",
+      "settlement_method": "Deliverable",
+      "spec_status": "verified",
+      "spec_url": "https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.contractSpecs.html",
+      "spec_verified_at": "2026-09-22",
+      "tick_value_usd": 10,
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Energy",
+      "code": "NG",
+      "commodity": "Natural Gas",
+      "contract_unit": "10,000 MMBtu",
+      "exchange": "cme",
+      "id": "cme-ng",
+      "live_in_this_competition": false,
+      "min_tick": "0.001 per MMBtu",
+      "name": "Henry Hub Natural Gas Futures",
+      "price_data": {
+        "note": "CME blocks automated access.",
+        "status": "licensed_feed_required"
+      },
+      "price_quotation": "U.S. dollars and cents per MMBtu",
+      "settlement_method": "Deliverable",
+      "spec_note": "TAS code NGT. Page also showed a delayed front-month quote (NGV26 2.951, volume 135,338) at the time of reading.",
+      "spec_status": "verified",
+      "spec_url": "https://www.cmegroup.com/markets/energy/natural-gas/natural-gas.contractSpecs.html",
+      "spec_verified_at": "2026-09-22",
+      "tick_value_usd": 10,
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Energy",
+      "code": "BZ",
+      "commodity": "Brent Crude Oil",
+      "exchange": "cme",
+      "id": "cme-bz",
+      "live_in_this_competition": false,
+      "name": "Brent Crude Oil Last Day Financial Futures",
+      "price_data": {
+        "note": "Brent also trades on ICE (paid end-of-day reports).",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Energy",
+      "code": "RB",
+      "commodity": "Gasoline (RBOB)",
+      "exchange": "cme",
+      "id": "cme-rb",
+      "live_in_this_competition": false,
+      "name": "RBOB Gasoline Futures",
+      "price_data": {
+        "note": "EIA publishes the RBOB NYMEX futures series EER_EPMRR_PE1..PE4, which stops 2024-04-05.",
+        "status": "historical_only"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Energy",
+      "code": "HO",
+      "commodity": "Diesel / Heating Oil",
+      "exchange": "cme",
+      "id": "cme-ho",
+      "live_in_this_competition": false,
+      "name": "NY Harbor ULSD (Heating Oil / Diesel) Futures",
+      "price_data": {
+        "note": "EIA series EER_EPD2F_PE1..PE4 (No. 2 heating oil) stops 2024-04-05.",
+        "status": "historical_only"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Energy",
+      "code": null,
+      "commodity": "Electricity",
+      "exchange": "cme",
+      "id": "cme-power",
+      "live_in_this_competition": false,
+      "name": "Electricity / power futures (PJM, MISO, ERCOT, CAISO hubs)",
+      "price_data": {
+        "note": "CME lists North American power futures; the specific product pages and codes were not verified in this session, so no code is stated here.",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Precious Metals",
+      "code": "GC",
+      "commodity": "Gold",
+      "contract_unit": "100 troy ounces",
+      "delivery_grade": "Minimum 995 fineness",
+      "exchange": "cme",
+      "id": "cme-gc",
+      "live_in_this_competition": false,
+      "min_tick": "0.10 per troy ounce",
+      "name": "Gold Futures",
+      "price_data": {
+        "note": "CME blocks automated access.",
+        "status": "licensed_feed_required"
+      },
+      "price_quotation": "U.S. dollars and cents per troy ounce",
+      "rulebook": "COMEX 113",
+      "settlement_method": "Deliverable",
+      "spec_note": "TAS code GCT, TAM code GCD. Page also showed a delayed front-month quote (GCV6 last 4359.8, volume 16,518) at the time of reading.",
+      "spec_status": "verified",
+      "spec_url": "https://www.cmegroup.com/markets/metals/precious/gold.contractSpecs.html",
+      "spec_verified_at": "2026-09-22",
+      "termination": "Trading terminates at 12:30 p.m. CT on the third last business day of the contract month.",
+      "tick_value_usd": 10,
+      "venue": "COMEX"
+    },
+    {
+      "category": "Precious Metals",
+      "code": "SI",
+      "commodity": "Silver",
+      "contract_unit": "5,000 troy ounces",
+      "delivery_grade": "Minimum 999 fineness",
+      "exchange": "cme",
+      "id": "cme-si",
+      "live_in_this_competition": false,
+      "min_tick": "0.005 per troy ounce",
+      "name": "Silver Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "price_quotation": "U.S. dollars and cents per troy ounce",
+      "rulebook": "COMEX 112",
+      "settlement_method": "Deliverable",
+      "spec_note": "TAS code SIT; calendar spread tick 0.001 = $5.00. Page also showed a delayed front-month quote (SIZ6 last 67.300, volume 44,312) at the time of reading.",
+      "spec_status": "verified",
+      "spec_url": "https://www.cmegroup.com/markets/metals/precious/silver.contractSpecs.html",
+      "spec_verified_at": "2026-09-22",
+      "termination": "Trading terminates at 12:25 p.m. CT on the third last business day of the contract month.",
+      "tick_value_usd": 25,
+      "venue": "COMEX"
+    },
+    {
+      "category": "Precious Metals",
+      "code": "PL",
+      "commodity": "Platinum",
+      "exchange": "cme",
+      "id": "cme-pl",
+      "live_in_this_competition": false,
+      "name": "Platinum Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/metals/precious/platinum.contractSpecs.html",
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Precious Metals",
+      "code": "PA",
+      "commodity": "Palladium",
+      "exchange": "cme",
+      "id": "cme-pa",
+      "live_in_this_competition": false,
+      "name": "Palladium Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/metals/precious/palladium.contractSpecs.html",
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "HG",
+      "commodity": "Copper",
+      "contract_unit": "25,000 pounds",
+      "exchange": "cme",
+      "id": "cme-hg",
+      "live_in_this_competition": false,
+      "min_tick": "0.0005 per pound",
+      "name": "Copper Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "price_quotation": "U.S. dollars and cents per pound",
+      "settlement_method": "Deliverable",
+      "spec_note": "TAS codes HGT / HG0, TAM code HGF. Page also showed a delayed front-month quote (HGZ6 last 6.8675, volume 36,926) at the time of reading.",
+      "spec_status": "verified",
+      "spec_url": "https://www.cmegroup.com/markets/metals/base/copper.contractSpecs.html",
+      "spec_verified_at": "2026-09-22",
+      "termination": "Trading terminates at 12:00 noon CT on the third last business day of the contract month.",
+      "tick_value_usd": 12.5,
+      "venue": "COMEX"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "ALI",
+      "commodity": "Aluminium",
+      "exchange": "cme",
+      "id": "cme-ali",
+      "live_in_this_competition": false,
+      "name": "Aluminum Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/metals/base/aluminum.contractSpecs.html",
+      "venue": "COMEX"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "ZNC",
+      "commodity": "Zinc",
+      "exchange": "cme",
+      "id": "cme-znc",
+      "live_in_this_competition": false,
+      "name": "Zinc Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/metals/base/zinc.contractSpecs.html",
+      "venue": "COMEX"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "LED",
+      "commodity": "Lead",
+      "exchange": "cme",
+      "id": "cme-led",
+      "live_in_this_competition": false,
+      "name": "Lead Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/metals/base/lead.contractSpecs.html",
+      "venue": "COMEX"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "HR",
+      "commodity": "Steel (HRC)",
+      "exchange": "cme",
+      "id": "cme-hr",
+      "live_in_this_competition": false,
+      "name": "U.S. Midwest Domestic Hot-Rolled Coil Steel (CRU) Index Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/metals/ferrous/hrc-steel.contractSpecs.html",
+      "venue": "COMEX"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "TIO",
+      "commodity": "Iron Ore",
+      "exchange": "cme",
+      "id": "cme-tio",
+      "live_in_this_competition": false,
+      "name": "Iron Ore 62% Fe, CFR China (TSI) Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/metals/ferrous/iron-ore-62pct-fe-cfr-china-tsi-swap-futures.contractSpecs.html",
+      "venue": "COMEX"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "NI",
+      "commodity": "Nickel",
+      "exchange": "lme",
+      "id": "lme-ni",
+      "live_in_this_competition": false,
+      "name": "LME Nickel",
+      "price_data": {
+        "note": "LME blocks automated access (Cloudflare 403). Nickel is priced in this project only via the MOEX nickel future, which is a different, separately-specified contract.",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "LME"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "TF",
+      "commodity": "Iron Ore / Rubber",
+      "exchange": "sgx",
+      "id": "sgx-tf",
+      "live_in_this_competition": false,
+      "name": "SGX FTSE China A50 futures / SGX iron ore (TIO) and rubber contracts",
+      "price_data": {
+        "note": "The SGX derivatives API answered but rejected every parameter combination tried; no SGX market is claimed.",
+        "status": "endpoint_unresolved"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "SGX"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "code": "ZC",
+      "commodity": "Corn",
+      "contract_unit": "5,000 bushels",
+      "delivery_grade": "#2 Yellow at contract price",
+      "exchange": "cme",
+      "id": "cme-zc",
+      "live_in_this_competition": false,
+      "min_tick": "1/4 of one cent (0.0025) per bushel",
+      "name": "Corn Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "price_quotation": "U.S. cents per bushel",
+      "rulebook": "CBOT 10",
+      "settlement_method": "Deliverable",
+      "spec_note": "Globex code ZC, ClearPort/clearing code C, TAS code ZCT.",
+      "spec_status": "verified",
+      "spec_url": "https://www.cmegroup.com/markets/agriculture/grains/corn/specs",
+      "spec_verified_at": "2026-09-22",
+      "termination": "Trading terminates on the business day prior to the 15th day of the contract month.",
+      "tick_value_usd": 12.5,
+      "venue": "CBOT"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+      "code": "ZW",
+      "commodity": "Wheat",
+      "exchange": "cme",
+      "id": "cme-zw",
+      "live_in_this_competition": false,
+      "name": "Chicago SRW Wheat Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "CBOT"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+      "code": "ZO",
+      "commodity": "Oats",
+      "exchange": "cme",
+      "id": "cme-zo",
+      "live_in_this_competition": false,
+      "name": "Oats Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "CBOT"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+      "code": "ZR",
+      "commodity": "Rice",
+      "exchange": "cme",
+      "id": "cme-zr",
+      "live_in_this_competition": false,
+      "name": "Rough Rice Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "CBOT"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+      "code": "ZS",
+      "commodity": "Soybeans",
+      "exchange": "cme",
+      "id": "cme-zs",
+      "live_in_this_competition": false,
+      "name": "Soybean Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "product_id": 320,
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CBOT"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+      "code": "ZL",
+      "commodity": "Soybean Oil",
+      "exchange": "cme",
+      "id": "cme-zl",
+      "live_in_this_competition": false,
+      "name": "Soybean Oil Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "product_id": 312,
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CBOT"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/grain-and-oilseed.html",
+      "code": "ZM",
+      "commodity": "Soybean Meal",
+      "exchange": "cme",
+      "id": "cme-zm",
+      "live_in_this_competition": false,
+      "name": "Soybean Meal Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "CBOT"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "code": "RS",
+      "commodity": "Canola",
+      "exchange": "ice",
+      "id": "ice-canola",
+      "live_in_this_competition": false,
+      "name": "Canola Futures",
+      "price_data": {
+        "note": "ICE end-of-day data is a paid subscription.",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "ICE Futures Canada"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "code": null,
+      "commodity": "Wheat (milling)",
+      "exchange": "euronext",
+      "id": "euronext-milling-wheat",
+      "live_in_this_competition": false,
+      "name": "Milling Wheat Futures",
+      "price_data": {
+        "note": "Euronext lists milling wheat and rapeseed futures; no endpoint was tested, so nothing is claimed.",
+        "status": "unverified"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "Euronext"
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "KC",
+      "commodity": "Coffee",
+      "exchange": "ice",
+      "id": "ice-kc",
+      "live_in_this_competition": false,
+      "name": "Coffee C Futures",
+      "price_data": {
+        "note": "Coffee is also priced in this project through the MOEX coffee future, a separately-specified contract.",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "ICE Futures U.S."
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "CC",
+      "commodity": "Cocoa",
+      "exchange": "ice",
+      "id": "ice-cc",
+      "live_in_this_competition": false,
+      "name": "Cocoa Futures",
+      "price_data": {
+        "note": "Cocoa is also priced through the MOEX cocoa future.",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "ICE Futures U.S."
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "SB",
+      "commodity": "Sugar",
+      "exchange": "ice",
+      "id": "ice-sb",
+      "live_in_this_competition": false,
+      "name": "Sugar No. 11 Futures",
+      "price_data": {
+        "note": "Sugar is also priced through the MOEX sugar future.",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "ICE Futures U.S."
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "CT",
+      "commodity": "Cotton",
+      "exchange": "ice",
+      "id": "ice-ct",
+      "live_in_this_competition": false,
+      "name": "Cotton No. 2 Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "ICE Futures U.S."
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "OJ",
+      "commodity": "Orange Juice",
+      "exchange": "ice",
+      "id": "ice-oj",
+      "live_in_this_competition": false,
+      "name": "FCOJ-A (Orange Juice) Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "ICE Futures U.S."
+    },
+    {
+      "category": "Livestock",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+      "code": "LE",
+      "commodity": "Live Cattle",
+      "exchange": "cme",
+      "id": "cme-le",
+      "live_in_this_competition": false,
+      "name": "Live Cattle Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "product_id": 22,
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Livestock",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+      "code": "GF",
+      "commodity": "Feeder Cattle",
+      "exchange": "cme",
+      "id": "cme-gf",
+      "live_in_this_competition": false,
+      "name": "Feeder Cattle Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "product_id": 34,
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Livestock",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+      "code": "HE",
+      "commodity": "Lean Hogs",
+      "exchange": "cme",
+      "id": "cme-he",
+      "live_in_this_competition": false,
+      "name": "Lean Hogs Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "product_id": 19,
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Livestock",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/livestock.html",
+      "code": null,
+      "commodity": "Pork",
+      "exchange": "cme",
+      "id": "cme-pork-cutout",
+      "live_in_this_competition": false,
+      "name": "Pork Cutout Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "product_id": 8948,
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Dairy",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/dairy.html",
+      "code": "DC",
+      "commodity": "Milk (Class III)",
+      "exchange": "cme",
+      "id": "cme-dc",
+      "live_in_this_competition": false,
+      "name": "Class III Milk Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "product_id": 781,
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Dairy",
+      "category_page": "https://www.cmegroup.com/markets/agriculture/dairy.html",
+      "code": null,
+      "commodity": "Butter / Cheese / Whey",
+      "exchange": "cme",
+      "id": "cme-dairy-pack",
+      "live_in_this_competition": false,
+      "name": "Dairy complex (butter, cheese, nonfat dry milk, dry whey)",
+      "price_data": {
+        "note": "The dairy category page is verified; individual product codes were not read, so none are stated.",
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Lumber & Other",
+      "code": "LBR",
+      "commodity": "Lumber",
+      "exchange": "cme",
+      "id": "cme-lbr",
+      "live_in_this_competition": false,
+      "name": "Random-Length Lumber Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/agriculture/lumber-and-softs/lumber.html",
+      "venue": "CME"
+    },
+    {
+      "category": "Commodity Indexes",
+      "code": null,
+      "commodity": "Agriculture index",
+      "exchange": "cme",
+      "id": "cme-ag-index",
+      "live_in_this_competition": false,
+      "name": "CME Group Agriculture Index Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://www.cmegroup.com/markets/agriculture/agriculture-index",
+      "venue": "CME"
+    },
+    {
+      "category": "Equity Index",
+      "category_page": "https://www.cmegroup.com/markets/equities.html",
+      "code": "ES",
+      "commodity": "Equity index (S&P 500)",
+      "exchange": "cme",
+      "id": "cme-es",
+      "live_in_this_competition": false,
+      "name": "E-mini S&P 500 Futures",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Equity Index",
+      "category_page": "https://www.cmegroup.com/markets/equities.html",
+      "code": null,
+      "commodity": "Equity index",
+      "exchange": "cme",
+      "id": "cme-equity-complex",
+      "live_in_this_competition": false,
+      "name": "Equity index complex (Nasdaq-100, Dow, Russell, international indices, sectors)",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Interest Rates",
+      "category_page": "https://www.cmegroup.com/markets/interest-rates.html",
+      "code": null,
+      "commodity": "Interest rates",
+      "exchange": "cme",
+      "id": "cme-rates-complex",
+      "live_in_this_competition": false,
+      "name": "Interest-rate complex (SOFR, Fed Funds, Treasury futures, T-Bills, ESTR, TIIE, TBA)",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CBOT / CME"
+    },
+    {
+      "category": "FX",
+      "category_page": "https://www.cmegroup.com/markets/fx.html",
+      "code": null,
+      "commodity": "Foreign exchange",
+      "exchange": "cme",
+      "id": "cme-fx-complex",
+      "live_in_this_competition": false,
+      "name": "FX futures complex (EUR, JPY, GBP, AUD, CAD, CHF and micro/mini sizes)",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Crypto",
+      "category_page": "https://www.cmegroup.com/markets/cryptocurrencies.html",
+      "code": null,
+      "commodity": "Crypto",
+      "exchange": "cme",
+      "id": "cme-crypto-complex",
+      "live_in_this_competition": false,
+      "name": "Crypto futures (Bitcoin, Ether and micro sizes)",
+      "price_data": {
+        "status": "licensed_feed_required"
+      },
+      "spec_status": "listed_only",
+      "spec_url": null,
+      "venue": "CME"
+    },
+    {
+      "category": "Carbon & Environmental",
+      "code": null,
+      "commodity": "Carbon",
+      "exchange": "cme",
+      "id": "cme-carbon",
+      "live_in_this_competition": false,
+      "name": "Environmental / carbon offset futures (Global Emissions Offset, Nature-Based GEOF, EU Allowances)",
+      "price_data": {
+        "note": "CME lists environmental products, but no official product page was verified in this session, so nothing is claimed.",
+        "status": "unverified"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "NYMEX"
+    },
+    {
+      "category": "Water",
+      "code": "NQH2O",
+      "commodity": "Water",
+      "exchange": "cme",
+      "id": "cme-water",
+      "live_in_this_competition": false,
+      "name": "Nasdaq Veles California Water Index Futures",
+      "price_data": {
+        "note": "The contract is widely reported to be CME-listed; no official page was verified in this session, so it is listed here only as an item to verify.",
+        "status": "unverified"
+      },
+      "spec_status": "unverified",
+      "spec_url": null,
+      "venue": "CME"
+    }
+  ],
+  "source": "engine/universe/futures-registry.json"
+}

@@ -1,0 +1,35 @@
+{
+  "anomalies": [],
+  "anomaly_count": 0,
+  "coverage": {
+    "instruments": 716,
+    "instruments_by_venue": {
+      "kalshi": 694,
+      "kalshi_margin": 4,
+      "moex_forts": 18
+    },
+    "intents": 0,
+    "season": null,
+    "strategies": 0,
+    "tiers": {
+      "modelled_maker_fills": 0,
+      "quote_based_fills": 0,
+      "taker_fills_from_published_ladders": 0
+    },
+    "trades": 0,
+    "trades_by_strategy": {},
+    "trades_by_venue": {},
+    "unclassified_series": 15
+  },
+  "fully_verified": 0,
+  "generated_at": "2026-09-22T18:57:30.717Z",
+  "methodology": [
+    "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
+    "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula, and its instrument is still published with its own provenance.",
+    "Simulated maker fills are counted separately and are never presented as observed executions.",
+    "Anomalies are reported, never silently corrected."
+  ],
+  "results": [],
+  "trades_checked": 0,
+  "with_anomalies": 0
+}
