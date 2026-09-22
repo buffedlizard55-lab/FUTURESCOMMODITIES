@@ -17,6 +17,10 @@ import { createHash } from 'node:crypto';
 export const USER_AGENT =
   'FUTURESCOMMODITIES-research-bot/1.0 (+https://github.com/buffedlizard55-lab/FUTURESCOMMODITIES; official public APIs only; contact via repository issues)';
 
+export function nowIso() {
+  return new Date().toISOString();
+}
+
 export function sha256(buffer) {
   return createHash('sha256').update(buffer).digest('hex');
 }
