@@ -1,30 +1,17 @@
 {
   "counts": {
-    "at": "2026-09-22T19:21:22.723Z",
-    "degraded": 2,
+    "at": "2026-09-22T19:25:13.392Z",
+    "degraded": 0,
     "instruments": 1929,
-    "intents": 0,
+    "intents": 3,
     "quotes": 74,
-    "requests_used": 186,
-    "run_id": "run-2026-09-22T19-20-25-288Z",
+    "requests_used": 173,
+    "run_id": "run-2026-09-22T19-24-25-743Z",
     "settlements": 0,
-    "trades": 5
+    "trades": 24
   },
-  "degraded": [
-    {
-      "error": "closes is not defined",
-      "step": "strategy_decide",
-      "strategy": "moex-metals-trend",
-      "venue": "engine"
-    },
-    {
-      "error": "Cannot access 'contracts' before initialization",
-      "step": "strategy_decide",
-      "strategy": "moex-calendar-carry",
-      "venue": "engine"
-    }
-  ],
-  "finished_at": "2026-09-22T19:21:22.724Z",
+  "degraded": [],
+  "finished_at": "2026-09-22T19:25:13.394Z",
   "notes": [
     {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/exchange/status",
@@ -36,25 +23,67 @@
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series?category=Commodities&include_product_metadata=true",
       "http_status": 200,
       "ok": true,
-      "sha256": "7db2307f63493fa3a544f57e847ff07e0c079f1b9c2dcf99b0bf33dd1d7791bd"
+      "sha256": "ade31d14d16f1ee4da3b147073a3e6138a55a351ce5a9769c600525c1f127d28"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVER15M",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDTN",
       "http_status": 200,
       "ok": true,
-      "sha256": "f05caa838fe4ab1333439f35ac8ff2f37e5560c51de359efc2cafc9f9805c085"
+      "sha256": "7a1e638e54d8208ab8ef3dd0cc3a66db59fc44a29bd3d8624290dc78aac029b4"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXBRENTWEX",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINNY",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "78c2d30aba41e6e06914998f3a8fb8364a3b5645c22bf4620cc705741728bfc1"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMN",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "5673d98ad07090974e10643acb8bb9e9680a4439fd63b13ac188b9ad3985c1ad"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMD",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "60ddcab71766dc1fb71e540e80eb6926672c1809b6bca579bd7a81f07ae1d419"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDOR",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "918b607fcf963bb9cd69affa40c57b68c3fdd65bf9318b3a5a0dcf7cfe69925b"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIE",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIH",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIW",
       "http_status": 200,
       "ok": true,
-      "sha256": "6f1d52f2fa5dcb2d26033d37e7e900b8475b34cb591da7e28a6887c01bd1ad72"
+      "sha256": "42d5c8893933ff91b3e33ee87cc0fae713cfb691593e638a1ef0c0d67eb3fb82"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNC",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "6f3d28b9dbaec6dea92c775c24ac39a9bd3629ed1f6939cb2a4754913a6c9a20"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGAS15M",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "43cc4b854e42f5601dcf32591505eed8a7f4085e7250a81dd5e93b25bb8c5b20"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "f70e7fc8c77a1be97de18739db6fdff75fc0da7ee344775b3f8094c8f85b4d27"
     },
     {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNY",
@@ -63,289 +92,31 @@
       "sha256": "f3696960514db362e7ab1adc63fc20594aaae86d411aa19f019a536bad5b97cc"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOFFEEMON",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGASMIN",
       "http_status": 200,
       "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+      "sha256": "3c78fe92af537568f5e675c06ff46cad36602fd6c83414f5593ffec41579c954"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDWI",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERH",
       "http_status": 200,
       "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDVA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "ef5a785b69135045ba003596b797a812bc2202aca3ef78ab5915251156f4a9b4"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOFFEEW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXTX",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "92b1aca0434e2023c6b6d67d4b5c84b8cd42af50c258f50ff198504fe50fbaaa"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDOH",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "915c6c03f80a497e3451edc1ff5ace18ee6acfd18dd42d3dd0a8e76a52767e44"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "1cd8cedaef1c7f5f3a2f78f67321e82fb00f60c9b50916b23a0554d9fe716e91"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPER15M",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "994066dc058a86e2afe1e8ca80a7f27a8f291b956ca5d8f434a9f7565bd85f9f"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMI",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "b3ab4157261a92f85a9c0f0fd0cadc23f56e361e42f451a2a16d9c06ecfb43cf"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "b0559edd373c7a28a06683755d4e433d84c580c3b6c830e1ffead67988bbb272"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERYEAR",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOCOAW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDCA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "686d25a2a014dd4b1af15dd7ecabefb015b2c75ca10d3c4f801862e516318dc9"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINCA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "3f30861c03712d6a499f40ce0cfc608b504d939774638b6bc6323d4db0a742f7"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINTX",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "98e85bdc6e0d2acc85654fb4e2eeeb0d71caa8562ea4ec7eae1c2a363617f9e3"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDOR",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "8eab9209944a2cf49f04acec4fe3e8cfffaa1f7ce7cf71ea6fee2b500bbbe20c"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSUGARW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDVSSILVER",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "56b4a43749d024978843bccbef9be547bbbec751e5bb35eadd720a87608cfbf0"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDEOY",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+      "sha256": "de0d4b6dd8a30c983b2231d6e51605ead0a90afba71c4a749f14ac7899ba44de"
     },
     {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXBRENTMON",
       "http_status": 200,
       "ok": true,
-      "sha256": "8aecdbc4cd54a98ed1ccce69fa6fc1daef2a6e0fdf71a032942d7677eb7dca47"
+      "sha256": "18e17a890c3f01d609f1fe793d027cbfb9a9d9c593e7c649303bb543e16febec"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTI15M",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMI",
       "http_status": 200,
       "ok": true,
-      "sha256": "1af0851d3eb98f722c6fc790ec5027f674f4874f0f0fbf00563159cae729ab00"
+      "sha256": "b879478c49f79094714b295f52d29ef01f7d10855f3b63db1773ccb1ec7c8b7d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXLITHIUMW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXPLATINUM15M",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "573eba35f65e7db833d0fc4c39a25b8b6f20dd066cb8f56452bdffa8cbe54fc9"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPERMON",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "6906007f99c46415e39b7fc06d59116da333388be1e641da0a93b6280e88588e"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMONTHLY",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMN",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMN",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "d377b6a67aac780a3460bb5523dcae7d9a278e38a3b9816205104dec65edc859"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSOYBEANW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXPALLADIUM15M",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "5da4ab138b6dea95f650c2414055091a75ec3a1561d04f1456eb0f968c6afd92"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDAZ",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "ed662141b723666e3f0f138dbef9283e3f78cb52658034736d3d2aabc192c78c"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMAX",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "87e1875da72dedc32b28a922539922d7102989cb3f85a67d7754ec8de1e41492"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDTX",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "229cd32b3f2bb4a2adc57e2ca7fc11d48ff7710b7fc514be33b0c61195804be7"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDH",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "48760a687fa8dd2cdbdb907686caae6651031bc4339fa1226c5b26b1c7e22539"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNJ",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNJ",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "3fd8df03900405a557996fd62ac472d7fb48719666ea16640305c20c63317bca"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDFL",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "69492074f4c772b926179511a164bdd7bb6c9c4c17803cd7ca27e0763e72371c"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDIN",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDGA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "7e5d8368663c60b1b2d79d73eaa475de5a756c982bd687accd0e351b29aafdac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWHENWTI",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXCA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "f959b55f06ede0916c5da87d843a997fe7ab8e1dc49965dccc5379ec84cc13c8"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXBRENTD",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "a7bbb20d609f34d42f5b6d347296c3c4d1083e1d5e066d988f1ab3faffaee15f"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAX",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "6fa68303821fc49eecfa1d944858dd41a33171fcd2826d16a2d30520bfa0601f"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNV",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNV",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASM",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "e6474bb5acc9e25b4bcf033746214b1f539ffe857b16c09f377ce34fcdb95a6f"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGASMAX",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "95d899e011c23a9863a3fd2f8b8e512e0f55017c3f7f6744a4efe3f27094e5a3"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXBRENTW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "a10ffd1a2431655ae2b6955c8d753e617cd4284a75380aa906f4889f513e961c"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASY",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXLITHIUMMON",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
@@ -357,46 +128,148 @@
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASW",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXPALLADIUM15M",
       "http_status": 200,
       "ok": true,
-      "sha256": "a8094d786759fd03c103deacdc0c7b0473f76da7cc56f6bdd2a91161a40dc4bd"
+      "sha256": "0ca02afd4fb1eecdf703feaddffeb72b8617e2eae2671edc69dffa6beddfb12c"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDSC",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAX",
       "http_status": 200,
       "ok": true,
-      "sha256": "26d95f3073ac3018f0170e3950746b47efeb4ce2375446070c04e170ec03a5ce"
+      "sha256": "e50959554842ddc6bab79f828e61d858666d63dc9b7fb0cc6d2fbb18aa1106c0"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMIN",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWHENWTI",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDFL",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "dccad744d0aabb7599a668340acbea479bc35e9367fd3edf3c092415bba9b74b"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMIN",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "651483fbc1c8bf9f2592bea68f0714c625b2e8137fa4b43684eae227703a8d55"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDWA",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "6b20daa992484b2c1c436494817c97d7357514f3fa3a9efea7a0ab2f0e0598d2"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVER15M",
       "http_status": 200,
       "note": "succeeded on retry after 429",
       "ok": true
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMIN",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVER15M",
       "http_status": 200,
       "ok": true,
-      "sha256": "421174c7be223a7e954a9748359026896cf4f3fb784d8266d3bb8c1fcd4fa6ec"
+      "sha256": "e777f4253fae89cc81ad3770b13d73e2a7cc97c2af4fac922810333a877f3e65"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDTN",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDVSSILVER",
       "http_status": 200,
       "ok": true,
-      "sha256": "5fe1861ee63ad1603b8d81c55c8ae4488aeaf1b737d20e688560d2df8137d2e2"
+      "sha256": "e157349e090a0cc2d02a8f636c047f4b2c4af4c9b99744e9a3282a36e4a40fd9"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGASMIN",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMO",
       "http_status": 200,
       "ok": true,
-      "sha256": "f9bbd6a65d657e690a84f6c019501dbd4efb1e479b4d1f5f812aa11f23bb5d4b"
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDD",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSUGARW",
       "http_status": 200,
       "ok": true,
-      "sha256": "98582ab9eaae918cb42271cb5b086993fa93d30b9466a37be1cd7fdb7f223c0c"
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDTX",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "cb47aabfdd068b5d53b12dd53e46950577a5ec18ae3e05791ecc095bffcead54"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXBRENTD",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "7ff31d4084739ba9fe2d87b447ff5dadc1fc65922c3183ad991fb30540e73a20"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXLITHIUMW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPERW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "c01d37acafcf3a49b2e103526a5a24cdadc3fb9f5f7316db62b53fbc17807fe9"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "e2ed19d284de39de7962dd71048ea44d9ea92d0ea2843ac05a016a41cb7238cb"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDPA",
+      "http_status": 200,
+      "note": "succeeded on retry after 429",
+      "ok": true
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDPA",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "78bfc82addff7669d779ce85aed58dca5a2fb843555d6381213034c44aef2aff"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWHEATMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMONTHLY",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMAX",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "3308fa5ed46254401699556a0727c302c9272cb3300e40046533231bd4682f01"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGASD",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "be8506ece2a0d8b1b9ae05f18c36d72dcb4f7d4dac6a99e2592c4553103d4bcb"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGASW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "b14cc80df38b9717babec1936df4970ad6fac73dc8cf07b225dbe32004f9bb41"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXPLATINUM15M",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "ed921d6e27c821418f7c95fc4150cd688d15de78d83d65cf9f6ff0e9f5326f5c"
     },
     {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXPLATINUMH",
@@ -405,193 +278,25 @@
       "sha256": "e9288757dea21c4c363108fa26942d61f1377f2a2cf6711582efb870d6b24c6d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDIL",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIWHEN",
       "http_status": 200,
       "ok": true,
-      "sha256": "b4ed35a2e57ff3429a27e53ea76c1aeb54e8f501ade175e28253aed51b45fbf5"
+      "sha256": "352f27e2d2c23752e7eaab30f2ae56fd34f4b526930065deb9ee13382ff9c077"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDYEAR",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDVA",
       "http_status": 200,
       "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+      "sha256": "bf3127719037e7d134100050be4514a6c2423ebe3dd13175157f844c2479dcf0"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDDIRY",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCORNMON",
       "http_status": 200,
       "note": "succeeded on retry after 429",
       "ok": true
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDDIRY",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "e5514bb0763d23012d846e38db106a00208a8bb02bfaf05a9694470afa3c29a0"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGASD",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "8a6ccc3159423c4a9e3c347fcfacfd6dcc3075b58dc099a6250dcd542c90a883"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINNY",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "78c2d30aba41e6e06914998f3a8fb8364a3b5645c22bf4620cc705741728bfc1"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINFL",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "e32ffce59fe3162138af36235072cbda7de51ae6cee2d4a46e1793ac065f5c4e"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGASW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "8e1f7d073365f22157690be63f9ed827b3ee4736ff81909a7c5c98401d2afd0c"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNC",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "9724cd1346e30f55317337c7c7396bfa9ff8dd97ea4cd4c58f0aa8a13ebf9894"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSOYBEANMON",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDCO",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "8abb71da917a2005a63e90aa1e6df7e652a8de5ac4e0cc4d10c852a0f0f75987"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDMON",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDMON",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "97d04fbda731db5ddf6466b1b0e27b802b349df74a6cf32fe717eb9b22760cff"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "cfbd1fc75813acb0263202772f377acbff2c6aae44dffe7b8d524d8924272b60"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDWA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "d32da453edfdb43a5a72f878a4d4b2680f050b86372755008dbaa02443768f4d"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWHEATW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERD",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "b2803d735ec918bc11c74e5f233a46df00e39adb8309a33dc84dfed0384a2a48"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDPA",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "e3ac2167d3b73899055c5f7fb14b73ec33c765825cce055ac3f75143eb72fe40"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDCT",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGAS",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMO",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMO",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXNY",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "5da2bb35e33a7fdb5e50bea6b5ce367fa0bbe7b9cb5b46d9a69c65c7f5a375b2"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGASW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCORNW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMAXM",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPERD",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "350b6eebe533075ef2af476ee4c0d8eff8baa266526bda5db527e4ea63986278"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXM",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "25dd700b65d55978f19a17e3dc1269b4f93b2b49d024845ed7989156c9832176"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMD",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMD",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "d1529a75c62e6e87af965c4cd6ac76cf9352f1ab16e4d8a7e81d2080cbfd1bb1"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIW",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "b35549d423b0046d932384f4dca9133df241ad923dbe6c254370549e9b551530"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXHOILMON",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCORNMON",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
@@ -603,13 +308,19 @@
       "sha256": "be742c0159a35599a2ac502d405069d3a49e49148e3d6cd64dda1a1e187e14df"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOCOAMON",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNV",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSUGARMON",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDMA",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "3e56ae4f0f5da009be44446106dd8f5aac90768881f627fc2b589b8a8b9d9285"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXBRENTWEX",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
@@ -618,55 +329,37 @@
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLD15M",
       "http_status": 200,
       "ok": true,
-      "sha256": "fac1bfac770b0c5c36b2c7cc332ba6ff88c1354a06f6c713523b42f0a7fe0634"
+      "sha256": "a9aea8a1fc98265daf24601fb52890070d324e57280985e2c9a7e61f62133cf8"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERH",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDIL",
       "http_status": 200,
       "ok": true,
-      "sha256": "a294d94e1bf4c905e26d189fae0c1936dd8325df9c40c926fc3f46b6baeb8617"
+      "sha256": "3b90729e55b9e558687aa6fd62a5f7a7d26d21830a18abe1b2fb1e777c3a5c7c"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMIN",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMIN",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "651483fbc1c8bf9f2592bea68f0714c625b2e8137fa4b43684eae227703a8d55"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGASMON",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "6df825ed93cf296e8cc99f71e2b34b79366a238178bb72ec6564e90d8b1f8306"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERMON",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "4f781a3e575b030f48be3202d674a2017a0851c4db89410bb731d21e3285498b"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASWNJ",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "e03862bd6e277ab5c181d6e497b1d4f04d46047a277623c81b4d2417a16f4528"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWHEATMON",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMAXM",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASED",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXTX",
+      "http_status": 200,
+      "note": "succeeded on retry after 429",
+      "ok": true
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXTX",
       "http_status": 200,
       "ok": true,
-      "sha256": "0897e2f18d20de3cf580b7863cb6593e78563d67fbf1f20436a10ad658ba1355"
+      "sha256": "7d7fa94012a4feea34ea24df04a3169540a99234ac9330f8f3dbbd4822a4ceea"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWHEATW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIEU",
@@ -675,22 +368,316 @@
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDCO",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "1b32384e966bce52eb56379aeee96a4cc2ecf6cf382bdf9865606e90763c76b2"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDDIRY",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "453d9cabc59e73ced6c95521284257a41e4cb9756d7e8e6899d917d0621b7de6"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOCOAW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "af77d7a655f17a92eada48ae9233843c7f1fba25a2910ac910456690adad3740"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPERD",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "c6c6d7ef2cdec0aa7e9699869919feb63b4ddba81523ef976135f37eb646276a"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDOH",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "4774da8e225f1a68fd7ff3a57c6739a497bb3b5162f18200158e288b8ee0c6d3"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDEOY",
+      "http_status": 200,
+      "note": "succeeded on retry after 429",
+      "ok": true
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDEOY",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDNJ",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "21c083b1fd64bbe4f96892a48ba932d394607edeb3a006c8ce153cd80ff7a67a"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASED",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "7c7445204789f5e1b35c97b1e9f428d3cd2fdce61dc0559ca469eaacae96287c"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOFFEEMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXCA",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "334310550b0c4120c4d8d55ae348260ac7c4a14a442b1b6b596afa564f6b3bb1"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXHOILMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGASMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "7af9dcb8479228735995f859d666f1a410a339f6ea81f4664043e1f860a28942"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASD",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "f2fd26c452489642718c243c9582b68cceab4a0f1cdd9e310733f68171735dd7"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERYEAR",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPERMON",
+      "http_status": 200,
+      "note": "succeeded on retry after 429",
+      "ok": true
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPERMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "d909cfe7871e2151cd42022b5609966cb10adae5f382a329552fa0b723c337ca"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINCA",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "3f30861c03712d6a499f40ce0cfc608b504d939774638b6bc6323d4db0a742f7"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDWI",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDH",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "13c5eaa3a2223b48d31fb442ef6c3704743043550d0c8cc17a390692b8147453"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSOYBEANW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "c1e674545e297c78514db1b192188f96e16918500eaef2627490ce6c1ffa9f95"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXNY",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "e11496e6558d5a64eef20271f0b9ae03240fafd584d1f257102fe4031e70b605"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTI",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "4aeec717bd29ace1e1fea9318b2223f1d81ce550166abfae9f2c22497f45bf54"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPER15M",
+      "http_status": 200,
+      "note": "succeeded on retry after 429",
+      "ok": true
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPER15M",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "5f0d50e59de85877c93eb92027edba53576f7a383831ec41b00a4ac363a9c426"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCORNW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOCOAMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDCT",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDSC",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "f9a78054df111bffe1a5acb992e975123001a9eff1a34f1c097d03bcaf50a3c7"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXM",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "7253847b926014d37794ae46208e9b125c55fbe0cf1b7f021ce240e8e7e343f0"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTI15M",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "52ac1b80683c5c41e0fba6a90943434d1ad8d60b2796e24fa89cdff8a2f847f4"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASM",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "af29186b4d83178f1af3fbd595d1d4722c38e28462686a03cacaabc9ca0d9cff"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "dfa23475b793012f2e44dd4e7ea0800f6a41547f7f47d41c7901ef52302ddc40"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDAZ",
+      "http_status": 200,
+      "note": "succeeded on retry after 429",
+      "ok": true
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDAZ",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "16ce5cd4f8148c234b8943bbc7100cc60de9093997d322fd61f8afd6f2d24784"
+    },
+    {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXHOILW",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIE",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINFL",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "e32ffce59fe3162138af36235072cbda7de51ae6cee2d4a46e1793ac065f5c4e"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASY",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMINTX",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "98e85bdc6e0d2acc85654fb4e2eeeb0d71caa8562ea4ec7eae1c2a363617f9e3"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASWNJ",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "12d4fa18156e4eb4ff7600d260eda7b58c2f556d91db805dbb8fe1f707e260ae"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDCA",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "17cbaf46111bd725a04518f9fb74074c4356baf3947990851f1ad6f5b318d0b9"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDIN",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIH",
       "http_status": 200,
       "note": "succeeded on retry after 429",
       "ok": true
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIE",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIH",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "8993f4f471b3fd1426f2d4f30878af80dfdd1f95e5d36921282222dcede2bfdb"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGASMAX",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "ce8a7927f11842ad17c3470610222b4ed6e274ccaa8207553e38996600d9f8c4"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDYEAR",
       "http_status": 200,
       "ok": true,
       "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXPALLADIUMH",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "c452d9532632008d7f6e2e33e0e882f35e243910372603c71a6518be7a2e57c9"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSOYBEANMON",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXBRENTW",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "98655eb74c24e578bdff4fac8e6f3a650effbcff1e757aefa515903267398865"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXGOLDD",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "7578e91157396699cceb04a60068289338dbbea5436ad59c4b6b4196e073fc24"
     },
     {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASMAXFL",
@@ -699,334 +686,328 @@
       "sha256": "31a4dfc22fd6f0432ef58951b4aeccb68cd1a7d1b20a52681d07dac1b3eac08c"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOPPERW",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASDGA",
       "http_status": 200,
       "ok": true,
-      "sha256": "b8a9b013f89545d35a08c7193150737278b11c3b679024b628760124ea15153c"
+      "sha256": "11dc03a5263daea32e7562d0729a9b99cd1063add33345442295a2462ef60be0"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXPALLADIUMH",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "573e50d5038e55b60362cd94bc41f78dc805872a96a49e331ab46b6826b16cf4"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCORNMON",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNATGAS15M",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "7aa5b5ee633d7e5352d2b63de44745ea6d9ecd93a169088942c0e1cb62c70e40"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTI",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "9cba27035ff9fd8eb162a2c413ea71ca89d617684fe462bceb86d787673a1b21"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXAAAGASD",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "1d001db83031be2558f5ba3145c87f5dd14e8a4c9805cefe9808543a890c3b72"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXLITHIUMMON",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIWHEN",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERD",
       "http_status": 200,
       "note": "succeeded on retry after 429",
       "ok": true
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIWHEN",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSILVERD",
       "http_status": 200,
       "ok": true,
-      "sha256": "352f27e2d2c23752e7eaab30f2ae56fd34f4b526930065deb9ee13382ff9c077"
+      "sha256": "cb5521a11247d17cc4c22bd54055552108115944f4c66252c47109aabd0d46d5"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVER15M-26SEP221530-30/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXSUGARMON",
       "http_status": 200,
       "ok": true,
-      "sha256": "1db4d52da96324d874db9363c435b22cfd1128cce8d62c04b6406b2ff2eb5d7c"
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T92.49/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXCOFFEEW",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T92.39/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGAS",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T92.29/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXWTIMIN",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "bb3254c259ecb65d0c9a6c322a88204821bcf6d3e333d280b8c70b912260d821"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T92.19/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets?limit=100&status=open&series_ticker=KXNGASW",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "50699ea1db13415ea46ec367dcfa58decd9660083271c5dc061561f38337fbac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T92.09/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.1100/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "e899d4d38d66a0fa8f8865189ae1d932cf6fd5f975908c6d888996cec4d752f7"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.99/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.1050/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "9513f3ebf5b5dd1a09639c3a3205f41f8683e23d8d92d683807e4747abf083f9"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.89/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.1000/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "433e652e2c3dc84fe3b7a24d106cfaaacc6239fedafddfcb5dcb955d69b91c0b"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.79/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0950/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "3d5b719ee1e442c62f469ebccd1f7566d0ccb49749e60d4c39957512af9e15e3"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.69/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0900/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "6c263160d469fbbc6d7c617b658495fe4e91083a01305046569fdb68c92792e1"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.59/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0850/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "40e3345e04eb27b5fd99b497fbad374fffc5c64319b5a1af24759ba33a5c01ac"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.49/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0800/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "bcf880f5f5d76521db42c0075841a237cca3e1b616c68abca0123929b07ec327"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.39/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0750/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "b7c7e00cdfe86d9a6020f786e1c2e6ebebabad1a7c97d1348f48deab0075c756"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.29/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0700/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "5b2b43b307dad7256922aacd6ad078be419024d2a9e1f513e5283dc5b1d2c00d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.19/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0650/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "875642ca89dbd5c0729c2b6625ba9140d7451effcef72d7f76955df16d3cbf5a"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T91.09/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0600/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "eca8b33dbd40fb9ee3d9dc6e1cc29194de067d7db7adfac3f3e7902ef4dcaf8d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.99/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0550/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "2d64d77d99251c93b70f65acdaabde6ec21482fbca723df94161a7057c60dc14"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.89/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0500/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "bab1f9fd257aabb31f13f59ecfbe135bf7b9433ebb834bbe44a932ff18cde77e"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.79/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0450/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "5ba44ea56ae31084150df436f6ba20b9874fb1da380bcdd5896872f58c7b98e0"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.69/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0400/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "5eb304b18879ade08bbf5a2a8d33567c20dd83b2259b9344818e5a2a18e75f4d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.59/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0350/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "4dab1d00ac322102d41b0797072fd36dc8b9313dee234575a8d2de477aa12119"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.49/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0300/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "13a46e52abfa795cc871a3cbd1e6d103c9020be389ad4396a9bdee7145ec7a53"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.39/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINNY-26DEC31-2.90/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "39e15526360f19e7d3cea471a8cdbc2e8129a19bd54248f06bcd0c6b822705ce"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.29/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINNY-26DEC31-2.80/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "259f0f87246df3e0f4e9c59cb48dc5c7aae361b3da6e59be0bc37907caa8bcf7"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.19/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINNY-26DEC31-2.70/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "84cb57fbf9db9c956dbb9320f263f3320cfff28b3b3ab3f9192f208aaf16174b"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T90.09/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINNY-26DEC31-2.60/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "f7796fde064c3b614cbee6cb4932b8e99c011470391e5d7b77a024737e823fcb"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.99/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINNY-26DEC31-2.50/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "ebb745bb4b9b9bc14689ecc6ab464c7d03bc51759a1c87ff89ca3d1045dd5804"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.89/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.4250/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "0ae68a9cc802f77ca8acb43b6fe9ea88414abeffdd45bfb44b9161e8cfd97485"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.79/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.4200/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "601ab0e8c80b6552b5095cb0562fd5f3ed6cb4f19aa17774956d0bb0721318cb"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.69/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.4150/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "dd12bd0e913f977c42a6db868c1f482d2aa7c3676f59d8ed24c9e80bf47280a6"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.59/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.4100/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "f79ee2d73e9f1a2e7de0f67ccf634ab9f0515b97549e905d69d287d2a4ad3c0d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.49/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.4050/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "20345861200fd3283f75acd3a2167ab56f470d847e9d0e1cb869cce319cca8b1"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.39/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.4000/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "00df86f23ffb45c72c339e5dd303a23ac797810804ffd488211b86894a6587f4"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.29/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3950/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "cd807ddf80ff13bd8e04bf75fdfbace427bd2f9142d6a44326b47c16b7bc4e46"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.19/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3900/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "2bcae49ce4a62bd4befba4bdb1f5bf5e81646a2d6d8dacf5b4eb35ea03a2b307"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T89.09/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3850/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "cb49f38dc15aac3bc93d57a1c0e7847f058c0a9dea6a5488c277f3de2f95b948"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T88.99/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3800/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "3c0f0aed04ea153708d64e6215b5b2411c75a033c1fa45a4c3d0102e2328672b"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T88.89/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3750/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "c98d88cca21388f3ef55d52d8bfc59be2d6826ba195e8c6d76e3d3581b04d4b1"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T88.79/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3700/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "1a7965c3af0f0b0d500aa65564be33ae1c4c43274d7ba99f978b09e7ffe84ea4"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T88.69/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3650/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "ba6aa42c1d84b14c88bba35b7b23b4488fe74673112f197d4f4e13ce68b2d056"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2217-T88.59/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3600/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e07d09f130e604a9e1acfc736fb57cbdfc33d8a5a253466a0cbd5c98cf6c9f74"
+      "sha256": "da4830d780d5e1ec52fddde5362abd4a605db653893c59520e554bc3d5554d8d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2216-T91.39/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3550/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "e2bce534bc01e3336c8c1788bee6e218f5781f3d72c911ecb19630575bb52262"
+      "sha256": "ab36bd3b665a9bfd8436218d27c839f5c801bbdb9eb31c7dbeb0292e5d5b61d8"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2216-T91.29/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3500/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "50e712801e8634d2d1d466fc1e4b0634bd9a0b37ae836259c2e17777e40e65d7"
+      "sha256": "96c7993d4c43ebdf96a962a1c6272d59ea723a3bb0a07ea8b2745522f7fa220c"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2216-T91.19/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3450/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "b2aaff55c8f00037c4fe2f59609a039439988f9c2eeeb0315038202dd17b0079"
+      "sha256": "8897e912e25933a0ff11110c50b6bc401ea096e955010fefee006e6cc9b3c616"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26SEP2216-T91.09/orderbook?depth=20",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMD-26SEP23-4.2600/orderbook?depth=20",
       "http_status": 200,
       "ok": true,
-      "sha256": "7b00b2f0590cf7e3a04b3b6c59dd75965481d8af7cd76b558bd25be4cf34bb79"
+      "sha256": "421beb52b46a1a0faa2871b4a578319b0cb01443e23919c2d664ca6d40369364"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMD-26SEP23-4.2550/orderbook?depth=20",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "fb6002841efcbd3683ac802a815733d60ab317d092e01dd2bb5403be443df001"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMD-26SEP23-4.2500/orderbook?depth=20",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "08357062fa1401701acb91f69ac6770a1491dfc407e960c25be02b3e8ff36912"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMD-26SEP23-4.2450/orderbook?depth=20",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "469d8bb03ce8a45281399c1e317cc52d28f0ded7efe07577fad918b220592cba"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMD-26SEP23-4.2400/orderbook?depth=20",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "f32478cc7e9c05d30f4011814cd3de9dfc5586d2b21256b61abe34d50f3ce395"
+    },
+    {
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMD-26SEP23-4.2350/orderbook?depth=20",
+      "http_status": 200,
+      "ok": true,
+      "sha256": "29505be56e873c719bfd6d14764a1652ac672dbdb06b8fd8ae11b09265378ee8"
     },
     {
       "endpoint": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
       "http_status": 200,
       "ok": true,
-      "sha256": "34a8dcae48687dc251c321c2b1830e30cf36a9473dd86cfb68f6e8fd3572f32e"
+      "sha256": "38fef89924fda65bc82c15cf77af210960c5042452974e64fd37fa5bfc5682f8"
     },
     {
       "duplicates_removed": 5533,
@@ -1250,183 +1231,111 @@
       "volume_today": 2
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXSILVER15M/markets/KXSILVER15M-26SEP221530-30/candlesticks?start_ts=1782328868&end_ts=1790104868&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDTN/markets/KXAAAGASDTN-26SEP23-4.1100/candlesticks?start_ts=1782329110&end_ts=1790105110&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "f4476421e78b7fa49e1f1ad82880f12380dea11417bc124d518e4f2d1e4cde87"
+      "sha256": "381822abf3cf959be7e3ee5682e25b9aad44b258b878309f0aa9c2ffa5561fe3"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXWTIH/markets/KXWTIH-26SEP2217-T92.49/candlesticks?start_ts=1782328868&end_ts=1790104868&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASMINNY/markets/KXAAAGASMINNY-26DEC31-2.90/candlesticks?start_ts=1782329110&end_ts=1790105110&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "e6fc193cadd906a367944ea889f6ce900e616f94ffb95c3248728a791fa870c3"
+      "sha256": "d452de324f51b9ec8d28846903f83328619eabcc2605d38798f738d8d92d212c"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDNY/markets/KXAAAGASDNY-26SEP23-4.5300/candlesticks?start_ts=1782328869&end_ts=1790104869&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDMD/markets/KXAAAGASDMD-26SEP23-4.2600/candlesticks?start_ts=1782329110&end_ts=1790105110&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "2debc596d75e86a91a0f0b31b2e6bf9be339d70d801233e5a5fb8a4b2015b99c"
+      "sha256": "eab7d4c57b0267f2f001492e1394b4d8410b4b0619b7ac440db882a24f76fc75"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDVA/markets/KXAAAGASDVA-26SEP23-4.2450/candlesticks?start_ts=1782328869&end_ts=1790104869&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXWTIW/markets/KXWTIW-26SEP2514-T85.00/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "6a9b856a097134af787c9d04423056c13c8848cdf6ec42b14f525d57324c6d10"
+      "sha256": "6a752f2fbb9d528959f0b590e57d8704e56f046dc201eec7df2e3ddd984b5367"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASMAXTX/markets/KXAAAGASMAXTX-26DEC31-6.00/candlesticks?start_ts=1782328869&end_ts=1790104869&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDNC/markets/KXAAAGASDNC-26SEP23-4.1700/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "e80390c4a8d55b63dd40ed5e40ea87b15684de1ed78258a795b55b9c6c5e07c6"
+      "sha256": "02fe33a4701f871d0b56faa6bb5454ebf029d36652ec71a1cbb5c69d8ce4ba8b"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDOH/markets/KXAAAGASDOH-26SEP23-4.5300/candlesticks?start_ts=1782328869&end_ts=1790104869&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXNATGAS15M/markets/KXNATGAS15M-26SEP221530-30/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "1504f6f3806b0624d4c0ba8b3db15831ddf9a68cb11f81714f290ad349efd5dd"
+      "sha256": "8c894392ebc8b543b674184e9efad7afd945bc513bb86e598bc87a9055e84f50"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXSILVERW/markets/KXSILVERW-26SEP2517-T83.99/candlesticks?start_ts=1782328869&end_ts=1790104869&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASW/markets/KXAAAGASW-26SEP28-4.7000/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "538c8da3d9b16d56d3982a142eed778d3da3ed484144bc9c3b79f52a2523934e"
+      "sha256": "1ce8bb06f1a14e09bf01b547040b94dc755f5c0127e129cd4e807ce28884d990"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXCOPPER15M/markets/KXCOPPER15M-26SEP221530-30/candlesticks?start_ts=1782328869&end_ts=1790104869&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXNGASMIN/markets/KXNGASMIN-26DEC31-N2.40/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "f883ee41df50c00f9c5618973b4134a1f129d36aba7564658fd16c744a16ff77"
+      "sha256": "5e14b5dd09d9153fb17883d81e50d2f4c1d2571e6d0813c85f4ac390db5c8cc0"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDMI/markets/KXAAAGASDMI-26SEP23-4.9200/candlesticks?start_ts=1782328869&end_ts=1790104869&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXSILVERH/markets/KXSILVERH-26SEP2216-T67.449/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "7014bca7fd6f9c0ebe81a8c726d97811db272ab34899b8cadb44c4356eb82451"
+      "sha256": "0f1bfa7f1c9f08f1171abe71166630bddede6c8c0d2d61846e33137b6b089456"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXGOLDW/markets/KXGOLDW-26SEP2517-T4722.99/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASMIN/markets/KXAAAGASMIN-26DEC31-3.60/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "7615c658a43758b90c0c9c8fc4f0ac7c2a916810d24258f9f99a3de89bfa4635"
+      "sha256": "7b9809825bac3a2bc0c2382abd4ab8fbd8d6efce885dd3ab74168f15adee702d"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDCA/markets/KXAAAGASDCA-26SEP23-6.2250/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDWA/markets/KXAAAGASDWA-26SEP23-5.5950/candlesticks?start_ts=1782329111&end_ts=1790105111&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "7d567bb91a9b95d87c1a9dedddc753c9b3cef2620171bd61e99b76caf789836a"
+      "sha256": "c85160242460056818037e96a0ef2d0ebb7ef5aebba4106b41ae16977c8b3bd5"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASMINCA/markets/KXAAAGASMINCA-26DEC31-4.10/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXCOPPERW/markets/KXCOPPERW-26SEP2517-T7.56/candlesticks?start_ts=1782329112&end_ts=1790105112&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "69fb8d94e2a3552ac6867672fee80bc976ef17e721b19b62dcd586eaedfbfd06"
+      "sha256": "e1e3152b4d40ff9e456f1230d3a14eaf85857b9234fed023daf9547984b13f84"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASMINTX/markets/KXAAAGASMINTX-26DEC31-2.30/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXSILVERMON/markets/KXSILVERMON-26SEP3017-T83.99/candlesticks?start_ts=1782329112&end_ts=1790105112&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "66709296895a0f7ef2dd64a0c6b682ff5458790f18f0e732bdc93d7bec948990"
+      "sha256": "e0ce5fd3798aff0e495935a7e5fc04ed9c9cdc767145c88eb7f67b339be636c2"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDOR/markets/KXAAAGASDOR-26SEP23-5.1400/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDPA/markets/KXAAAGASDPA-26SEP23-4.6050/candlesticks?start_ts=1782329112&end_ts=1790105112&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "35d2fb9fc5424db9c828956f3ed24826485c1fe21afc7da42b16084f8844894b"
+      "sha256": "3493cc73e0fe844aa842fe6d6ad2927b4cd2e32d081450e43dea2a40c60c9fdd"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXBRENTMON/markets/KXBRENTMON-26SEP3017-T129.99/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXNATGASD/markets/KXNATGASD-26SEP2317-T3.145/candlesticks?start_ts=1782329112&end_ts=1790105112&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "170210feac70fd0d1120acf443c8d98b275e57f2ca72fedfe3630691a55eccd8"
+      "sha256": "0a3d59a3e9643e4f29b45ceb1d7f280007d1fc4044c26bca0cb40988ef1b00c5"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXWTI15M/markets/KXWTI15M-26SEP221530-30/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXNATGASW/markets/KXNATGASW-26SEP2517-T4.899/candlesticks?start_ts=1782329112&end_ts=1790105112&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "2afb25e8c466110e7447e7c4612b5b78f9eb5afc5a717b47fe32a706360dbe1d"
+      "sha256": "fbbb68cb3d941d80a2e431e0396c3c8fd292c330e178d77d2eb88170ac9131d6"
     },
     {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXPLATINUM15M/markets/KXPLATINUM15M-26SEP221530-30/candlesticks?start_ts=1782328870&end_ts=1790104870&period_interval=1440",
+      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXPLATINUMH/markets/KXPLATINUMH-26SEP2217-T1844.49/candlesticks?start_ts=1782329112&end_ts=1790105112&period_interval=1440",
       "http_status": 200,
       "ok": true,
-      "sha256": "3994f7a1a67e036634bcf495842a15bbc07985477c366f946645c92973426e9e"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXCOPPERMON/markets/KXCOPPERMON-26SEP3017-T5.19/candlesticks?start_ts=1782328871&end_ts=1790104871&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "8d26ed4f9af95f61a119559222a10ec514eb9f2db70757100ff0d7f34d702198"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDMN/markets/KXAAAGASDMN-26SEP23-4.4250/candlesticks?start_ts=1782328871&end_ts=1790104871&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "7207738285c32a2a4360581bd276d62b98905a4b3809dc2757aadb676dbf729b"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXPALLADIUM15M/markets/KXPALLADIUM15M-26SEP221530-30/candlesticks?start_ts=1782328871&end_ts=1790104871&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "3e1c4b9b24aa666fb220381c66d9a689e10fa3097203c42d671bf7d2b3f493dd"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDAZ/markets/KXAAAGASDAZ-26SEP23-4.7450/candlesticks?start_ts=1782328871&end_ts=1790104871&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "e890608cdf35911bd5652169e559c1a0ff6329825ce0465a5fade17dc95f6665"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXWTIMAX/markets/KXWTIMAX-26SEP30-T125.50/candlesticks?start_ts=1782328871&end_ts=1790104871&period_interval=1440",
-      "http_status": 200,
-      "note": "succeeded on retry after 429",
-      "ok": true
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXWTIMAX/markets/KXWTIMAX-26SEP30-T125.50/candlesticks?start_ts=1782328871&end_ts=1790104871&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "b9a2b4816aaa3f6eb0d330c3c7bb15deef0e31c970b27bf2c3802c2d11f4b7bd"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDTX/markets/KXAAAGASDTX-26SEP23-4.0050/candlesticks?start_ts=1782328872&end_ts=1790104872&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "567e211f88abf48c7ad7adc63a70a5798cf936aadc6c7b443e88d1897c2a7d27"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXGOLDH/markets/KXGOLDH-26SEP2216-T4387.99/candlesticks?start_ts=1782328872&end_ts=1790104872&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "00e2aa04b65d19dffba96ba8a7493c346eae7a95d20ce6df5bd6f6fdb56ef464"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDNJ/markets/KXAAAGASDNJ-26SEP23-4.4600/candlesticks?start_ts=1782328872&end_ts=1790104872&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "b182ec4adbcb479e69c50bcafef9500b064738e9f3d58891b0a464e2899f4304"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDFL/markets/KXAAAGASDFL-26SEP23-4.2800/candlesticks?start_ts=1782328872&end_ts=1790104872&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "50465697bb77fcf8fb64e16f57c9b0e0a4ba76d53e6c43212a2449eda0e7b1e4"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASDGA/markets/KXAAAGASDGA-26SEP23-4.1350/candlesticks?start_ts=1782328873&end_ts=1790104873&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "69d4ed9841350106729bf70f7ca85be982cd1945abf34b22d9514918d591feed"
-    },
-    {
-      "endpoint": "https://api.elections.kalshi.com/trade-api/v2/series/KXAAAGASMAXCA/markets/KXAAAGASMAXCA-26DEC31-8.00/candlesticks?start_ts=1782328873&end_ts=1790104873&period_interval=1440",
-      "http_status": 200,
-      "ok": true,
-      "sha256": "e323c149b13af187e144961016ab2bf7ba543abbca40d524ee64db29499e43f9"
+      "sha256": "affa6c0dce6aaa19a91f704100fca026bdc525d3896d7e11a93d29164f069103"
     }
   ],
   "provenance_entries": 0,
-  "run_id": "run-2026-09-22T19-20-25-288Z",
-  "started_at": "2026-09-22T19:20:25.288Z",
+  "run_id": "run-2026-09-22T19-24-25-743Z",
+  "started_at": "2026-09-22T19:24:25.743Z",
   "venues": {
     "kalshi": {
       "exchange_active": true,
@@ -1438,8 +1347,8 @@
         "method": "GET",
         "note": "Kalshi exchange status",
         "ok": true,
-        "request_started_at": "2026-09-22T19:20:25.290Z",
-        "retrieved_at": "2026-09-22T19:20:25.425Z",
+        "request_started_at": "2026-09-22T19:24:25.745Z",
+        "retrieved_at": "2026-09-22T19:24:25.924Z",
         "sha256": "9c900e19dad1f05812a0c3c40c19253e5962c839b1739481aef3d20244c4f778",
         "url": "https://api.elections.kalshi.com/trade-api/v2/exchange/status"
       },
