@@ -1,168 +1,79 @@
 {
   "_readme": [
-    "Watchlist resolution rules. The engine resolves these rules against the LIVE official Kalshi",
-    "series list on every tick and records which series matched, so the universe is discovered",
-    "and verifiable rather than hand-asserted. Anything that does not resolve is reported as",
-    "unresolved in data/registry/universe.json and is never traded.",
+    "What the competition is allowed to look at.",
     "",
-    "keyword (regex, case-insensitive) is matched against '<ticker> <title>'."
+    "kalshi.classification_rules is the only place where a Kalshi series becomes a commodity in",
+    "this project. Rules are tested in order against '<series ticker> <series title>'. A series",
+    "that matches no rule is recorded as Unclassified and is NEVER traded: the platform does not",
+    "guess what an unlabelled market is about.",
+    "",
+    "The first rule deliberately excludes cross-commodity ratio markets (e.g. gold vs silver),",
+    "which are not a price for a single commodity and therefore must not be traded as one."
   ],
   "kalshi": {
-    "categories": [
-      "Commodities",
-      "Economics",
-      "Financials",
-      "Crypto"
-    ],
-    "series_rules": [
-      {
-        "id": "energy",
-        "group": "Energy",
-        "keyword": "WTI|BRENT|CRUDE|NATGAS|NATURAL GAS|GASOLINE|DIESEL|HEATING OIL|PROPANE|POWER|ELECTRIC"
-      },
-      {
-        "id": "precious",
-        "group": "Precious Metals",
-        "keyword": "GOLD|SILVER|PLATINUM|PALLADIUM"
-      },
-      {
-        "id": "base",
-        "group": "Industrial Metals",
-        "keyword": "COPPER|ALUMIN|NICKEL|ZINC|LEAD|STEEL|LITHIUM"
-      },
-      {
-        "id": "grains",
-        "group": "Grains & Oilseeds",
-        "keyword": "CORN|WHEAT|SOY|OATS|RICE|CANOLA"
-      },
-      {
-        "id": "softs",
-        "group": "Soft Commodities",
-        "keyword": "COFFEE|COCOA|SUGAR|COTTON|ORANGE"
-      },
-      {
-        "id": "livestock",
-        "group": "Livestock & Dairy",
-        "keyword": "CATTLE|HOG|PORK|MILK|BUTTER|CHEESE|WHEY|FEEDER"
-      },
-      {
-        "id": "carbon",
-        "group": "Carbon & Environment",
-        "keyword": "CARBON|EMISSION|CREDIT|RIN|RGGI"
-      },
-      {
-        "id": "equity_index",
-        "group": "Equity Index",
-        "keyword": "S&P|SP500|NASDAQ|DOW|RUSSELL"
-      },
-      {
-        "id": "rates",
-        "group": "Interest Rates",
-        "keyword": "FED|RATE|CPI|INFLATION|TREASURY|YIELD"
-      },
-      {
-        "id": "fx",
-        "group": "FX",
-        "keyword": "EUR/USD|USD/JPY|DOLLAR|EURO|YEN"
-      },
-      {
-        "id": "crypto",
-        "group": "Crypto",
-        "keyword": "BITCOIN|BTC|ETHEREUM|ETH|SOLANA|XRP"
-      }
-    ],
-    "exclude_keyword": "NBA|NFL|MLB|WNBA|NHL|TENNIS|OSCAR|EMMY|GRAMMY|ELECTION|PRESIDENT|GAME|MATCH|ALBUM|MOVIE",
+    "category": "Commodities",
     "max_series": 60,
+    "max_pages_per_series": 2,
     "max_quoted_markets": 45,
-    "min_volume_24h_for_quote": 0,
-    "quote_orderbooks_for": "top_by_volume_and_spread"
-  },
-  "kalshi_margin_perps": {
-    "include_asset_classes": [
-      "Commodities",
-      "Metals",
-      "Crypto"
-    ],
-    "max_quoted": 12
+    "max_perps": 12,
+    "perp_asset_classes": ["Metals"],
+    "classification_rules": [
+      { "pattern": "gold[^a-z]{0,12}vs[^a-z]{0,12}silver|silver[^a-z]{0,12}vs[^a-z]{0,12}gold|goldvs", "commodity": null, "group": "Excluded", "note": "Cross-commodity ratio market: it is not a price for a single commodity and is excluded from trading." },
+      { "pattern": "\\bgold\\b|gold|\\bXAU\\b", "commodity": "Gold", "group": "Precious Metals" },
+      { "pattern": "\\bsilver\\b|silver|\\bXAG\\b", "commodity": "Silver", "group": "Precious Metals" },
+      { "pattern": "platinum", "commodity": "Platinum", "group": "Precious Metals" },
+      { "pattern": "palladium", "commodity": "Palladium", "group": "Precious Metals" },
+      { "pattern": "copper", "commodity": "Copper", "group": "Industrial Metals" },
+      { "pattern": "\\bwti\\b|crude|west texas", "commodity": "WTI Crude Oil", "group": "Energy" },
+      { "pattern": "brent", "commodity": "Brent Crude Oil", "group": "Energy" },
+      { "pattern": "\\baaa\\b|gas price|pump price|retail gas", "commodity": "Gasoline (US retail average)", "group": "Energy" },
+      { "pattern": "natural gas|natgas|henry hub|\\bngas\\b", "commodity": "Natural Gas", "group": "Energy" },
+      { "pattern": "heating oil|diesel|distillate|ulsd", "commodity": "Diesel / Heating Oil", "group": "Energy" },
+      { "pattern": "gasoline|\\brbob\\b", "commodity": "Gasoline", "group": "Energy" },
+      { "pattern": "cocoa", "commodity": "Cocoa", "group": "Soft Commodities" },
+      { "pattern": "coffee", "commodity": "Coffee", "group": "Soft Commodities" },
+      { "pattern": "sugar", "commodity": "Sugar", "group": "Soft Commodities" },
+      { "pattern": "cotton", "commodity": "Cotton", "group": "Soft Commodities" },
+      { "pattern": "orange juice|\\bFCOJ\\b", "commodity": "Orange Juice", "group": "Soft Commodities" },
+      { "pattern": "\\bcorn\\b", "commodity": "Corn", "group": "Grains & Oilseeds" },
+      { "pattern": "wheat", "commodity": "Wheat", "group": "Grains & Oilseeds" },
+      { "pattern": "soybean|\\bsoy\\b", "commodity": "Soybeans", "group": "Grains & Oilseeds" },
+      { "pattern": "\\boats\\b|oat ", "commodity": "Oats", "group": "Grains & Oilseeds" },
+      { "pattern": "\\brice\\b", "commodity": "Rice", "group": "Grains & Oilseeds" },
+      { "pattern": "lumber|timber", "commodity": "Lumber", "group": "Lumber & Other" },
+      { "pattern": "lithium", "commodity": "Lithium", "group": "Industrial Metals" },
+      { "pattern": "uranium", "commodity": "Uranium", "group": "Energy" },
+      { "pattern": "milk|dairy|butter|cheese|whey", "commodity": "Dairy", "group": "Dairy" }
+    ]
   },
   "moex": {
-    "enabled": true,
+    "max_contracts": 30,
+    "min_volume_today": 10,
     "asset_codes": [
-      "GOLD",
-      "SILV",
-      "PLT",
-      "PLTM",
-      "SLV",
-      "COPPER",
-      "NICKEL",
-      "ALUM",
-      "COCOA",
-      "COFFEE",
-      "SUGAR",
-      "WHEAT",
-      "AI92",
-      "AI95"
-    ],
-    "max_contracts_per_asset": 2,
-    "board": "RFUD"
+      "GOLD", "SILV", "PLT", "PLTM", "PALL",
+      "COPPER", "NICKEL", "ALUM", "ZINC", "LEAD",
+      "COCOA", "COFFEE", "SUGAR",
+      "WHEAT", "CORN", "SOY", "RICE",
+      "AI92", "AI95", "BRENT", "NGAS", "DAMILK"
+    ]
   },
   "benchmarks": {
     "fred": {
       "enabled": true,
-      "note": "Federal Reserve Bank of St. Louis FRED CSV downloads (keyless, official US central-bank publication). The two series below are the EIA spot series re-published by FRED, so attribution names both.",
-      "series": [
-        {
-          "id": "DCOILWTICO",
-          "alias": "RCLC1",
-          "name": "Cushing, OK WTI spot price FOB (EIA series RCLC1, published by FRED)",
-          "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"
-        },
-        {
-          "id": "DHHNGSP",
-          "alias": "RNGWHHD",
-          "name": "Henry Hub natural gas spot price (EIA series RNGWHHD, published by FRED)",
-          "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DHHNGSP"
-        }
-      ]
+      "note": "FRED CSV downloads are keyless. Where a series is the EIA spot series re-published by the Federal Reserve Bank of St. Louis, both publishers are named on the record.",
+      "series": "configured_in_config/competition.json -> benchmarks block; kept here for review"
     },
-    "eia_reference": {
-      "enabled": false,
-      "status": "documented_not_automated",
-      "reason": "EIA publishes the NYMEX futures table only as XLS (BIFF) plus an HTML weekly-pivot view, and explicitly stops futures prices after 2024-04-05. Spot benchmarks are therefore taken from FRED (same EIA series) and the raw XLS URLs are kept here for manual review.",
-      "series": [
-        {
-          "id": "RCLC1",
-          "name": "Cushing OK WTI spot price FOB (daily)",
-          "xls": "https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls"
-        },
-        {
-          "id": "RNGWHHD",
-          "name": "Henry Hub natural gas spot price (daily)",
-          "xls": "https://www.eia.gov/dnav/ng/hist_xls/RNGWHHDd.xls"
-        },
-        {
-          "id": "PET_PRI_FUT_S1_D",
-          "name": "NYMEX futures prices (discontinued after 2024-04-05)",
-          "page": "https://www.eia.gov/dnav/pet/pet_pri_fut_s1_d.htm"
-        }
-      ]
-    },
-    "usda_ams": {
-      "enabled": true,
-      "reports": [
-        {
-          "slug_id": 2453,
-          "name": "National Daily Boxed Beef Cutout & Boxed Beef Cuts - Negotiated Sales",
-          "url": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports/2453",
-          "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports"
-        },
-        {
-          "slug_id": 2466,
-          "name": "5 Area Daily Weighted Average Direct Slaughter Cattle - Negotiated",
-          "url": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports/2466",
-          "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports"
-        }
-      ]
-    }
+    "eia_archive": [
+      { "series_id": "RCLC1", "url": "https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls", "description": "Cushing OK WTI futures contract 1 (historical only: EIA stopped publishing futures prices after 2024-04-05)" },
+      { "series_id": "RNGWHHD", "url": "https://www.eia.gov/dnav/ng/hist_xls/RNGWHHDd.xls", "description": "Henry Hub natural gas spot price (daily)" }
+    ]
+  },
+  "usda": {
+    "enabled": true,
+    "queries": ["livestock", "dairy"],
+    "reports": [
+      { "slug_id": 2453, "name": "National Daily Boxed Beef Cutout & Boxed Beef Cuts - Negotiated Sales (USDA AMS)" },
+      { "slug_id": 2466, "name": "5 Area Daily Weighted Average Direct Slaughter Cattle - Negotiated (USDA AMS)" }
+    ]
   }
 }

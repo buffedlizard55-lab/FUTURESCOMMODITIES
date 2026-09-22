@@ -2,11 +2,10 @@ name: dev-tick
 on:
   push:
     branches: [arena/01a0ca5d-futurescommodities]
-  workflow_dispatch:
 permissions:
   contents: write
 jobs:
-  dev-tick:
+  tick:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -14,18 +13,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: tick (capture output)
+      - name: run tick + verify + report (capture output)
         run: |
           set +e
           mkdir -p data
           {
-            echo "=== tick start $(date -u +%FT%TZ)"
+            echo "=== $(date -u +%FT%TZ) tick"
             node engine/tick.mjs --max-requests=400
-            echo "=== tick exit=$?"
+            echo "tick_exit=$?"
             node engine/verify.mjs
-            echo "=== verify exit=$?"
+            echo "verify_exit=$?"
+            node engine/report.mjs
+            echo "report_exit=$?"
           } > data/_run.log 2>&1
-          tail -c 4000 data/_run.log
+          tail -c 6000 data/_run.log
           exit 0
       - name: commit
         run: |

@@ -1,149 +1,148 @@
 /**
- * Zero-dependency HTTP client with full provenance capture.
+ * Minimal HTTP client with full provenance capture.
  *
- * Design rules (see docs/VERIFICATION.md):
- *  - Every network call produces a provenance record: url, http status, byte length,
- *    sha256 of the response body, content-type, request/response timestamps, and
- *    a plain-language note describing what the response is.
- *  - Nothing is ever invented. If a call fails, the caller records the failure and
- *    marks downstream data as "unavailable" rather than filling in a guess.
- *  - We never send an `Origin` header. Observed behaviour (verified 2026-09-22):
- *    Kalshi's public API returns HTTP 403 to requests carrying a foreign `Origin`
- *    header (see docs/VERIFICATION.md, "CORS"). Sending none keeps calls working.
+ * Rules enforced here:
+ *  - every request records the absolute URL, HTTP status, response byte size, SHA-256 of the
+ *    response body and both the request and retrieval timestamps;
+ *  - nothing is retried into a different URL silently: the fallback chain is explicit and each
+ *    attempt is logged;
+ *  - no response is ever cached across runs in a way that could hide a failure: a failed fetch
+ *    is reported as failed so the caller can mark the run "degraded" instead of guessing.
+ *
+ * Zero dependencies: uses the global fetch available in Node 18+.
  */
 
 import { createHash } from 'node:crypto';
 
 export const USER_AGENT =
-  'futurescommodities-research/1.0 (+https://github.com/buffedlizard55-lab/FUTURESCOMMODITIES; paper-trading research; contact via repo issues)';
+  'FUTURESCOMMODITIES-research-bot/1.0 (+https://github.com/buffedlizard55-lab/FUTURESCOMMODITIES; official public APIs only; contact via repository issues)';
 
-export function sha256(buf) {
-  return createHash('sha256').update(buf).digest('hex');
+export function sha256(buffer) {
+  return createHash('sha256').update(buffer).digest('hex');
 }
 
-export function nowIso() {
-  return new Date().toISOString();
-}
-
-export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
- * Fetch a URL, capturing a provenance record regardless of success.
- * @returns {Promise<{ok:boolean, status:number|null, body:Buffer|null, text:string|null,
- *   json:any|null, provenance:object}>}
+ * Fetch a URL and return { ok, status, text, json, buffer, provenance }.
+ * provenance = { url, http_status, bytes, sha256, content_type, request_started_at,
+ *                retrieved_at, attempts[], note }
  */
-export async function fetchWithProvenance(url, opts = {}) {
+export async function get(url, options = {}) {
   const {
-    headers = {},
     timeoutMs = 30000,
     retries = 2,
-    accept = 'application/json, text/plain, */*',
-    method = 'GET',
+    headers = {},
     note = null,
-    parse = 'auto', // 'auto' | 'json' | 'text' | 'none'
-  } = opts;
+    accept = 'application/json, text/plain, */*',
+    expect = 'text',
+  } = options;
 
   const attempts = [];
-  for (let attempt = 1; attempt <= retries + 1; attempt++) {
-    const startedAt = nowIso();
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const requestStartedAt = new Date().toISOString();
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, {
-        method,
+        method: 'GET',
+        redirect: 'follow',
         headers: {
-          'user-agent': USER_AGENT,
-          accept,
+          'User-Agent': USER_AGENT,
+          Accept: accept,
           ...headers,
         },
         signal: controller.signal,
-        redirect: 'follow',
       });
-      const buf = Buffer.from(await res.arrayBuffer());
+      const buffer = Buffer.from(await res.arrayBuffer());
+      const retrievedAt = new Date().toISOString();
       clearTimeout(timer);
-      const record = {
+
+      const provenance = {
         url,
-        method,
         note,
+        request_started_at: requestStartedAt,
+        retrieved_at: retrievedAt,
         http_status: res.status,
         ok: res.ok,
+        bytes: buffer.length,
         content_type: res.headers.get('content-type'),
-        bytes: buf.length,
-        sha256: sha256(buf),
-        request_started_at: startedAt,
-        retrieved_at: nowIso(),
-        attempt,
+        sha256: sha256(buffer),
+        attempts,
+        method: 'GET',
       };
+
       if (!res.ok) {
-        attempts.push(record);
-        // 4xx (except 429) will not improve by retrying.
-        if (res.status < 500 && res.status !== 429) {
-          return { ok: false, status: res.status, body: buf, text: null, json: null, provenance: { ...record, attempts } };
-        }
-        if (attempt <= retries) {
-          await sleep(400 * attempt);
-          continue;
-        }
-        return { ok: false, status: res.status, body: buf, text: null, json: null, provenance: { ...record, attempts } };
+        return { ok: false, status: res.status, text: null, json: null, buffer, provenance };
       }
-      let text = null;
+
+      const text = buffer.toString('utf8');
       let json = null;
-      if (parse !== 'none') {
-        text = buf.toString('utf8');
-        if (parse === 'json' || (parse === 'auto' && /json/i.test(record.content_type || ''))) {
-          try {
-            json = JSON.parse(text);
-          } catch (err) {
-            json = null;
-            record.parse_error = String(err);
-          }
+      if (expect === 'json' || (expect === 'auto' && /json/i.test(res.headers.get('content-type') || ''))) {
+        try {
+          json = JSON.parse(text);
+        } catch (error) {
+          provenance.parse_error = String(error.message ?? error);
+          return { ok: false, status: res.status, text, json: null, buffer, provenance };
         }
       }
-      return { ok: true, status: res.status, body: buf, text, json, provenance: { ...record, attempts } };
-    } catch (err) {
+      return { ok: true, status: res.status, text, json, buffer, provenance };
+    } catch (error) {
       clearTimeout(timer);
+      lastError = error;
       attempts.push({
-        url,
-        method,
-        note,
-        error: String(err && err.message ? err.message : err),
-        request_started_at: startedAt,
-        retrieved_at: nowIso(),
         attempt,
+        url,
+        error: String(error?.message ?? error),
+        request_started_at: requestStartedAt,
+        retrieved_at: new Date().toISOString(),
       });
-      if (attempt <= retries) await sleep(500 * attempt);
+      if (attempt < retries) await sleep(400 * (attempt + 1));
     }
   }
+
   return {
     ok: false,
     status: null,
-    body: null,
     text: null,
     json: null,
-    provenance: { url, method, note, error: 'all attempts failed', attempts, retrieved_at: nowIso() },
+    buffer: null,
+    provenance: {
+      url,
+      note,
+      ok: false,
+      http_status: null,
+      bytes: 0,
+      sha256: null,
+      attempts,
+      error: String(lastError?.message ?? lastError ?? 'request failed'),
+      retrieved_at: new Date().toISOString(),
+    },
   };
 }
 
-/** Convenience: fetch JSON or return {ok:false}. */
-export async function fetchJson(url, opts = {}) {
-  const r = await fetchWithProvenance(url, { parse: 'json', ...opts });
-  return r;
+/** Fetch JSON with a status guard. */
+export async function getJson(url, options = {}) {
+  return get(url, { ...options, expect: 'json' });
 }
 
 /**
- * Deterministic JSON writer: stable key order and no timestamps added implicitly,
- * so committed files only change when the underlying data changes.
+ * Deterministic JSON stringifier: object keys are sorted so that identical data always
+ * produces identical bytes. This keeps every committed artifact diff-stable.
  */
 export function stableStringify(value, indent = 2) {
-  const seen = new WeakSet();
-  const walk = (v) => {
-    if (v === null || typeof v !== 'object') return v;
-    if (seen.has(v)) return '[circular]';
-    seen.add(v);
-    if (Array.isArray(v)) return v.map(walk);
+  const normalized = normalize(value);
+  return JSON.stringify(normalized, null, indent);
+}
+
+function normalize(value) {
+  if (Array.isArray(value)) return value.map(normalize);
+  if (value && typeof value === 'object') {
     const out = {};
-    for (const k of Object.keys(v).sort()) out[k] = walk(v[k]);
+    for (const key of Object.keys(value).sort()) out[key] = normalize(value[key]);
     return out;
-  };
-  return JSON.stringify(walk(value), null, indent);
+  }
+  return value;
 }

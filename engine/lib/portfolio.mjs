@@ -1,282 +1,377 @@
 /**
- * Paper-trading portfolio accounting.
+ * Paper-trading accounting.
  *
- * HARD RULES (mirrors the project brief):
- *  1. A trade can only exist if it was created from a verified quote snapshot. Every leg
- *     embeds the provenance record (official source URL, HTTP status, content hash,
- *     retrieval timestamp) that produced its prices.
- *  2. Fills are size-aware: a taker order walks the real order book and the trade stores
- *     per-level detail. If the book cannot fill the order, the unfilled remainder is
- *     recorded — never assumed filled at a better price.
- *  3. Fees use the official Kalshi fee formula (see lib/kalshi.mjs) with the multiplier and
- *     precision source recorded on the trade.
- *  4. Slippage is measured against a defined reference (book mid at snapshot time) and
- *     stored, never smoothed away.
- *  5. When a value cannot be computed from verified data (e.g. FX conversion unavailable),
- *     the field is `null` and a `*_status` field explains why. Nothing is estimated silently.
+ * Every dollar figure this project reports comes from this file, and every one of them is
+ * derived from data that was fetched from an official source in the same run. Nothing here
+ * invents a price, a size or a fee.
+ *
+ * Fee model (Kalshi, official schedule):
+ *   taker general = roundup(multiplier * 0.07 * contracts * price * (1 - price))
+ *   maker general = roundup(multiplier * 0.0175 * contracts * price * (1 - price))
+ *   rounded UP to the nearest centicent ($0.000001) and, for accounts settling in cents,
+ *   to the nearest cent. There is no settlement fee.
+ *
+ * Fill model:
+ *   Kalshi event contracts  -> taker walks the real resting ladder; maker fills only when the
+ *                              market trades through the resting price (modelled, never assumed);
+ *   MOEX futures / Kalshi perps -> quote-based fill at the exchange's own bid or offer, with
+ *                              slippage measured against the exchange midpoint.
  */
 
 import { createHash } from 'node:crypto';
-import { kalshiMakerFee, kalshiTakerFee } from './kalshi.mjs';
+
+/* ------------------------------------------------------------------ fees */
+
+export function roundUpTo(value, step) {
+  if (!Number.isFinite(value)) return null;
+  const units = Math.ceil(value / step - 1e-12);
+  return Number((units * step).toFixed(10));
+}
+
+export function kalshiTakerFee({ contracts, price, multiplier = 1, precision = 2 }) {
+  if (!Number.isFinite(price) || price <= 0 || price >= 1) return 0;
+  const raw = multiplier * 0.07 * contracts * price * (1 - price);
+  return roundUpTo(raw, precision === 2 ? 0.01 : 0.000001);
+}
+
+export function kalshiMakerFee({ contracts, price, multiplier = 0, precision = 2 }) {
+  if (!Number.isFinite(price) || price <= 0 || price >= 1) return 0;
+  if (!multiplier) return 0;
+  const raw = multiplier * 0.0175 * contracts * price * (1 - price);
+  return roundUpTo(raw, precision === 2 ? 0.01 : 0.000001);
+}
+
+/* ------------------------------------------------------------------ fills */
+
+/**
+ * Walk a ladder of resting contracts.
+ * levels: [{ price, contracts, source }] ordered best-first for the side being bought.
+ */
+export function walkLadder(levels = [], contracts, limitPrice = null) {
+  let remaining = contracts;
+  let notional = 0;
+  const used = [];
+  for (const level of levels) {
+    if (remaining <= 0) break;
+    if (limitPrice != null && level.price > limitPrice + 1e-9) break;
+    const take = Math.min(remaining, level.contracts);
+    if (take <= 0) continue;
+    used.push({ price: level.price, contracts: take, source: level.source ?? null });
+    notional += take * level.price;
+    remaining -= take;
+  }
+  const filled = contracts - remaining;
+  return {
+    filled,
+    unfilled: remaining,
+    notional: Number(notional.toFixed(6)),
+    vwap: filled > 0 ? Number((notional / filled).toFixed(6)) : null,
+    levels: used,
+    worstPrice: used.length ? used[used.length - 1].price : null,
+    bestPrice: used.length ? used[0].price : null,
+  };
+}
+
+/** Taker fill against a real ladder (Kalshi event contracts). */
+export function simulateEventContractTakerFill({ ladder, contracts, limitPrice, feeMultiplier = 1, feePrecision = 2, referencePrice = null }) {
+  const walk = walkLadder(ladder, contracts, limitPrice);
+  const feeUsd = walk.filled > 0 ? kalshiTakerFee({ contracts: walk.filled, price: walk.vwap, multiplier: feeMultiplier, precision: feePrecision }) : 0;
+  const slippagePerContract = referencePrice != null && walk.vwap != null ? Number((walk.vwap - referencePrice).toFixed(6)) : null;
+  return {
+    order_type: 'taker',
+    execution_model: 'taker_walks_official_order_book',
+    requested: contracts,
+    filled: walk.filled,
+    unfilled: walk.unfilled,
+    vwap: walk.vwap,
+    best_price: walk.bestPrice,
+    worst_price: walk.worstPrice,
+    notional_usd: walk.notional,
+    levels: walk.levels,
+    fee_usd: feeUsd,
+    fee_model: `official Kalshi taker formula roundup(${feeMultiplier} x 0.07 x contracts x price x (1-price)) rounded up to ${feePrecision === 2 ? '$0.01' : '$0.000001'}`,
+    reference_price: referencePrice,
+    slippage_per_contract_usd: slippagePerContract,
+    slippage_usd: slippagePerContract != null ? Number((slippagePerContract * walk.filled).toFixed(6)) : null,
+    note:
+      walk.unfilled > 0
+        ? `${walk.unfilled} of ${contracts} contracts could not be filled within the recorded price limit and were left unfilled - the ledger never assumes the remainder filled.`
+        : 'Fully filled against resting size recorded in the official order book.',
+  };
+}
+
+/**
+ * Maker fill. A resting order only fills when the market actually trades through its price.
+ * The caller must supply evidence of that (the observed best offer moving through the resting
+ * price) plus the depth that existed at or better than the resting price. Queue position is not
+ * modelled, and the trade is flagged as modelled rather than observed.
+ */
+export function simulateEventContractMakerFill({ contracts, restingPrice, availableAtPrice, feeMultiplier = 0, feePrecision = 2, referencePrice = null, tradeThroughEvidence }) {
+  const filled = Math.max(0, Math.min(contracts, Math.floor(availableAtPrice ?? 0)));
+  const feeUsd = filled > 0 ? kalshiMakerFee({ contracts: filled, price: restingPrice, multiplier: feeMultiplier, precision: feePrecision }) : 0;
+  const slippagePerContract = referencePrice != null ? Number((restingPrice - referencePrice).toFixed(6)) : null;
+  return {
+    order_type: 'maker',
+    execution_model: 'resting_order_filled_when_market_traded_through_price',
+    requested: contracts,
+    filled,
+    unfilled: contracts - filled,
+    vwap: filled > 0 ? restingPrice : null,
+    best_price: restingPrice,
+    worst_price: restingPrice,
+    notional_usd: filled > 0 ? Number((filled * restingPrice).toFixed(6)) : 0,
+    levels: filled > 0 ? [{ price: restingPrice, contracts: filled, source: 'resting maker order' }] : [],
+    fee_usd: feeUsd,
+    fee_model: `official Kalshi maker formula roundup(${feeMultiplier} x 0.0175 x contracts x price x (1-price)) - multiplier is 0 unless the series fee_type indicates maker fees`,
+    reference_price: referencePrice,
+    slippage_per_contract_usd: slippagePerContract,
+    slippage_usd: slippagePerContract != null ? Number((slippagePerContract * filled).toFixed(6)) : null,
+    modelled: true,
+    trade_through_evidence: tradeThroughEvidence ?? null,
+    note: 'Modelled maker fill: queue position is not observable from public data, so this fill is reported as modelled and is excluded from "observed execution" statistics.',
+  };
+}
+
+/** Quote-based fill for MOEX futures and Kalshi perps: you pay the exchange offer, you sell at the exchange bid. */
+export function simulateQuoteFill({ action, side, contracts, bid, offer, tickSize = null, feeUsd = null, feeModel = null, availableLiquidity = null }) {
+  const price = action === 'buy' ? offer : bid;
+  const mid = bid != null && offer != null ? Number(((bid + offer) / 2).toFixed(8)) : null;
+  const slippagePerContract = mid != null && price != null ? Number(((action === 'buy' ? price - mid : mid - price)).toFixed(8)) : null;
+  return {
+    order_type: 'taker',
+    execution_model: 'quote_based_fill_at_official_bid_offer',
+    requested: contracts,
+    filled: price != null ? contracts : 0,
+    unfilled: price != null ? 0 : contracts,
+    vwap: price ?? null,
+    best_price: price ?? null,
+    worst_price: price ?? null,
+    mid_price: mid,
+    notional_usd: null, // filled in by the caller once the contract's USD value per price unit is known
+    levels: price != null ? [{ price, contracts, source: action === 'buy' ? 'official exchange best offer' : 'official exchange best bid' }] : [],
+    fee_usd: feeUsd,
+    fee_model: feeModel,
+    reference_price: mid,
+    slippage_per_contract_usd: slippagePerContract,
+    slippage_usd: slippagePerContract != null ? Number((slippagePerContract * contracts).toFixed(6)) : null,
+    tick_size: tickSize,
+    available_liquidity: availableLiquidity,
+    note:
+      'The exchange publishes a best bid/offer (and, for MOEX, volume and open interest) but no per-level depth, so the fill is at the quoted price and the size is capped by an explicit share of the exchange-published liquidity. This is a modelled fill, not an observed execution.',
+  };
+}
+
+/* ------------------------------------------------------------------ ledger ids */
 
 export function tradeId(...parts) {
   return createHash('sha256').update(parts.join('|')).digest('hex').slice(0, 20);
 }
 
-export function newPortfolio(strategy, startingCashUsd) {
+/* ------------------------------------------------------------------ books */
+
+/** Build the tradable ladders a Kalshi book implies (official semantics: bids are published, asks are implied). */
+export function buildEventContractLadders(book) {
+  const yes = [...(book.yes ?? [])].sort((a, b) => b.price - a.price);
+  const no = [...(book.no ?? [])].sort((a, b) => b.price - a.price);
+  const bestYesBid = yes.length ? yes[0].price : null;
+  const bestNoBid = no.length ? no[0].price : null;
+  const bestYesAsk = bestNoBid != null ? Number((1 - bestNoBid).toFixed(6)) : null;
+  const bestNoAsk = bestYesBid != null ? Number((1 - bestYesBid).toFixed(6)) : null;
+  const buyYesLevels = no.map((l) => ({ price: Number((1 - l.price).toFixed(6)), contracts: l.contracts, source: `implied from resting NO bid at ${l.price}` }));
+  const buyNoLevels = yes.map((l) => ({ price: Number((1 - l.price).toFixed(6)), contracts: l.contracts, source: `implied from resting YES bid at ${l.price}` }));
+  // Exits: selling a YES position hits the published YES bids; selling NO hits the published NO bids.
+  const sellYesLevels = yes.map((l) => ({ price: l.price, contracts: l.contracts, source: 'published YES bid' }));
+  const sellNoLevels = no.map((l) => ({ price: l.price, contracts: l.contracts, source: 'published NO bid' }));
   return {
-    strategy_id: strategy.id,
-    username: strategy.username,
+    best_yes_bid: bestYesBid,
+    best_yes_ask: bestYesAsk,
+    best_no_bid: bestNoBid,
+    best_no_ask: bestNoAsk,
+    mid: bestYesBid != null && bestYesAsk != null ? Number(((bestYesBid + bestYesAsk) / 2).toFixed(6)) : null,
+    spread: bestYesBid != null && bestYesAsk != null ? Number((bestYesAsk - bestYesBid).toFixed(6)) : null,
+    buy_yes_levels: buyYesLevels,
+    buy_no_levels: buyNoLevels,
+    sell_yes_levels: sellYesLevels,
+    sell_no_levels: sellNoLevels,
+    depth_yes_contracts: yes.reduce((sum, l) => sum + l.contracts, 0),
+    depth_no_contracts: no.reduce((sum, l) => sum + l.contracts, 0),
+    book_side_semantics:
+      'Kalshi publishes resting bids only. A YES bid at x is identical to a NO offer at (1 - x), so the ladders above are derived, not guessed.',
+  };
+}
+
+/* ------------------------------------------------------------------ portfolio */
+
+export function newPortfolio({ strategyId, username, marketType, startingCashUsd, startedAt }) {
+  return {
+    strategy_id: strategyId,
+    username,
+    market_type: marketType,
+    started_at: startedAt,
     starting_cash_usd: startingCashUsd,
     cash_usd: startingCashUsd,
+    equity_usd: startingCashUsd,
     realized_pnl_usd: 0,
+    unrealized_pnl_usd: 0,
     fees_paid_usd: 0,
-    positions: {}, // key: instrument_id
-    trade_count: 0,
-    closed_trade_count: 0,
-    created_at: new Date().toISOString(),
+    slippage_paid_usd: 0,
+    open_positions: 0,
+    closed_trades: 0,
+    positions: {},
+    updated_at: startedAt,
   };
 }
 
-/* ------------------------------------------------------------------ */
-/* Event contracts (Kalshi binary, $1 notional per contract)           */
-/* ------------------------------------------------------------------ */
+/** Apply a fill to the portfolio. Returns nothing; mutates in place (state is written once per run). */
+export function applyFill(portfolio, trade) {
+  const { instrument_id: instrumentId, action, contracts, fill, side, outcome } = trade;
+  const price = fill.vwap;
+  const fee = fill.fee_usd ?? 0;
+  const notional = price != null ? Number((price * contracts * (trade.usd_per_price_unit ?? 1)).toFixed(6)) : 0;
+  portfolio.fees_paid_usd = Number(((portfolio.fees_paid_usd ?? 0) + fee).toFixed(6));
+  portfolio.slippage_paid_usd = Number(((portfolio.slippage_paid_usd ?? 0) + (fill.slippage_usd ?? 0)).toFixed(6));
 
-/**
- * Simulate a taker fill for a Kalshi event contract against a real order book snapshot.
- * @param {object} args
- * @param {object} args.book          parsed book (see kalshi.bookFromRaw)
- * @param {'yes'|'no'} args.outcome
- * @param {'buy'|'sell'} args.action
- * @param {number} args.contracts     desired contract count
- * @param {number|null} args.limitPrice
- * @param {number} args.feeMultiplier series fee_multiplier (official series metadata)
- * @param {object} args.quote         market quote record (for provenance/echo)
- */
-export function simulateEventContractFill({ book, outcome, action, contracts, limitPrice = null, feeMultiplier = 1, feePrecision = 2, walkBookForTaker }) {
-  const ladder = action === 'buy'
-    ? (outcome === 'yes' ? book.buyYesLevels : book.buyNoLevels)
-    : (outcome === 'yes' ? book.yesBids.slice().reverse() : book.noBids.slice().reverse());
-  const fill = walkBookForTaker({ book, outcome, action, contracts, limitPrice });
-  if (!fill) {
-    return {
-      filled: 0,
-      requested: contracts,
-      reason: ladder.length ? 'limit price excluded all available liquidity' : 'no resting liquidity on the required side',
-      levels: [],
-    };
-  }
-  const fee = kalshiTakerFee({ price: fill.vwap, contracts: fill.filled, multiplier: feeMultiplier, precision: feePrecision });
-  // Slippage must be measured in the SAME price space as the fill: a NO purchase at 0.98 is
-  // cheap when YES trades at 0.02, so the reference for a NO leg is (1 - YES mid).
-  const ref = book.mid == null ? null : outcome === 'yes' ? book.mid : Number((1 - book.mid).toFixed(6));
-  const slippage = ref != null ? Number(((fill.vwap - ref) * (action === 'buy' ? 1 : -1)).toFixed(6)) : null;
-  return {
-    ...fill,
-    fee_usd: fee,
-    fee_model: `kalshi_taker: roundup(${feeMultiplier} * 0.07 * C * P * (1-P)) @ precision ${feePrecision} decimals`,
-    reference_price: ref,
-    reference_note:
-      ref == null
-        ? 'reference mid unavailable (one-sided book at snapshot)'
-        : outcome === 'yes'
-          ? 'reference = book mid (best YES bid + best YES ask) / 2 from the same snapshot'
-          : 'reference = implied NO mid = 1 - YES mid from the same snapshot',
-    slippage_per_contract_usd: slippage,
-    slippage_usd: slippage == null ? null : Number((slippage * fill.filled).toFixed(6)),
-  };
-}
-
-/** Maker fill model: assumes our resting order is filled only if the book trades through it. */
-export function simulateEventContractMakerFill({ book, outcome, action, contracts, restingPrice, feeMultiplier = 0, feePrecision = 2 }) {
-  const bestOpposing = action === 'buy'
-    ? (outcome === 'yes' ? book.bestYesAsk : book.bestNoAsk)
-    : (outcome === 'yes' ? book.bestYesBid : book.bestNoBid);
-  const crosses = bestOpposing != null && (action === 'buy' ? restingPrice >= bestOpposing : restingPrice <= bestOpposing);
-  if (crosses) {
-    return {
-      filled: 0,
-      requested: contracts,
-      reason: 'resting price crossed the book at snapshot time, so it would have been a taker order; excluded from maker model',
-      levels: [],
-    };
-  }
-  const depth = action === 'buy'
-    ? (outcome === 'yes' ? book.noDepthContracts : book.yesDepthContracts)
-    : (outcome === 'yes' ? book.yesDepthContracts : book.noDepthContracts);
-  const fillable = Math.min(contracts, depth);
-  if (fillable <= 0) {
-    return { filled: 0, requested: contracts, reason: 'no opposing depth available to trade against a resting order', levels: [] };
-  }
-  const fee = kalshiMakerFee({ price: restingPrice, contracts: fillable, multiplier: feeMultiplier, precision: feePrecision });
-  return {
-    filled: fillable,
-    requested: contracts,
-    unfilled: contracts - fillable,
-    vwap: restingPrice,
-    worstPrice: restingPrice,
-    bestPrice: restingPrice,
-    notional_usd: Number((restingPrice * fillable).toFixed(6)),
-    levels: [{ price: restingPrice, contracts: fillable, derived_from: 'maker model: resting order filled from opposing depth' }],
-    fee_usd: fee,
-    fee_model: `kalshi_maker: roundup(${feeMultiplier} * 0.0175 * C * P * (1-P)) @ precision ${feePrecision} decimals`,
-    reference_price: book.mid,
-    slippage_per_contract_usd: 0,
-    slippage_usd: 0,
-    maker_model_note:
-      'Maker fills are modelled conservatively: size is capped at the opposing depth visible in the snapshot and no queue-position advantage is assumed. Real maker fills require queue simulation and are flagged as modelled, not observed.',
-  };
-}
-
-/* ------------------------------------------------------------------ */
-/* Futures (linear, quoted in the contract face currency)              */
-/* ------------------------------------------------------------------ */
-
-/**
- * Simulate a futures fill from an official exchange quote.
- * @param {object} args
- * @param {'buy'|'sell'} args.action
- * @param {number} args.contracts
- * @param {number|null} args.bid   official best bid (0/null if none)
- * @param {number|null} args.offer official best offer
- * @param {number} args.lotVolume  units per contract (official LOTVOLUME)
- * @param {number|null} args.depthContracts liquidity cap used (see liquidity_model)
- */
-export function simulateFuturesFill({ action, contracts, bid, offer, lotVolume, feePerContract = null, feeCurrency = null, tickSize = null }) {
-  const price = action === 'buy' ? offer : bid;
-  if (price == null) {
-    return { filled: 0, requested: contracts, reason: `official ${action === 'buy' ? 'offer' : 'bid'} missing in the exchange quote`, levels: [] };
-  }
-  const units = (lotVolume ?? 1) * contracts;
-  const mid = bid != null && offer != null ? (bid + offer) / 2 : null;
-  const slippage = mid == null ? null : Number(((price - mid) * (action === 'buy' ? 1 : -1)).toFixed(8));
-  const feeTotal = feePerContract == null ? null : Number((feePerContract * contracts).toFixed(6));
-  return {
-    filled: contracts,
-    requested: contracts,
-    unfilled: 0,
-    vwap: price,
-    worstPrice: price,
-    bestPrice: price,
-    levels: [{ price, contracts, derived_from: `official exchange ${action === 'buy' ? 'best offer' : 'best bid'} at snapshot` }],
-    units,
-    reference_price: mid,
-    tick_size: tickSize,
-    slippage_per_contract: slippage,
-    slippage_cost_quote_ccy: slippage == null ? null : Number((slippage * units).toFixed(8)),
-    fee_total_quote_ccy: feeTotal,
-    fee_currency: feeCurrency,
-    fee_model: feePerContract == null ? 'exchange fee not published in the quote payload for this contract; recorded as null' : 'exchange-published per-contract fee (MOEX BUYSELLFEE) × contracts',
-  };
-}
-
-/* ------------------------------------------------------------------ */
-/* Position lifecycle                                                  */
-/* ------------------------------------------------------------------ */
-
-export function upsertPosition(portfolio, instrumentId, patch) {
   const existing = portfolio.positions[instrumentId];
-  portfolio.positions[instrumentId] = { ...(existing ?? {}), ...patch };
-  return portfolio.positions[instrumentId];
-}
+  const signedDelta = action === 'buy' ? contracts : -contracts;
 
-export function applyEventContractOpen(portfolio, { feeUsd, costUsd }) {
-  portfolio.cash_usd = Number((portfolio.cash_usd - costUsd - feeUsd).toFixed(6));
-  portfolio.fees_paid_usd = Number((portfolio.fees_paid_usd + feeUsd).toFixed(6));
-  portfolio.trade_count += 1;
-}
-
-export function applyEventContractClose(portfolio, { proceedsUsd, feeUsd, realizedPnlUsd }) {
-  portfolio.cash_usd = Number((portfolio.cash_usd + proceedsUsd - feeUsd).toFixed(6));
-  portfolio.fees_paid_usd = Number((portfolio.fees_paid_usd + feeUsd).toFixed(6));
-  portfolio.realized_pnl_usd = Number((portfolio.realized_pnl_usd + realizedPnlUsd).toFixed(6));
-  portfolio.closed_trade_count += 1;
-}
-
-/** Mark-to-market for every open position using the latest verified quotes. */
-export function markToMarket(portfolio, quotesById) {
-  let unrealized = 0;
-  const marks = [];
-  for (const [instrumentId, pos] of Object.entries(portfolio.positions)) {
-    const q = quotesById[instrumentId];
-    if (!q) {
-      marks.push({ instrument_id: instrumentId, mark_status: 'no_quote_in_snapshot', unrealized_pnl_usd: null });
-      continue;
-    }
-    let mark = null;
-    let value = null;
-    if (pos.kind === 'event_contract') {
-      // Conservative mark: exit at the bid we could actually hit for our side.
-      mark = pos.outcome === 'yes' ? q.best_yes_bid : q.best_no_bid;
-      if (mark != null) {
-        value = Number(((mark - pos.avg_entry_price) * pos.contracts).toFixed(6));
-        unrealized += value;
-      }
-    } else if (pos.kind === 'perpetual') {
-      // Kalshi perps quote a dollar price PER CONTRACT (verified: gold perp bid 4.3498 with
-      // contract_size 0.001 oz, i.e. the quote already equals the contract's dollar value), so
-      // P&L per contract is simply the price change - no further multiplier.
-      mark = pos.side === 'long' ? q.bid : q.offer;
-      if (mark != null) {
-        value = Number(((mark - pos.avg_entry_price) * pos.contracts * (pos.side === 'short' ? -1 : 1)).toFixed(6));
-        unrealized += value;
-      }
-    } else if (pos.kind === 'future') {
-      mark = pos.side === 'long' ? q.bid : q.offer;
-      const multiplier = pos.usd_per_price_unit ?? pos.lot_volume ?? 1;
-      if (mark != null) {
-        value = Number(((mark - pos.avg_entry_price) * pos.contracts * multiplier * (pos.side === 'short' ? -1 : 1)).toFixed(6));
-        unrealized += value;
-      }
-    }
-    marks.push({
+  if (!existing) {
+    portfolio.positions[instrumentId] = {
       instrument_id: instrumentId,
-      mark_price: mark,
-      mark_basis: pos.kind === 'event_contract' ? 'best bid for the held outcome (conservative exit assumption)' : 'official exchange best bid/offer for the position side',
-      unrealized_pnl_usd: value,
-    });
-  }
-  portfolio.unrealized_pnl_usd = Number.isFinite(unrealized) ? Number(unrealized.toFixed(6)) : null;
-  const openValue = openPositionValue(portfolio, quotesById);
-  const equity = portfolio.cash_usd + openValue;
-  portfolio.equity_usd = Number.isFinite(equity) ? Number(equity.toFixed(6)) : null;
-  if (!Number.isFinite(equity)) {
-    portfolio.equity_status = 'not_computable_missing_verified_inputs';
-    portfolio.equity_note = 'At least one open position could not be valued from the current snapshot (missing verified quote or valuation multiplier); equity is left null instead of being estimated.';
+      venue: trade.venue_id,
+      ticker: trade.ticker,
+      kind: trade.instrument_kind,
+      side: side ?? (action === 'buy' ? 'long' : 'short'),
+      outcome: outcome ?? null,
+      contracts,
+      avg_entry_price: price,
+      entry_ts: trade.created_at,
+      entry_trade_id: trade.id,
+      entry_fee_usd: fee,
+      usd_per_price_unit: trade.usd_per_price_unit ?? 1,
+      market: {
+        exchange: trade.exchange,
+        series_ticker: trade.series_ticker ?? null,
+        close_time: trade.market_dates?.close_time ?? null,
+        expiration_date: trade.market_dates?.expiration_date ?? null,
+        last_trade_date: trade.market_dates?.last_trade_date ?? null,
+      },
+      mark_price: null,
+      mark_source_url: null,
+      unrealized_pnl_usd: null,
+    };
   } else {
-    delete portfolio.equity_status;
-    delete portfolio.equity_note;
+    const sameSide = (existing.side === 'long' && signedDelta > 0) || (existing.side === 'short' && signedDelta < 0);
+    const newContracts = existing.contracts + (existing.side === 'long' ? signedDelta : -signedDelta);
+    if (sameSide || newContracts > 0) {
+      const total = existing.contracts + Math.abs(signedDelta);
+      if (total > 0) existing.avg_entry_price = Number(((existing.avg_entry_price * existing.contracts + price * Math.abs(signedDelta)) / total).toFixed(8));
+      existing.contracts = Math.abs(newContracts);
+      existing.entry_fee_usd = Number(((existing.entry_fee_usd ?? 0) + fee).toFixed(6));
+    } else if (newContracts === 0) {
+      delete portfolio.positions[instrumentId];
+      portfolio.closed_trades += 1;
+    }
   }
-  portfolio.marks = marks;
+
+  // Paper cash: Kalshi event contracts and MOEX futures are fully funded here (no margin), the
+  // cash movement is the traded notional plus the fee. Perps are margined, so only the fee is
+  // deducted at entry and the P&L accrues as unrealised until the position is closed.
+  if (trade.instrument_kind !== 'perpetual') {
+    portfolio.cash_usd = Number((portfolio.cash_usd + (action === 'buy' ? -1 : 1) * notional - fee).toFixed(6));
+  } else {
+    portfolio.cash_usd = Number((portfolio.cash_usd - fee).toFixed(6));
+  }
   return portfolio;
 }
 
-/**
- * Value of open positions at liquidation prices (mark basis above). For event contracts the
- * position value is contracts × mark. For linear futures/perps it is the entry notional plus
- * unrealized PnL.
- */
-export function openPositionValue(portfolio, quotesById) {
-  let total = 0;
-  for (const [instrumentId, pos] of Object.entries(portfolio.positions)) {
-    const q = quotesById[instrumentId];
-    if (!q) continue;
-    if (pos.kind === 'event_contract') {
-      const mark = pos.outcome === 'yes' ? q.best_yes_bid : q.best_no_bid;
-      if (mark != null) total += mark * pos.contracts;
-    } else if (pos.kind === 'perpetual') {
-      // Perps are margined: cash is not reduced at entry, so only unrealised P&L is added.
-      const mark = pos.side === 'long' ? q.bid : q.offer;
-      if (mark != null) total += (mark - pos.avg_entry_price) * pos.contracts * (pos.side === 'short' ? -1 : 1);
-    } else if (pos.kind === 'future') {
-      const mark = pos.side === 'long' ? q.bid : q.offer;
-      const multiplier = pos.usd_per_price_unit ?? pos.lot_volume ?? 1;
-      if (mark != null) total += (mark - pos.avg_entry_price) * pos.contracts * multiplier * (pos.side === 'short' ? -1 : 1);
+/** Mark every open position from the latest verified snapshot. Missing quotes stay null, never faked. */
+export function markPortfolio(portfolio, quotesById) {
+  let unrealized = 0;
+  let openValue = 0;
+  let complete = true;
+  for (const position of Object.values(portfolio.positions ?? {})) {
+    const quote = quotesById[position.instrument_id];
+    position.mark_price = null;
+    position.mark_source_url = null;
+    position.unrealized_pnl_usd = null;
+    if (!quote) {
+      position.mark_status = 'no_quote_in_snapshot';
+      complete = false;
+      continue;
     }
+    let mark = null;
+    if (position.kind === 'event_contract') {
+      mark = position.outcome === 'yes' ? quote.best_yes_bid : quote.best_no_bid;
+    } else if (position.kind === 'future' || position.kind === 'perpetual') {
+      mark = position.side === 'long' ? quote.bid : quote.offer;
+    }
+    if (mark == null) {
+      position.mark_status = 'one_sided_book_no_exit_price';
+      complete = false;
+      continue;
+    }
+    const multiplier = position.usd_per_price_unit ?? 1;
+    const sign = position.side === 'short' || position.outcome === 'no' ? 1 : 1;
+    let pnl;
+    if (position.kind === 'event_contract') {
+      pnl = (mark - position.avg_entry_price) * position.contracts;
+      openValue += mark * position.contracts;
+    } else if (position.kind === 'perpetual') {
+      pnl = (mark - position.avg_entry_price) * position.contracts * (position.side === 'short' ? -1 : 1);
+      openValue += pnl;
+    } else {
+      pnl = (mark - position.avg_entry_price) * position.contracts * multiplier * (position.side === 'short' ? -1 : 1);
+      openValue += 0;
+    }
+    position.mark_price = mark;
+    position.mark_status = position.kind === 'event_contract' ? 'exit_at_bid_conservative' : position.side === 'long' ? 'long_marked_at_bid' : 'short_marked_at_offer';
+    position.mark_source_url = quote.source?.url ?? null;
+    position.unrealized_pnl_usd = Number(pnl.toFixed(6));
+    unrealized += pnl;
+    void sign;
   }
-  return total;
+
+  portfolio.open_positions = Object.keys(portfolio.positions ?? {}).length;
+  portfolio.unrealized_pnl_usd = Number(unrealized.toFixed(6));
+  const equity = portfolio.cash_usd + openValue;
+  portfolio.equity_usd = complete || portfolio.open_positions === 0 ? Number(equity.toFixed(6)) : portfolio.equity_usd ?? null;
+  portfolio.equity_complete = complete;
+  portfolio.updated_at = new Date().toISOString();
+  return portfolio;
 }
 
 export function returnPct(portfolio) {
+  if (!portfolio.equity_usd || !portfolio.starting_cash_usd) return null;
   return Number((((portfolio.equity_usd - portfolio.starting_cash_usd) / portfolio.starting_cash_usd) * 100).toFixed(4));
+}
+
+/* ------------------------------------------------------------------ settlement */
+
+/**
+ * Settlement of an expired Kalshi event contract. The settlement result is taken from the
+ * exchange's own market record (market.result). If the exchange has not published a result the
+ * position is left open and flagged - the simulator never guesses an outcome.
+ */
+export function settlePosition({ portfolio, position, result, settledAt, marketRecordUrl, marketRecordSha256, expiry }) {
+  if (position.kind !== 'event_contract') return null;
+  if (result !== 'yes' && result !== 'no') return null;
+  const won = position.outcome === result;
+  const payout = won ? position.contracts : 0;
+  const pnl = Number((payout - position.avg_entry_price * position.contracts - (position.entry_fee_usd ?? 0)).toFixed(6));
+  portfolio.cash_usd = Number((portfolio.cash_usd + payout).toFixed(6));
+  portfolio.realized_pnl_usd = Number(((portfolio.realized_pnl_usd ?? 0) + pnl).toFixed(6));
+  portfolio.closed_trades += 1;
+  delete portfolio.positions[position.instrument_id];
+  return {
+    instrument_id: position.instrument_id,
+    ticker: position.ticker,
+    outcome_held: position.outcome,
+    result,
+    payout_usd: Number(payout.toFixed(6)),
+    pnl_usd: pnl,
+    settled_at: settledAt,
+    expiration: expiry ?? null,
+    settlement_source_url: marketRecordUrl ?? null,
+    settlement_source_sha256: marketRecordSha256 ?? null,
+  };
 }
