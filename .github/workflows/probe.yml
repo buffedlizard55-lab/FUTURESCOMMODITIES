@@ -6,46 +6,67 @@ on:
 permissions:
   contents: write
 jobs:
-  probe:
+  probe3:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: probe official endpoints
+      - name: probe3
         run: |
           mkdir -p probe
-          OUT=probe/results2.txt
-          : > $OUT
-          probe () {
-            echo "===== $1" >> $OUT
-            code=$(curl -s -o /tmp/o -w "%{http_code}" -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36" -H "Accept: application/json,text/html,*/*" --max-time 25 "$1" || echo ERR)
-            echo "HTTP $code bytes=$(wc -c </tmp/o 2>/dev/null || echo 0)" >> $OUT
-            head -c 350 /tmp/o >> $OUT 2>/dev/null || true
-            echo >> $OUT; echo >> $OUT
-          }
-          # --- official futures / commodity exchanges & government sources ---
-          probe "https://arquivos.b3.com.br/apinegocios/tickers"
-          probe "https://www.shfe.com.cn/data/dailydata/kx/kx20260922.dat"
-          probe "http://www.czce.com.cn/cn/DFSStaticFiles/Future/2026/20260922/FutureDataDaily.json"
-          probe "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json?iss.meta=off&iss.only=securities&securities.columns=SECID,SHORTNAME,LASTPRICE"
-          probe "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"
-          probe "https://api.sgx.com/derivatives/v1.0/contracts"
-          probe "https://www.eurex.com/api/v1/derivatives-daily-prices?limit=1"
-          probe "https://www.lme.com/api/prices"
-          probe "https://www.jpx.co.jp/english/markets/statistics-derivatives/futures/01.html"
-          # --- kalshi public data surfaces ---
-          probe "https://api.elections.kalshi.com/trade-api/v2/exchange/schedule"
-          probe "https://api.elections.kalshi.com/trade-api/v2/historical/markets?limit=2"
-          probe "https://api.elections.kalshi.com/trade-api/v2/series/KXWTI"
-          probe "https://api.elections.kalshi.com/trade-api/v2/markets/trades?limit=2"
-          TICK=$(curl -s --max-time 20 "https://api.elections.kalshi.com/trade-api/v2/markets?status=open&limit=1&series_ticker=KXWTI" | python3 -c "import sys,json;print(json.load(sys.stdin)['markets'][0]['ticker'])" 2>/dev/null || echo "")
-          echo "ticker=$TICK" >> $OUT
-          if [ -n "$TICK" ]; then
-            probe "https://api.elections.kalshi.com/trade-api/v2/markets/$TICK/orderbook"
-            probe "https://api.elections.kalshi.com/trade-api/v2/markets/$TICK/candlesticks?start_ts=1789000000&end_ts=1791000000&period_interval=60"
-          fi
-          probe "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=50"
-          git config user.name "probe-bot"
-          git config user.email "probe@users.noreply.github.com"
-          git add probe/results2.txt
-          git commit -m "probe: results2 [skip ci]" || true
+          K="https://api.elections.kalshi.com/trade-api/v2"
+          : > probe/results3.txt
+          echo "=== CORS headers (browser access test)" >> probe/results3.txt
+          curl -s -D - -o /dev/null -H "Origin: https://buffedlizard55-lab.github.io" --max-time 20 "$K/markets?limit=1" | grep -i -E "access-control|^HTTP" >> probe/results3.txt || true
+          echo "=== series (all categories)" >> probe/results3.txt
+          python3 - <<'PY'
+          import json,urllib.request,collections
+          K="https://api.elections.kalshi.com/trade-api/v2"
+          def get(u):
+              r=urllib.request.Request(u,headers={"User-Agent":"research-probe/1.0"})
+              return json.load(urllib.request.urlopen(r,timeout=30))
+          out={}
+          for cat in ["Commodities","Financials","Economics","Crypto","Climate and Weather","World"]:
+              try:
+                  d=get(f"{K}/series?category={urllib.parse.quote(cat)}")
+                  out[cat]=[{"ticker":s["ticker"],"title":s["title"],"frequency":s.get("frequency"),"tags":s.get("tags"),"settlement_sources":s.get("settlement_sources")} for s in d.get("series",[])]
+              except Exception as e:
+                  out[cat]=f"ERROR {e}"
+          json.dump(out,open("probe/kalshi_series.json","w"),indent=1)
+          print("series counts:",{k:(len(v) if isinstance(v,list) else v) for k,v in out.items()})
+          try:
+              m=get(f"{K}/margin/markets?limit=200")
+              json.dump(m,open("probe/kalshi_margin.json","w"),indent=1)
+              print("margin tickers:",[x.get("ticker") for x in m.get("markets",[])][:40])
+          except Exception as e: print("margin err",e)
+          PY
+          python3 - <<'PY'
+          import json,urllib.request,re
+          def get(u,hdr=None):
+              r=urllib.request.Request(u,headers=hdr or {"User-Agent":"Mozilla/5.0"})
+              return urllib.request.urlopen(r,timeout=25).read()
+          res={}
+          # MOEX FORTS commodity futures
+          try:
+              b=get("https://iss.moex.com/iss/engines/futures/markets/forts/securities.json?iss.meta=off&iss.only=securities&securities.columns=SECID,SHORTNAME,ASSETCODE,LASTTRADEDATE")
+              d=json.loads(b)["securities"]
+              rows=[dict(zip(d["columns"],r)) for r in d["data"]]
+              kw=re.compile(r"GOLD|SILV|PLAT|PALL|WHEAT|SUGAR|CORN|OIL|BRENT|GAS|COPPER|NICKEL|ALUM|COCOA|COFFEE|COTTON|SOY|BARLEY|PLT|SLV",re.I)
+              res["moex_commodity_like"]=[r for r in rows if kw.search(str(r.get("SHORTNAME",""))+str(r.get("ASSETCODE",""))) or kw.search(str(r.get("SECID","")))]
+              res["moex_total"]=len(rows)
+              res["moex_sample"]=rows[:5]
+          except Exception as e: res["moex"]=f"ERR {e}"
+          for name,u in [("fred_csv","https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"),
+                         ("eia_keyless","https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls"),
+                         ("b3_settle","https://arquivos.b3.com.br/apinegocios/ticker/DI1"),
+                         ("sgx_deriv","https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=code&value=TF"),
+                         ("usda_ams","https://mpr.datamart.ams.usda.gov/services/v1.1/reports?q=livestock"),
+                         ("kalshi_fees","https://kalshi.com/docs/kalshi-fee-schedule.pdf")]:
+              try:
+                  b=get(u); res[name]={"status":"ok","bytes":len(b),"head":b[:120].decode("utf8","ignore")}
+              except Exception as e: res[name]=f"ERR {e}"
+          json.dump(res,open("probe/sources.json","w"),indent=1,default=str)
+          print(json.dumps({k:(v if isinstance(v,str) else (v.get("status") if isinstance(v,dict) else len(v))) for k,v in res.items()},indent=1)[:2000])
+          PY
+          git config user.name "probe-bot"; git config user.email "probe@users.noreply.github.com"
+          git add -A && git commit -m "probe: harvest kalshi universe + sources [skip ci]" || true
           git push || true
