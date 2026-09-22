@@ -59,12 +59,21 @@ export async function moexHistory(secid, { from, till } = {}) {
   return { ok: true, secid, rows: table(res.json, 'history'), provenance: res.provenance };
 }
 
-/** Reference data (FACEUNIT, LOTSIZE, LISTLEVEL, ...) used to value PnL correctly. */
+/**
+ * Reference data for a security. The `description` table is the authoritative place where
+ * MOEX publishes FACEUNIT (the contract's face currency) and other contract facts; the
+ * `securities` table alone does not carry FACEUNIT for FORTS contracts.
+ */
 export async function moexSecurityRef(secid) {
   const url = `${MOEX_ISS}/securities/${encodeURIComponent(secid)}.json?iss.meta=off`;
-  const res = await fetchJson(url, { note: `MOEX ISS security reference data for ${secid}` });
+  const res = await fetchJson(url, { note: `MOEX ISS security reference data (incl. FACEUNIT) for ${secid}` });
   if (!res.ok) return { ok: false, secid, provenance: res.provenance };
-  return { ok: true, secid, rows: table(res.json, 'securities'), provenance: res.provenance };
+  const descriptionRows = table(res.json, 'description');
+  const description = {};
+  for (const r of descriptionRows) {
+    if (r.name != null) description[r.name] = r.value;
+  }
+  return { ok: true, secid, rows: table(res.json, 'securities'), description, provenance: res.provenance };
 }
 
 /** All FORTS contracts currently listed (used to discover the commodity universe). */
@@ -84,11 +93,11 @@ export async function moexFortsSecurities() {
  * Contracts quoted in RUB (e.g. RUB-denominated WHEAT/SUGAR) are flagged for FX conversion
  * rather than silently converted.
  */
-export function classifyMoexContract({ security, marketdata, ref }) {
-  const faceunit = (ref?.FACEUNIT || security?.FACEUNIT || '').toUpperCase() || null;
+export function classifyMoexContract({ security, marketdata, ref, description }) {
+  const faceunit = (description?.FACEUNIT || ref?.FACEUNIT || security?.FACEUNIT || '').toUpperCase() || null;
   const lotvolume = Number(security?.LOTVOLUME ?? ref?.LOTSIZE ?? NaN);
   const minstep = Number(security?.MINSTEP ?? NaN);
-  const settleref = Number(ref?.SETTLEDATE ? 1 : 1);
+  const minstepOk = Number.isFinite(minstep) && minstep > 0 ? minstep : null;
   return {
     secid: security?.SECID,
     shortname: security?.SHORTNAME,
@@ -98,11 +107,11 @@ export function classifyMoexContract({ security, marketdata, ref }) {
     lot_volume: Number.isFinite(lotvolume) ? lotvolume : null,
     min_step: Number.isFinite(minstep) ? minstep : null,
     currency_quoted: faceunit,
-    pnl_currency_ready: faceunit === 'USD',
+    pnl_currency_ready: null, // decided in the tick, once the official FX rate is available
     settlement_currency_note:
-      faceunit === 'USD'
-        ? 'Contract is quoted in USD (FACEUNIT=USD per official MOEX reference data): PnL computed directly in USD.'
-        : `Contract face currency is ${faceunit ?? 'unknown'}; USD PnL requires an official FX conversion step (not applied automatically).`,
+      faceunit == null
+        ? 'Face currency not published in the retrieved MOEX reference data; USD valuation will be derived from the official STEPPRICE/MINSTEP fields plus the MOEX USD/RUB rate, or the instrument is skipped.'
+        : `Face currency reported by MOEX as ${faceunit}; USD valuation derived from the official STEPPRICE/MINSTEP fields plus the MOEX USD/RUB rate.`,
     quote: marketdata
       ? {
           bid: num(marketdata.BID),
@@ -129,6 +138,15 @@ export function classifyMoexContract({ security, marketdata, ref }) {
       exercise_fee_rub: num(security?.EXERCISEFEE),
       initial_margin_rub: num(security?.INITIALMARGIN),
       step_price_rub: num(security?.STEPPRICE),
+    },
+    // Official valuation inputs: STEPPRICE is the RUB value of one MINSTEP move, so the USD
+    // value of a one-unit price move is (STEPPRICE / MINSTEP) / USD_RUB. No assumption needed
+    // about lot sizes or quote currency - it comes straight from the exchange's own fields.
+    valuation_inputs: {
+      min_step: minstepOk,
+      step_price_rub: num(security?.STEPPRICE),
+      faceunit,
+      description_fields: description ?? null,
     },
   };
 }

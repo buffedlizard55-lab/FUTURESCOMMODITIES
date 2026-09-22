@@ -8,19 +8,68 @@
     "keyword (regex, case-insensitive) is matched against '<ticker> <title>'."
   ],
   "kalshi": {
-    "categories": ["Commodities", "Economics", "Financials", "Crypto"],
+    "categories": [
+      "Commodities",
+      "Economics",
+      "Financials",
+      "Crypto"
+    ],
     "series_rules": [
-      { "id": "energy", "group": "Energy", "keyword": "WTI|BRENT|CRUDE|NATGAS|NATURAL GAS|GASOLINE|DIESEL|HEATING OIL|PROPANE|POWER|ELECTRIC" },
-      { "id": "precious", "group": "Precious Metals", "keyword": "GOLD|SILVER|PLATINUM|PALLADIUM" },
-      { "id": "base", "group": "Industrial Metals", "keyword": "COPPER|ALUMIN|NICKEL|ZINC|LEAD|STEEL|LITHIUM" },
-      { "id": "grains", "group": "Grains & Oilseeds", "keyword": "CORN|WHEAT|SOY|OATS|RICE|CANOLA" },
-      { "id": "softs", "group": "Soft Commodities", "keyword": "COFFEE|COCOA|SUGAR|COTTON|ORANGE" },
-      { "id": "livestock", "group": "Livestock & Dairy", "keyword": "CATTLE|HOG|PORK|MILK|BUTTER|CHEESE|WHEY|FEEDER" },
-      { "id": "carbon", "group": "Carbon & Environment", "keyword": "CARBON|EMISSION|CREDIT|RIN|RGGI" },
-      { "id": "equity_index", "group": "Equity Index", "keyword": "S&P|SP500|NASDAQ|DOW|RUSSELL" },
-      { "id": "rates", "group": "Interest Rates", "keyword": "FED|RATE|CPI|INFLATION|TREASURY|YIELD" },
-      { "id": "fx", "group": "FX", "keyword": "EUR/USD|USD/JPY|DOLLAR|EURO|YEN" },
-      { "id": "crypto", "group": "Crypto", "keyword": "BITCOIN|BTC|ETHEREUM|ETH|SOLANA|XRP" }
+      {
+        "id": "energy",
+        "group": "Energy",
+        "keyword": "WTI|BRENT|CRUDE|NATGAS|NATURAL GAS|GASOLINE|DIESEL|HEATING OIL|PROPANE|POWER|ELECTRIC"
+      },
+      {
+        "id": "precious",
+        "group": "Precious Metals",
+        "keyword": "GOLD|SILVER|PLATINUM|PALLADIUM"
+      },
+      {
+        "id": "base",
+        "group": "Industrial Metals",
+        "keyword": "COPPER|ALUMIN|NICKEL|ZINC|LEAD|STEEL|LITHIUM"
+      },
+      {
+        "id": "grains",
+        "group": "Grains & Oilseeds",
+        "keyword": "CORN|WHEAT|SOY|OATS|RICE|CANOLA"
+      },
+      {
+        "id": "softs",
+        "group": "Soft Commodities",
+        "keyword": "COFFEE|COCOA|SUGAR|COTTON|ORANGE"
+      },
+      {
+        "id": "livestock",
+        "group": "Livestock & Dairy",
+        "keyword": "CATTLE|HOG|PORK|MILK|BUTTER|CHEESE|WHEY|FEEDER"
+      },
+      {
+        "id": "carbon",
+        "group": "Carbon & Environment",
+        "keyword": "CARBON|EMISSION|CREDIT|RIN|RGGI"
+      },
+      {
+        "id": "equity_index",
+        "group": "Equity Index",
+        "keyword": "S&P|SP500|NASDAQ|DOW|RUSSELL"
+      },
+      {
+        "id": "rates",
+        "group": "Interest Rates",
+        "keyword": "FED|RATE|CPI|INFLATION|TREASURY|YIELD"
+      },
+      {
+        "id": "fx",
+        "group": "FX",
+        "keyword": "EUR/USD|USD/JPY|DOLLAR|EURO|YEN"
+      },
+      {
+        "id": "crypto",
+        "group": "Crypto",
+        "keyword": "BITCOIN|BTC|ETHEREUM|ETH|SOLANA|XRP"
+      }
     ],
     "exclude_keyword": "NBA|NFL|MLB|WNBA|NHL|TENNIS|OSCAR|EMMY|GRAMMY|ELECTION|PRESIDENT|GAME|MATCH|ALBUM|MOVIE",
     "max_series": 60,
@@ -29,28 +78,90 @@
     "quote_orderbooks_for": "top_by_volume_and_spread"
   },
   "kalshi_margin_perps": {
-    "include_asset_classes": ["Commodities", "Metals", "Crypto"],
+    "include_asset_classes": [
+      "Commodities",
+      "Metals",
+      "Crypto"
+    ],
     "max_quoted": 12
   },
   "moex": {
     "enabled": true,
-    "asset_codes": ["GOLD", "SILV", "PLT", "PLTM", "SLV", "COPPER", "NICKEL", "ALUM", "COCOA", "COFFEE", "SUGAR", "WHEAT", "AI92", "AI95"],
+    "asset_codes": [
+      "GOLD",
+      "SILV",
+      "PLT",
+      "PLTM",
+      "SLV",
+      "COPPER",
+      "NICKEL",
+      "ALUM",
+      "COCOA",
+      "COFFEE",
+      "SUGAR",
+      "WHEAT",
+      "AI92",
+      "AI95"
+    ],
     "max_contracts_per_asset": 2,
     "board": "RFUD"
   },
   "benchmarks": {
-    "eia": {
+    "fred": {
       "enabled": true,
+      "note": "Federal Reserve Bank of St. Louis FRED CSV downloads (keyless, official US central-bank publication). The two series below are the EIA spot series re-published by FRED, so attribution names both.",
       "series": [
-        { "id": "RCLC1", "name": "Cushing OK WTI spot price FOB (daily, official EIA)", "page": "https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=RCLC1&f=D" },
-        { "id": "RNGWHHD", "name": "Henry Hub natural gas spot price (daily, official EIA)", "page": "https://www.eia.gov/dnav/ng/hist/LeafHandler.ashx?n=NG&s=RNGWHHD&f=D" }
+        {
+          "id": "DCOILWTICO",
+          "alias": "RCLC1",
+          "name": "Cushing, OK WTI spot price FOB (EIA series RCLC1, published by FRED)",
+          "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"
+        },
+        {
+          "id": "DHHNGSP",
+          "alias": "RNGWHHD",
+          "name": "Henry Hub natural gas spot price (EIA series RNGWHHD, published by FRED)",
+          "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DHHNGSP"
+        }
+      ]
+    },
+    "eia_reference": {
+      "enabled": false,
+      "status": "documented_not_automated",
+      "reason": "EIA publishes the NYMEX futures table only as XLS (BIFF) plus an HTML weekly-pivot view, and explicitly stops futures prices after 2024-04-05. Spot benchmarks are therefore taken from FRED (same EIA series) and the raw XLS URLs are kept here for manual review.",
+      "series": [
+        {
+          "id": "RCLC1",
+          "name": "Cushing OK WTI spot price FOB (daily)",
+          "xls": "https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls"
+        },
+        {
+          "id": "RNGWHHD",
+          "name": "Henry Hub natural gas spot price (daily)",
+          "xls": "https://www.eia.gov/dnav/ng/hist_xls/RNGWHHDd.xls"
+        },
+        {
+          "id": "PET_PRI_FUT_S1_D",
+          "name": "NYMEX futures prices (discontinued after 2024-04-05)",
+          "page": "https://www.eia.gov/dnav/pet/pet_pri_fut_s1_d.htm"
+        }
       ]
     },
     "usda_ams": {
       "enabled": true,
       "reports": [
-        { "slug_id": 2453, "name": "National Daily Boxed Beef Cutout & Boxed Beef Cuts - Negotiated Sales", "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports" },
-        { "slug_id": 2466, "name": "5 Area Daily Weighted Average Direct Slaughter Cattle - Negotiated", "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports" }
+        {
+          "slug_id": 2453,
+          "name": "National Daily Boxed Beef Cutout & Boxed Beef Cuts - Negotiated Sales",
+          "url": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports/2453",
+          "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports"
+        },
+        {
+          "slug_id": 2466,
+          "name": "5 Area Daily Weighted Average Direct Slaughter Cattle - Negotiated",
+          "url": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports/2466",
+          "list_endpoint": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports"
+        }
       ]
     }
   }

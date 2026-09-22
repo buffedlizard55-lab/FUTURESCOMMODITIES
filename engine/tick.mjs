@@ -16,7 +16,7 @@
  */
 
 import { appendFileSync, readFileSync } from 'node:fs';
-import { KalshiClient, bookFromRaw, walkBookForTaker } from './lib/kalshi.mjs';
+import { KalshiClient, bookFromRaw, kalshiMakerFee, walkBookForTaker } from './lib/kalshi.mjs';
 import { moexHistory } from './lib/moex.mjs';
 import { fetchJson, nowIso } from './lib/http.mjs';
 import {
@@ -35,6 +35,7 @@ import {
 import { appendJsonlUnique, ensureDir, paths, readJson, readJsonl, writeJsonIfChanged } from './lib/store.mjs';
 import {
   collectEiaBenchmarks,
+  collectFredBenchmarks,
   collectKalshiInstruments,
   collectKalshiPerps,
   collectMoexInstruments,
@@ -110,12 +111,18 @@ async function main() {
   manifests.push(...notes.filter((n) => n.provenance).map((n) => n.provenance));
 
   /* ---------------------- 3. Benchmark publications --------------------- */
-  const benchmarks = OFFLINE ? {} : await collectEiaBenchmarks(WL.benchmarks?.eia, notes);
+  const benchmarks = OFFLINE
+    ? {}
+    : {
+        ...(await collectFredBenchmarks(WL.benchmarks?.fred, notes)),
+        ...(await collectEiaBenchmarks(WL.benchmarks?.eia, notes)),
+      };
   manifests.push(...notes.filter((n) => n.provenance).map((n) => n.provenance));
 
   /* --------------------------- 4. FX for RUB fees ----------------------- */
   const fx = OFFLINE ? null : await collectUsdRub(notes);
   if (fx?.provenance) manifests.push(fx.provenance);
+  annotateMoexValuation(moexRes.instruments, fx, notes);
 
   /* --------------------------- 5. Price history ------------------------- */
   const kalshiHistory = OFFLINE ? {} : await refreshKalshiHistory(kalshi, seriesRes.series, manifests, degraded);
@@ -131,6 +138,7 @@ async function main() {
   /* ----------------------------- 6. State ------------------------------- */
   const previousSnapshot = readJson(`${paths.snapshots}/latest.json`, null);
   const portfolios = readJson(`${paths.state}/portfolios.json`, null) ?? {};
+  const workingOrders = readJson(`${paths.state}/working_orders.json`, { orders: [] });
   const openingCash = KC.starting_cash_usd;
 
   for (const s of STRATEGIES) {
@@ -153,6 +161,12 @@ async function main() {
   const newTrades = [];
   const intents = [];
   const strategyActivity = [];
+
+  // 7a. Resting maker orders are resolved BEFORE new decisions: a resting order can only fill
+  // when the market trades through its price, which is stricter (and more honest) than filling
+  // it immediately against the snapshot.
+  const makerFills = processWorkingOrders({ workingOrders, ctx, portfolios, runId, newTrades, intents });
+  if (makerFills.length) strategyActivity.push({ step: 'working_orders', fills: makerFills });
 
   for (const strategy of STRATEGIES) {
     const portfolio = portfolios[strategy.id];
@@ -196,7 +210,7 @@ async function main() {
     }
 
     for (const ord of [...exitOrders, ...(decision.orders ?? [])]) {
-      const outcome = executeOrder({ ord, ctx, portfolio, runId, newTrades, intents });
+      const outcome = executeOrder({ ord, ctx, portfolio, runId, newTrades, intents, workingOrders });
       strategyActivity.push({ strategy_id: strategy.id, instrument_id: ord.instrument_id, ...outcome });
     }
 
@@ -399,6 +413,11 @@ async function main() {
     fx,
   });
   writeJsonIfChanged(`${paths.state}/portfolios.json`, portfolios);
+  writeJsonIfChanged(`${paths.state}/working_orders.json`, {
+    generated_at: nowIso(),
+    note: 'Resting (maker) orders that are live in the simulation. They fill only if a later snapshot shows the market trading through the resting price, capped by the depth available at that price.',
+    orders: workingOrders.orders.slice(-200),
+  });
   writeJsonIfChanged(`${paths.state}/leaderboard.json`, { generated_at: nowIso(), season: competitionState.season, leaderboard });
   writeJsonIfChanged(`${paths.state}/competition.json`, competitionState);
   writeJsonIfChanged(`${paths.state}/activity.json`, { generated_at: nowIso(), strategies: strategyActivity.slice(-200), settlements });
@@ -449,27 +468,48 @@ function buildContext({ instruments, instrumentById, quotes, previousSnapshot, k
       if (group === 'Precious Metals' && /GOLD/i.test(asset)) {
         const goldInstrument = instruments.find((i) => i.venue === 'moex_forts' && i.asset_code === 'GOLD');
         const gold = goldInstrument ? moexHistory[goldInstrument.ticker] : null;
-        if (gold?.length) {
-          const closes = gold.map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((x) => x != null);
-          if (closes.length > 6) {
-            return {
-              name: 'MOEX GOLD front-future settlements',
-              url: 'https://iss.moex.com/iss/history/engines/futures/markets/forts/securities/GDZ6.json',
-              trend: { return: (closes.at(-1) - closes[0]) / closes[0], observations: closes.length },
-            };
-          }
-        }
-      }
-      if (group === 'Energy') {
-        const wti = benchmarks.RCLC1;
-        if (wti?.rows?.length > 6) {
-          const closes = wti.rows.map((r) => r.value);
+        const closes = (gold ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((x) => x != null && Number(x) > 0);
+        if (closes.length > 6) {
           return {
-            name: 'EIA Cushing WTI daily spot (RCLC1)',
-            url: wti.page,
+            name: `MOEX ${goldInstrument.ticker} daily settlements`,
+            url: `https://iss.moex.com/iss/history/engines/futures/markets/forts/securities/${goldInstrument.ticker}.json`,
             trend: { return: (closes.at(-1) - closes[0]) / closes[0], observations: closes.length },
           };
         }
+      }
+      if (group === 'Base Metals' && /COPPER/i.test(asset)) {
+        const copperInstrument = instruments.find((i) => i.venue === 'moex_forts' && i.asset_code === 'COPPER');
+        const copper = copperInstrument ? moexHistory[copperInstrument.ticker] : null;
+        const closes = (copper ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((x) => x != null && Number(x) > 0);
+        if (closes.length > 6) {
+          return {
+            name: `MOEX ${copperInstrument.ticker} daily settlements`,
+            url: `https://iss.moex.com/iss/history/engines/futures/markets/forts/securities/${copperInstrument.ticker}.json`,
+            trend: { return: (closes.at(-1) - closes[0]) / closes[0], observations: closes.length },
+          };
+        }
+      }
+      if (group === 'Energy') {
+        // Only the benchmark that matches the market's underlying is used as a signal. The engine
+        // never maps a gasoline market onto a crude oil trend or vice versa.
+        const energyMap = [
+          { match: /(WTI|CRUDE)/i, key: 'RCLC1' },
+          { match: /(GASOLINE|RBOB)/i, key: 'RBOB' },
+          { match: /(NATGAS|NGAS|HENRY)/i, key: 'RNGWHHD' },
+        ];
+        const pick = energyMap.find((m) => m.match.test(`${asset} ${inst.title ?? ''} ${inst.series_ticker ?? ''}`));
+        const bench = pick ? benchmarks[pick.key] : null;
+        if (bench?.rows?.length > 6) {
+          const closes = bench.rows.map((r) => r.value);
+          return {
+            name: bench.name,
+            url: bench.page,
+            trend: { return: (closes.at(-1) - closes[0]) / closes[0], observations: closes.length },
+          };
+        }
+        // No matching verified benchmark: fall through to the market's own official candle
+        // history rather than substituting an unrelated commodity's trend.
+
       }
       const seriesCandles = kalshiHistory[inst.series_ticker];
       if (seriesCandles?.length > 6) {
@@ -487,7 +527,7 @@ function buildContext({ instruments, instrumentById, quotes, previousSnapshot, k
   };
 }
 
-function executeOrder({ ord, ctx, portfolio, runId, newTrades, intents }) {
+function executeOrder({ ord, ctx, portfolio, runId, newTrades, intents, workingOrders }) {
   const inst = ctx.instruments[ord.instrument_id];
   if (!inst) {
     intents.push(intentRecord(ord, runId, 'instrument_not_in_snapshot', 'No verified listing for this instrument in the current snapshot.'));
@@ -512,6 +552,10 @@ function executeOrder({ ord, ctx, portfolio, runId, newTrades, intents }) {
   }
 
   if (inst.market_type === 'event_contract') {
+    if (ord.order_type === 'maker' && !ord.prefill) {
+      const registered = registerWorkingOrder({ ord, inst, q, workingOrders, intents, runId });
+      return registered ? { executed: false, reason: 'resting_maker_order', resting_price: ord.limit_price } : { executed: false, reason: 'maker_order_rejected' };
+    }
     return executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, intents, existing });
   }
   if (inst.market_type === 'perpetual') {
@@ -525,6 +569,18 @@ function executeOrder({ ord, ctx, portfolio, runId, newTrades, intents }) {
 }
 
 function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, intents, existing }) {
+  const closeTime = inst.close_time ?? inst.expiration_time ?? null;
+  if (closeTime && new Date(closeTime).getTime() <= Date.now()) {
+    intents.push(intentRecord(ord, runId, 'market_closed', `Market closed at ${closeTime}; a live order could not have been filled.`));
+    return { executed: false, reason: 'market_closed' };
+  }
+  // Kalshi contracts trade in whole contracts in the markets this platform trades; orders are
+  // floored to whole contracts (fractional_trading_enabled is false for the contracts tracked).
+  const requested = Math.floor(ord.contracts);
+  if (requested < 1) {
+    intents.push(intentRecord(ord, runId, 'size_below_one_contract', 'Sized order was smaller than a single contract.'));
+    return { executed: false, reason: 'size_below_one_contract' };
+  }
   const book = {
     buyYesLevels: q.buy_yes_levels ?? [],
     buyNoLevels: q.buy_no_levels ?? [],
@@ -540,26 +596,41 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
     noDepthContracts: q.depth_no_contracts ?? 0,
   };
   const feeMultiplier = inst.fee_multiplier ?? 1;
-  const fill =
-    ord.order_type === 'maker'
-      ? simulateEventContractMakerFill({
-          book,
-          outcome: ord.outcome,
-          action: ord.action,
-          contracts: ord.contracts,
-          restingPrice: ord.limit_price,
-          feeMultiplier: 0,
-          feePrecision: 2,
-        })
-      : simulateEventContractFill({
-          book,
-          outcome: ord.outcome,
-          action: ord.action,
-          contracts: ord.contracts,
-          limitPrice: ord.limit_price,
-          feeMultiplier,
-          walkBookForTaker,
-        });
+  // Official rule: maker multiplier defaults to 0 (no maker fee) unless the series charges one.
+  // The exchange tells us via series field fee_type (e.g. 'quadratic_with_maker_fees').
+  const makerMultiplier = /maker/i.test(inst.fee_type ?? '') ? feeMultiplier : 0;
+  let fill;
+  if (ord.prefill) {
+    const contracts = Math.floor(ord.prefill.contracts);
+    const price = ord.prefill.price;
+    const fee = kalshiMakerFee({ price, contracts, multiplier: makerMultiplier, precision: 2 });
+    fill = {
+      filled: contracts,
+      requested: ord.contracts,
+      unfilled: 0,
+      vwap: price,
+      bestPrice: price,
+      worstPrice: price,
+      notional_usd: Number((price * contracts).toFixed(6)),
+      levels: [{ price, contracts, derived_from: 'resting maker order filled when the market traded through its price' }],
+      fee_usd: fee,
+      fee_model: `kalshi_maker: roundup(${makerMultiplier} * 0.0175 * C * P * (1-P)) @ precision 2 decimals (maker multiplier from series fee_type=${inst.fee_type ?? 'n/a'})`,
+      reference_price: q.mid,
+      slippage_per_contract_usd: 0,
+      slippage_usd: 0,
+      maker_model_note: ord.prefill.note ?? null,
+    };
+  } else {
+    fill = simulateEventContractFill({
+      book,
+      outcome: ord.outcome,
+      action: ord.action,
+      contracts: requested,
+      limitPrice: ord.limit_price,
+      feeMultiplier,
+      walkBookForTaker,
+    });
+  }
 
   if (!fill || !fill.filled) {
     intents.push(intentRecord(ord, runId, 'unfilled', fill?.reason ?? 'no liquidity', { fill }));
@@ -570,7 +641,8 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
   const price = fill.vwap;
   const fee = fill.fee_usd ?? 0;
   const trade = {
-    id: tradeId(runId, ord.strategy_id, inst.instrument_id, ord.action, ord.outcome ?? '', String(contracts), String(price), isExitFlag(ord)),
+    id: tradeId(runId, ord.strategy_id, inst.instrument_id, ord.action, ord.outcome ?? '', String(contracts), String(price), isExitFlag(ord), ord.prefill ? 'maker-fill' : 'taker-fill'),
+    instrument_id: inst.instrument_id,
     run_id: runId,
     strategy_id: ord.strategy_id,
     username: ord.username,
@@ -581,6 +653,7 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
     venue: 'Kalshi',
     venue_id: 'kalshi',
     official_source: q.source?.url ?? null,
+    venue_terms_url: 'https://kalshi.com/terms',
     exchange: 'Kalshi (CFTC-regulated designated contract market)',
     ticker: inst.ticker,
     series_ticker: inst.series_ticker,
@@ -606,7 +679,8 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
     requested_contracts: ord.contracts,
     unfilled_contracts: fill.unfilled ?? 0,
     fill: {
-      order_type: ord.order_type ?? 'taker',
+      order_type: ord.prefill ? 'maker' : ord.order_type ?? 'taker',
+      execution_model: ord.prefill ? 'resting_maker_order' : 'taker_against_order_book',
       vwap_price: price,
       best_price: fill.bestPrice,
       worst_price: fill.worstPrice,
@@ -699,10 +773,18 @@ function executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, 
 
 function executePerpOrder({ ord, inst, q, portfolio, runId, newTrades, intents, existing }) {
   const price = ord.action === 'buy' ? q.offer : q.bid;
-  if (price == null) {
-    intents.push(intentRecord(ord, runId, 'no_quote', 'Perp bid/offer missing in the official payload.'));
+  if (price == null || !(price > 0)) {
+    intents.push(intentRecord(ord, runId, 'no_quote', 'Perp bid/offer missing or zero in the official payload (no tradable market at this moment).'));
     return { executed: false, reason: 'no_quote' };
   }
+  const liq = perpLiquidityCap(inst, price);
+  let contracts = Math.floor(ord.contracts);
+  if (liq.cap != null && contracts > liq.cap) contracts = liq.cap;
+  if (contracts < 1) {
+    intents.push(intentRecord(ord, runId, 'below_liquidity_cap', `Sized order below one contract after applying the liquidity cap (${liq.basis}).`));
+    return { executed: false, reason: 'below_liquidity_cap' };
+  }
+  ord = { ...ord, contracts };
   const fill = simulateFuturesFill({
     action: ord.action,
     contracts: ord.contracts,
@@ -714,6 +796,7 @@ function executePerpOrder({ ord, inst, q, portfolio, runId, newTrades, intents, 
   });
   const trade = {
     id: tradeId(runId, ord.strategy_id, inst.instrument_id, ord.action, 'perp', String(ord.contracts), String(price), isExitFlag(ord)),
+    instrument_id: inst.instrument_id,
     run_id: runId,
     strategy_id: ord.strategy_id,
     username: ord.username,
@@ -750,7 +833,16 @@ function executePerpOrder({ ord, inst, q, portfolio, runId, newTrades, intents, 
       model: 'Perp fee schedule not retrieved from an official source in this project; recorded as null rather than assumed zero.',
       status: 'not_applied_fee_schedule_unverified',
     },
-    liquidity_consumed: { contracts: ord.contracts, note: 'Perp depth is not published per level in the official payload; best bid/offer used with the exchange-reported size fields where present.' },
+    liquidity_consumed: {
+      contracts: ord.contracts,
+      exchange_volume_24h_contracts: inst.volume_24h ?? null,
+      exchange_volume_24h_notional_usd: inst.volume_24h_notional_usd ?? null,
+      exchange_open_interest_contracts: inst.open_interest ?? null,
+      exchange_open_interest_notional_usd: inst.open_interest_notional_usd ?? null,
+      cap_applied: liq.cap ?? null,
+      cap_basis: liq.basis,
+      note: 'Per-level depth is not published for perps, so size is capped against the exchange-published 24h notional volume instead of a book walk.',
+    },
     thesis: ord.thesis,
     signal: ord.signal ?? null,
     provenance: {
@@ -800,11 +892,16 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
     intents.push(intentRecord(ord, runId, 'no_quote', 'Exchange bid/offer missing in the official payload.'));
     return { executed: false, reason: 'no_quote' };
   }
-  if (!inst.pnl_currency_ready) {
+  if (!inst.pnl_currency_ready || !(inst.usd_per_price_unit > 0)) {
     intents.push(
-      intentRecord(ord, runId, 'fx_conversion_required', `Contract face currency ${inst.faceunit ?? 'unknown'} requires an official FX conversion before USD PnL can be computed.`),
+      intentRecord(
+        ord,
+        runId,
+        'valuation_inputs_missing',
+        inst.valuation_note ?? 'USD valuation inputs (official STEPPRICE/MINSTEP plus the MOEX USD/RUB rate) were not available in this snapshot.',
+      ),
     );
-    return { executed: false, reason: 'fx_conversion_required' };
+    return { executed: false, reason: 'valuation_inputs_missing' };
   }
   const feePerContractRub = inst.fees_reported?.buy_sell_fee_rub ?? null;
   const usdRub = ctx.fx?.rate ?? null;
@@ -821,6 +918,7 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
   });
   const trade = {
     id: tradeId(runId, ord.strategy_id, inst.instrument_id, ord.action, ord.side ?? '', String(ord.contracts), String(price), isExitFlag(ord)),
+    instrument_id: inst.instrument_id,
     run_id: runId,
     strategy_id: ord.strategy_id,
     username: ord.username,
@@ -843,6 +941,9 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
       initial_margin_rub: inst.fees_reported?.initial_margin_rub ?? null,
       buy_sell_fee_rub: feePerContractRub,
       step_price_rub: inst.fees_reported?.step_price_rub ?? null,
+      min_step_quoted: inst.valuation_inputs?.min_step ?? null,
+      usd_per_price_unit: inst.usd_per_price_unit,
+      valuation_note: inst.valuation_note ?? null,
     },
     market_dates: { last_trade_date: inst.last_trade_date, trade_date: q.trade_date },
     action: ord.action,
@@ -873,6 +974,7 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
     liquidity_consumed: {
       contracts: ord.contracts,
       volume_today: q.volume_today,
+      cap_basis: 'MOEX ISS publishes aggregate volume and open interest, not per-level depth; the traded size is checked against the exchange-published daily volume rather than a book walk.',
       open_interest: q.open_interest,
       note: 'MOEX ISS publishes best bid/offer and aggregate volume/open interest (no per-level depth), so a per-level book walk is not possible; the trade records the aggregate liquidity that existed and the exact execution price.',
     },
@@ -903,6 +1005,7 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
       contracts: ord.contracts,
       avg_entry_price: price,
       lot_volume: inst.lot_volume ?? 1,
+      usd_per_price_unit: inst.usd_per_price_unit,
       entry_fee_usd: fill.fee_total_quote_ccy ?? 0,
       entry_trade_id: trade.id,
       entry_at: nowIso(),
@@ -912,7 +1015,7 @@ function executeFutureOrder({ ord, inst, q, portfolio, runId, newTrades, intents
     trade.pnl = { realized_pnl_usd: null, status: 'open_position_cost_recorded' };
   } else if (existing) {
     const sign = existing.side === 'long' ? 1 : -1;
-    const gross = (price - existing.avg_entry_price) * existing.contracts * (existing.lot_volume ?? 1) * sign;
+    const gross = (price - existing.avg_entry_price) * existing.contracts * (existing.usd_per_price_unit ?? existing.lot_volume ?? 1) * sign;
     const fees = (fill.fee_total_quote_ccy ?? 0) + (existing.entry_fee_usd ?? 0);
     const pnl = gross - fees;
     trade.pnl = {
@@ -1007,6 +1110,170 @@ async function settleEventContract({ kalshi, inst, pos, portfolio, runId, strate
     realized_pnl_usd: Number(pnl.toFixed(6)),
     closing_trade: trade,
   };
+}
+
+/* --------------------------------------------------------------------- */
+/* Working (resting) maker orders                                        */
+/* --------------------------------------------------------------------- */
+
+function registerWorkingOrder({ ord, inst, q, workingOrders, intents, runId }) {
+  const resting = Number(ord.limit_price);
+  if (!Number.isFinite(resting) || resting <= 0 || resting >= 1) {
+    intents.push(intentRecord(ord, runId, 'invalid_maker_price', 'Maker order rejected: resting price must be inside (0, 1).'));
+    return false;
+  }
+  const opposingBest = ord.outcome === 'yes' ? q.best_yes_ask : q.best_no_ask;
+  if (opposingBest != null && resting >= opposingBest) {
+    intents.push(
+      intentRecord(ord, runId, 'maker_price_crosses_book', `Resting buy price ${resting} is at or above the best offer ${opposingBest}; a real order at this price would execute as a taker, so it was not registered as a maker order.`),
+    );
+    return false;
+  }
+  const perStrategy = workingOrders.orders.filter((o) => o.strategy_id === ord.strategy_id && o.status === 'resting');
+  if (perStrategy.length >= 6) {
+    intents.push(intentRecord(ord, runId, 'working_order_limit', 'Strategy already has 6 resting orders; new maker order skipped.'));
+    return false;
+  }
+  const ttlHours = KC.maker_order_ttl_hours ?? 6;
+  const entry = {
+    id: tradeId('working', runId, ord.strategy_id, ord.instrument_id, ord.outcome, String(resting), String(ord.contracts)),
+    strategy_id: ord.strategy_id,
+    username: ord.username,
+    instrument_id: ord.instrument_id,
+    ticker: inst.ticker,
+    market_type_label: ord.market_type_label ?? null,
+    action: ord.action,
+    outcome: ord.outcome,
+    resting_price: resting,
+    contracts: Math.floor(ord.contracts),
+    remaining: Math.floor(ord.contracts),
+    status: 'resting',
+    placed_at: nowIso(),
+    expires_at: new Date(Date.now() + ttlHours * 3600000).toISOString(),
+    thesis: ord.thesis,
+    signal: ord.signal ?? null,
+    quote_at_placement: {
+      best_yes_bid: q.best_yes_bid,
+      best_yes_ask: q.best_yes_ask,
+      best_no_bid: q.best_no_bid,
+      best_no_ask: q.best_no_ask,
+      mid: q.mid,
+      spread: q.spread,
+      source_url: q.source?.url ?? null,
+      retrieved_at: q.source?.retrieved_at ?? null,
+      sha256: q.source?.sha256 ?? null,
+    },
+  };
+  workingOrders.orders.push(entry);
+  intents.push({
+    ...intentRecord(ord, runId, 'resting_order', `Resting maker order registered at ${resting}; it will only fill if the market later trades through that price.`),
+    status: 'resting_order',
+    resting_price: resting,
+    working_order_id: entry.id,
+  });
+  return entry;
+}
+
+function processWorkingOrders({ workingOrders, ctx, portfolios, runId, newTrades, intents }) {
+  const fills = [];
+  for (const wo of workingOrders.orders) {
+    if (wo.status !== 'resting') continue;
+    const inst = ctx.instruments[wo.instrument_id];
+    const q = ctx.quotes[wo.instrument_id];
+    const portfolio = portfolios[wo.strategy_id];
+    if (!inst || !q || !portfolio) {
+      wo.status = 'expired';
+      wo.expired_reason = 'instrument or quote no longer present in the snapshot';
+      continue;
+    }
+    const closeTime = inst.close_time ?? inst.expiration_time ?? null;
+    if (closeTime && new Date(closeTime).getTime() <= Date.now()) {
+      wo.status = 'expired';
+      wo.expired_reason = `market closed at ${closeTime}`;
+      continue;
+    }
+    if (wo.expires_at && new Date(wo.expires_at).getTime() <= Date.now()) {
+      wo.status = 'expired';
+      wo.expired_reason = `resting order TTL (${KC.maker_order_ttl_hours ?? 6}h) reached without the market trading through the price`;
+      continue;
+    }
+    if (wo.action !== 'buy') continue;
+    const bestOffer = wo.outcome === 'yes' ? q.best_yes_ask : q.best_no_ask;
+    const depth = (wo.outcome === 'yes' ? q.buy_yes_levels : q.buy_no_levels ?? []).reduce(
+      (sum, l) => sum + (l.price <= wo.resting_price ? l.contracts : 0),
+      0,
+    );
+    // Conservative maker model: the market must trade THROUGH the resting price, and the fill is
+    // capped by the depth that was available at or below it. Queue position is not modelled.
+    if (bestOffer == null || bestOffer >= wo.resting_price || depth < 1) continue;
+    const contracts = Math.min(Math.floor(wo.remaining), Math.floor(depth));
+    if (contracts < 1) continue;
+    const ord = {
+      strategy_id: wo.strategy_id,
+      username: wo.username,
+      instrument_id: wo.instrument_id,
+      venue: 'kalshi',
+      market_type_label: wo.market_type_label,
+      action: 'buy',
+      outcome: wo.outcome,
+      contracts,
+      limit_price: wo.resting_price,
+      order_type: 'maker',
+      thesis: wo.thesis,
+      signal: wo.signal,
+      prefill: {
+        contracts,
+        price: wo.resting_price,
+        note: 'Filled because the market traded through the resting price in this snapshot; size capped by depth available at or below that price. Queue position is not modelled - this is a modelled maker fill, not an observed one.',
+      },
+    };
+    const result = executeEventContractOrder({ ord, inst, q, portfolio, runId, newTrades, intents, existing: portfolio.positions[wo.instrument_id] });
+    if (result.executed) {
+      wo.remaining -= contracts;
+      wo.status = wo.remaining <= 0 ? 'filled' : 'partially_filled';
+      wo.filled_at = nowIso();
+      wo.filled_trade_ids = [...(wo.filled_trade_ids ?? []), newTrades.at(-1).id];
+      fills.push({ working_order_id: wo.id, instrument_id: wo.instrument_id, contracts, price: wo.resting_price });
+    }
+  }
+  return fills;
+}
+
+/** Liquidity cap for perps: a fixed participation rate of the exchange-published notional volume. */
+function perpLiquidityCap(inst, price) {
+  const PARTICIPATION = KC.perp_participation_rate ?? 0.001;
+  const notional = inst.volume_24h_notional_usd ?? inst.open_interest_notional_usd ?? null;
+  if (notional && price > 0) {
+    return {
+      cap: Math.max(1, Math.floor((notional * PARTICIPATION) / price)),
+      basis: `${(PARTICIPATION * 100).toFixed(2)}% of the exchange-published 24h notional volume ($${notional.toFixed(2)}) divided by the contract price ${price}`,
+      notional,
+    };
+  }
+  return { cap: null, basis: 'exchange published no 24h notional volume for this perp; the strategy size was used and flagged as uncapped', notional: null };
+}
+
+/**
+ * USD valuation for MOEX contracts straight from official exchange fields:
+ * usd_per_price_unit = (STEPPRICE_rub / MINSTEP) / USD_RUB.
+ * No assumption about lot sizes or the contract's quote currency is required.
+ */
+function annotateMoexValuation(instruments, fx, notes) {
+  for (const inst of instruments) {
+    const minStep = inst.valuation_inputs?.min_step ?? null;
+    const stepRub = inst.valuation_inputs?.step_price_rub ?? null;
+    const fxRate = fx?.rate ?? null;
+    if (minStep && stepRub && fxRate) {
+      inst.usd_per_price_unit = Number((stepRub / minStep / fxRate).toFixed(8));
+      inst.pnl_currency_ready = true;
+      inst.valuation_note = `USD value of a one-unit price move = (MOEX STEPPRICE ${stepRub} RUB per MINSTEP ${minStep}) / MOEX USD/RUB ${fxRate} = ${inst.usd_per_price_unit}. Derived only from official MOEX ISS fields.`;
+    } else {
+      inst.usd_per_price_unit = null;
+      inst.pnl_currency_ready = false;
+      inst.valuation_note = 'Missing MOEX STEPPRICE, MINSTEP or the MOEX USD/RUB rate in this snapshot, so USD P&L is not computed (no estimate is substituted).';
+      notes.push({ instrument_id: inst.instrument_id, skipped: 'valuation_inputs_missing', min_step: minStep, step_price_rub: stepRub, usd_rub: fxRate });
+    }
+  }
 }
 
 function availableWithin(levels = []) {

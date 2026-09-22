@@ -50,12 +50,30 @@ function trendSignal(candles, lookback) {
   return { return: ret, sigma: vol, observations: window.length };
 }
 
-/** Daily settlement closes for a MOEX contract from the official ISS history rows. */
+/**
+ * Daily closes for a MOEX contract from the official ISS history rows. Rows with zero/blank
+ * closes are dropped: MOEX publishes zero-filled rows for days a contract did not trade, and
+ * treating those as prices would fabricate a move.
+ */
 function moexCloses(rows, n = 60) {
   return (rows ?? [])
     .map((r) => ({ date: r.TRADEDATE, close: r.CLOSE ?? r.SETTLEPRICE, settle: r.SETTLEPRICE, volume: r.VOLUME, oi: r.OPENPOSITION }))
-    .filter((r) => r.close != null)
+    .filter((r) => r.close != null && Number(r.close) > 0)
     .slice(-n);
+}
+
+/** Only trade markets that still have meaningful time left before their close. */
+function hasTimeLeft(inst, minutes, now = new Date()) {
+  const close = inst.close_time ?? inst.expiration_time;
+  if (!close) return true;
+  return (new Date(close).getTime() - now.getTime()) / 60000 > minutes;
+}
+
+/** USD notional of one contract: perps quote dollars per contract; MOEX prices need the official multiplier. */
+function contractNotionalUsd(inst, price) {
+  if (inst.venue === 'kalshi_margin') return price; // quote is already the contract's dollar value
+  if (inst.venue === 'moex_forts') return price * (inst.usd_per_price_unit ?? 0);
+  return price;
 }
 
 function moexTrend(rows, lookback) {
@@ -133,6 +151,7 @@ export const STRATEGIES = [
         .filter((i) => /MON|WEEK|Weekly|Monthly/i.test(`${i.series_ticker} ${i.title}`))
         .slice(0, 12);
       for (const inst of candidates) {
+        if (!hasTimeLeft(inst, 60, ctx.now)) continue;
         const q = ctx.quotes[inst.instrument_id];
         if (!q || q.mid == null || q.spread == null) continue;
         if (q.spread > this.sizing.max_spread_cents / 100) {
@@ -203,6 +222,7 @@ export const STRATEGIES = [
       let taken = 0;
       for (const inst of candidates) {
         if (taken >= 4) break;
+        if (!hasTimeLeft(inst, 120, ctx.now)) continue;
         const q = ctx.quotes[inst.instrument_id];
         if (!q || q.mid == null || q.spread == null || q.best_yes_ask == null) continue;
         if (q.mid > 0.1 || q.spread > this.sizing.max_spread_cents / 100) continue;
@@ -264,6 +284,7 @@ export const STRATEGIES = [
       let taken = 0;
       for (const inst of candidates) {
         if (taken >= 3) break;
+        if (!hasTimeLeft(inst, 120, ctx.now)) continue;
         const q = ctx.quotes[inst.instrument_id];
         if (!q || q.mid == null || q.spread == null) continue;
         if (q.mid < 0.9 || q.spread > this.sizing.max_spread_cents / 100) continue;
@@ -500,8 +521,8 @@ export const STRATEGIES = [
       const orders = [];
       const notes = [];
       for (const inst of ctx.listInstruments({ venue: 'moex_forts' })) {
-        if (!inst.pnl_currency_ready) {
-          notes.push({ instrument_id: inst.instrument_id, skipped: 'face currency is not USD; USD PnL would require a conversion step', faceunit: inst.faceunit });
+        if (!inst.pnl_currency_ready || !(inst.usd_per_price_unit > 0)) {
+          notes.push({ instrument_id: inst.instrument_id, skipped: 'USD valuation unavailable this snapshot', valuation_note: inst.valuation_note ?? null });
           continue;
         }
         const q = ctx.quotes[inst.instrument_id];
@@ -516,8 +537,9 @@ export const STRATEGIES = [
         if (Math.abs(t.return) < this.sizing.threshold) continue;
         const side = t.return > 0 ? 'long' : 'short';
         const price = side === 'long' ? q.offer : q.bid;
-        const unitsPerContract = inst.lot_volume ?? 1;
-        const contracts = Math.max(1, Math.floor(this.sizing.notional_usd / (price * unitsPerContract)));
+        const notionalPerContract = contractNotionalUsd(inst, price);
+        if (!(notionalPerContract > 0)) continue;
+        const contracts = Math.max(1, Math.floor(this.sizing.notional_usd / notionalPerContract));
         orders.push(
           order(this, inst, q, {
             action: side === 'long' ? 'buy' : 'sell',
@@ -584,9 +606,15 @@ export const STRATEGIES = [
         const days = Math.max(1, (new Date(far.last_trade_date) - new Date(near.last_trade_date)) / 86400000);
         const carry = (qf.mid - qn.mid) / qn.mid;
         const annualised = carry * (365 / days);
-        const feeDrag = ((near.fees_reported?.buy_sell_fee_rub ?? 0) + (far.fees_reported?.buy_sell_fee_rub ?? 0)) / (qn.mid * (near.lot_volume ?? 1) * 64); // ~RUB/USD only for screening
+        // Cost screen uses the exchange's own published round-trip fees, converted with the
+        // MOEX USD/RUB rate taken in the same snapshot (never a hard-coded FX assumption).
+        const fxRate = ctx.fx?.rate ?? null;
+        const roundTripRub = (near.fees_reported?.buy_sell_fee_rub ?? 0) + (far.fees_reported?.buy_sell_fee_rub ?? 0);
+        const notionalPerContract = contractNotionalUsd(near, qn.mid);
+        const roundTripUsd = fxRate && roundTripRub ? roundTripRub / fxRate : null;
+        const feeDrag = roundTripUsd != null && notionalPerContract > 0 ? roundTripUsd / notionalPerContract : null;
         if (Math.abs(annualised) < this.sizing.min_annualised_carry) {
-          notes.push({ asset, skipped: 'carry below threshold', annualised_carry: annualised, days_between_expiries: days });
+          notes.push({ asset, skipped: 'carry below threshold', annualised_carry: annualised, days_between_expiries: days, fee_drag_usd: feeDrag });
           continue;
         }
         const direction = annualised < 0 ? 'backwardation' : 'contango';
@@ -597,7 +625,7 @@ export const STRATEGIES = [
             side: annualised < 0 ? 'short' : 'long',
             contracts,
             thesis: `${asset} curve in ${direction}: ${(annualised * 100).toFixed(2)}% annualised across ${days.toFixed(0)} days.`,
-            signal: { name: 'calendar_carry', value: annualised, near_mid: qn.mid, far_mid: qf.mid, days_between_expiries: days, fee_drag_screen_rub_per_unit: feeDrag },
+            signal: { name: 'calendar_carry', value: annualised, near_mid: qn.mid, far_mid: qf.mid, days_between_expiries: days, round_trip_fee_usd: feeDrag, fx_rate_used: fxRate },
           }),
         );
         orders.push(
@@ -644,7 +672,7 @@ export const STRATEGIES = [
       const notes = [];
       const groups = ['Grains & Oilseeds', 'Soft Commodities'];
       for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups })) {
-        if (!inst.pnl_currency_ready) continue;
+        if (!inst.pnl_currency_ready || !(inst.usd_per_price_unit > 0)) continue;
         const q = ctx.quotes[inst.instrument_id];
         const rows = ctx.moexHistory[inst.ticker];
         if (!q || !rows?.length) continue;
@@ -659,7 +687,9 @@ export const STRATEGIES = [
         }
         const side = seasonal.mean > 0 ? 'long' : 'short';
         const price = side === 'long' ? q.offer : q.bid;
-        const contracts = Math.max(1, Math.floor(this.sizing.notional_usd / (price * (inst.lot_volume ?? 1))));
+        const notionalPerContract = contractNotionalUsd(inst, price);
+        if (!(notionalPerContract > 0)) continue;
+        const contracts = Math.max(1, Math.floor(this.sizing.notional_usd / notionalPerContract));
         orders.push(
           order(this, inst, q, {
             action: side === 'long' ? 'buy' : 'sell',
@@ -710,6 +740,10 @@ export const STRATEGIES = [
         const q = ctx.quotes[inst.instrument_id];
         if (!q || q.mid == null) continue;
         if (ctx.hasPosition(inst.instrument_id)) continue;
+        if (!(q.bid > 0) || !(q.offer > 0)) {
+          notes.push({ instrument_id: inst.instrument_id, skipped: 'perp has no live two-sided quote in this snapshot', bid: q.bid, offer: q.offer });
+          continue;
+        }
         const prev = ctx.previousMid(inst.instrument_id);
         if (prev == null) {
           notes.push({ instrument_id: inst.instrument_id, skipped: 'no prior snapshot in the archive yet (first day of season)' });
@@ -719,8 +753,8 @@ export const STRATEGIES = [
         if (mom == null || Math.abs(mom) < this.sizing.threshold) continue;
         const side = mom > 0 ? 'long' : 'short';
         const price = side === 'long' ? q.offer : q.bid;
-        const contractSize = q.contract_size ?? 1;
-        const contracts = Math.max(1, Math.floor(this.sizing.notional_usd / (price * contractSize)));
+        // Kalshi perps quote a dollar price per contract, so notional = contracts x price.
+        const contracts = Math.max(1, Math.floor(this.sizing.notional_usd / price));
         orders.push(
           order(this, inst, q, {
             action: side === 'long' ? 'buy' : 'sell',
@@ -850,8 +884,17 @@ export const STRATEGIES = [
         const futSide = basis > 0 ? 'long' : 'short';
         const perpPrice = perpSide === 'long' ? pq.offer : pq.bid;
         const futPrice = futSide === 'long' ? fq.offer : fq.bid;
-        const perpContracts = Math.max(1, Math.floor(this.sizing.notional_usd / (perpPrice * (pq.contract_size ?? 1))));
-        const futContracts = Math.max(1, Math.floor(this.sizing.notional_usd / (futPrice * (fut.lot_volume ?? 1))));
+        if (!(perpPrice > 0) || !(futPrice > 0)) {
+          notes.push({ pair: pair.name, skipped: 'one leg has no live two-sided quote', perp_price: perpPrice, future_price: futPrice });
+          continue;
+        }
+        if (!fut.pnl_currency_ready || !(fut.usd_per_price_unit > 0)) {
+          notes.push({ pair: pair.name, skipped: 'future leg has no USD valuation this snapshot', valuation_note: fut.valuation_note ?? null });
+          continue;
+        }
+        const perpContracts = Math.max(1, Math.floor(this.sizing.notional_usd / perpPrice));
+        const futNotionalPerContract = futPrice * fut.usd_per_price_unit;
+        const futContracts = Math.max(1, Math.floor(this.sizing.notional_usd / futNotionalPerContract));
         orders.push(
           order(this, { instrument_id: pair.perp, venue: 'kalshi_margin', title: `${pair.name} perp` }, pq, {
             action: perpSide === 'long' ? 'buy' : 'sell',

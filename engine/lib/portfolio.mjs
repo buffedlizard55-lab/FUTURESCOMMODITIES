@@ -67,14 +67,21 @@ export function simulateEventContractFill({ book, outcome, action, contracts, li
     };
   }
   const fee = kalshiTakerFee({ price: fill.vwap, contracts: fill.filled, multiplier: feeMultiplier, precision: feePrecision });
-  const ref = book.mid;
+  // Slippage must be measured in the SAME price space as the fill: a NO purchase at 0.98 is
+  // cheap when YES trades at 0.02, so the reference for a NO leg is (1 - YES mid).
+  const ref = book.mid == null ? null : outcome === 'yes' ? book.mid : Number((1 - book.mid).toFixed(6));
   const slippage = ref != null ? Number(((fill.vwap - ref) * (action === 'buy' ? 1 : -1)).toFixed(6)) : null;
   return {
     ...fill,
     fee_usd: fee,
     fee_model: `kalshi_taker: roundup(${feeMultiplier} * 0.07 * C * P * (1-P)) @ precision ${feePrecision} decimals`,
     reference_price: ref,
-    reference_note: ref == null ? 'book mid unavailable (one-sided book at snapshot)' : 'book mid = (best YES bid + best YES ask) / 2 from the same snapshot',
+    reference_note:
+      ref == null
+        ? 'reference mid unavailable (one-sided book at snapshot)'
+        : outcome === 'yes'
+          ? 'reference = book mid (best YES bid + best YES ask) / 2 from the same snapshot'
+          : 'reference = implied NO mid = 1 - YES mid from the same snapshot',
     slippage_per_contract_usd: slippage,
     slippage_usd: slippage == null ? null : Number((slippage * fill.filled).toFixed(6)),
   };
@@ -206,15 +213,19 @@ export function markToMarket(portfolio, quotesById) {
         unrealized += value;
       }
     } else if (pos.kind === 'perpetual') {
+      // Kalshi perps quote a dollar price PER CONTRACT (verified: gold perp bid 4.3498 with
+      // contract_size 0.001 oz, i.e. the quote already equals the contract's dollar value), so
+      // P&L per contract is simply the price change - no further multiplier.
       mark = pos.side === 'long' ? q.bid : q.offer;
       if (mark != null) {
-        value = Number(((mark - pos.avg_entry_price) * pos.contracts * (pos.side === 'short' ? -1 : 1) * (pos.contract_size ?? 1)).toFixed(6));
+        value = Number(((mark - pos.avg_entry_price) * pos.contracts * (pos.side === 'short' ? -1 : 1)).toFixed(6));
         unrealized += value;
       }
     } else if (pos.kind === 'future') {
       mark = pos.side === 'long' ? q.bid : q.offer;
+      const multiplier = pos.usd_per_price_unit ?? pos.lot_volume ?? 1;
       if (mark != null) {
-        value = Number(((mark - pos.avg_entry_price) * pos.contracts * (pos.side === 'short' ? -1 : 1) * (pos.lot_volume ?? 1)).toFixed(6));
+        value = Number(((mark - pos.avg_entry_price) * pos.contracts * multiplier * (pos.side === 'short' ? -1 : 1)).toFixed(6));
         unrealized += value;
       }
     }
@@ -225,8 +236,17 @@ export function markToMarket(portfolio, quotesById) {
       unrealized_pnl_usd: value,
     });
   }
-  portfolio.unrealized_pnl_usd = Number(unrealized.toFixed(6));
-  portfolio.equity_usd = Number((portfolio.cash_usd + openPositionValue(portfolio, quotesById)).toFixed(6));
+  portfolio.unrealized_pnl_usd = Number.isFinite(unrealized) ? Number(unrealized.toFixed(6)) : null;
+  const openValue = openPositionValue(portfolio, quotesById);
+  const equity = portfolio.cash_usd + openValue;
+  portfolio.equity_usd = Number.isFinite(equity) ? Number(equity.toFixed(6)) : null;
+  if (!Number.isFinite(equity)) {
+    portfolio.equity_status = 'not_computable_missing_verified_inputs';
+    portfolio.equity_note = 'At least one open position could not be valued from the current snapshot (missing verified quote or valuation multiplier); equity is left null instead of being estimated.';
+  } else {
+    delete portfolio.equity_status;
+    delete portfolio.equity_note;
+  }
   portfolio.marks = marks;
   return portfolio;
 }
@@ -245,11 +265,13 @@ export function openPositionValue(portfolio, quotesById) {
       const mark = pos.outcome === 'yes' ? q.best_yes_bid : q.best_no_bid;
       if (mark != null) total += mark * pos.contracts;
     } else if (pos.kind === 'perpetual') {
+      // Perps are margined: cash is not reduced at entry, so only unrealised P&L is added.
       const mark = pos.side === 'long' ? q.bid : q.offer;
-      if (mark != null) total += pos.avg_entry_price * pos.contracts * (pos.contract_size ?? 1) + (mark - pos.avg_entry_price) * pos.contracts * (pos.contract_size ?? 1) * (pos.side === 'short' ? -1 : 1);
+      if (mark != null) total += (mark - pos.avg_entry_price) * pos.contracts * (pos.side === 'short' ? -1 : 1);
     } else if (pos.kind === 'future') {
       const mark = pos.side === 'long' ? q.bid : q.offer;
-      if (mark != null) total += (mark - pos.avg_entry_price) * pos.contracts * (pos.lot_volume ?? 1) * (pos.side === 'short' ? -1 : 1);
+      const multiplier = pos.usd_per_price_unit ?? pos.lot_volume ?? 1;
+      if (mark != null) total += (mark - pos.avg_entry_price) * pos.contracts * multiplier * (pos.side === 'short' ? -1 : 1);
     }
   }
   return total;

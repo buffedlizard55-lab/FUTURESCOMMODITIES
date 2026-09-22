@@ -11,7 +11,7 @@
 
 import { KalshiClient, bookFromRaw } from './kalshi.mjs';
 import { classifyMoexContract, moexContract, moexFortsSecurities, moexSecurityRef } from './moex.mjs';
-import { fetchJson } from './http.mjs';
+import { fetchJson, fetchWithProvenance } from './http.mjs';
 
 const num = (v) => (v === null || v === undefined || v === '' ? null : Number.isFinite(Number(v)) ? Number(v) : null);
 
@@ -123,6 +123,7 @@ export async function collectKalshiInstruments(client, seriesList) {
           http_status: res.provenance.http_status,
           sha256: res.provenance.sha256,
         },
+        is_tradable_now: m.close_time ? new Date(m.close_time).getTime() > Date.now() : true,
         verified_at: nowIso,
       });
     }
@@ -143,7 +144,10 @@ export function liquidityScore(instrument) {
 }
 
 export async function quoteKalshiInstruments(client, instruments, { maxQuoted }) {
-  const ranked = [...instruments].sort((a, b) => liquidityScore(b) - liquidityScore(a));
+  const now = Date.now();
+  const ranked = [...instruments]
+    .filter((i) => i.close_time && new Date(i.close_time).getTime() > now)
+    .sort((a, b) => liquidityScore(b) - liquidityScore(a));
   const selected = ranked.slice(0, maxQuoted);
   const quotes = {};
   const calls = [];
@@ -207,8 +211,18 @@ export async function collectKalshiPerps(client, { maxQuoted }, marginNotes) {
     title: m.ticker,
     asset_class: m.asset_class ?? null,
     contract_size: num(m.contract_size),
+    tick_size: num(m.tick_size),
+    underlying_multiplier: num(m.underlying_multiplier),
     bid: num(m.bid),
     offer: num(m.ask),
+    reference_price: m.reference_price?.price != null ? num(m.reference_price.price) : null,
+    settlement_mark_price: m.settlement_mark_price?.price != null ? num(m.settlement_mark_price.price) : null,
+    open_interest: num(m.open_interest),
+    open_interest_notional_usd: num(m.open_interest_notional_value_dollars),
+    volume: num(m.volume),
+    volume_24h: num(m.volume_24h),
+    volume_24h_notional_usd: num(m.volume_24h_notional_value_dollars),
+    status: m.status ?? null,
     liquidation_mark_price: m.liquidation_mark_price?.price != null ? num(m.liquidation_mark_price.price) : null,
     liquidation_mark_price_ts_ms: m.liquidation_mark_price?.ts_ms ?? null,
     leverage_estimate: num(m.leverage_estimate),
@@ -236,6 +250,7 @@ export async function collectKalshiPerps(client, { maxQuoted }, marginNotes) {
       contract_size: inst.contract_size,
       source: {
         venue: 'Kalshi Perps API',
+        url: `${client.host}/margin/markets?limit=200`,
         endpoint: `${client.host}/margin/markets?limit=200`,
         retrieved_at: res.provenance.retrieved_at,
         http_status: res.provenance.http_status,
@@ -289,7 +304,7 @@ export async function collectMoexInstruments(moexConfig, notes) {
       ref = await moexSecurityRef(row.SECID);
       notes.push({ endpoint: `MOEX ISS reference ${row.SECID}`, ok: ref.ok, provenance: ref.provenance });
     }
-    const klass = classifyMoexContract({ security: q.security, marketdata: q.marketdata, ref: ref.rows?.[0] });
+    const klass = classifyMoexContract({ security: q.security, marketdata: q.marketdata, ref: ref.rows?.[0], description: ref.description });
     contracts.push({ asset, secid: row.SECID, ...klass });
     const inst = {
       instrument_id: `moex:${row.SECID}`,
@@ -307,6 +322,7 @@ export async function collectMoexInstruments(moexConfig, notes) {
       pnl_currency_ready: klass.pnl_currency_ready,
       settlement_currency_note: klass.settlement_currency_note,
       fees_reported: klass.fees_reported,
+      valuation_inputs: klass.valuation_inputs,
       listing_provenance: {
         endpoint: 'https://iss.moex.com/iss/engines/futures/markets/forts/securities.json',
         retrieved_at: listing.provenance.retrieved_at,
@@ -402,6 +418,57 @@ export async function collectEiaBenchmarks(cfg, notes) {
     };
   }
   return out;
+}
+
+/**
+ * FRED CSV benchmark adapter (keyless official Fed publication of the EIA spot series).
+ * CSV layout: `observation_date,SERIES_ID` with '.' marking "no observation".
+ */
+export async function collectFredBenchmarks(cfg, notes) {
+  if (!cfg?.enabled) return {};
+  const out = {};
+  for (const s of cfg.series ?? []) {
+    const res = await fetchWithProvenance(s.url, { parse: 'text', accept: 'text/csv,text/plain,*/*', note: `FRED official CSV download for ${s.id}` });
+    if (!res.ok || !res.text) {
+      notes.push({ endpoint: s.url, error: 'request failed', provenance: res.provenance });
+      out[s.alias] = { status: 'unavailable', name: s.name, provenance: res.provenance, source: 'FRED (Federal Reserve Bank of St. Louis)' };
+      continue;
+    }
+    const rows = parseFredCsv(res.text);
+    notes.push({ endpoint: s.url, provenance: res.provenance, rows_parsed: rows.length });
+    out[s.alias] = {
+      status: rows.length ? 'ok' : 'parse_failed',
+      name: s.name,
+      series_id: s.id,
+      page: s.url,
+      source: 'FRED (Federal Reserve Bank of St. Louis) CSV download; series is the official EIA spot series re-published by FRED',
+      latest: rows.at(-1) ?? null,
+      rows_parsed: rows.length,
+      rows,
+      provenance: res.provenance,
+      parse_note: rows.length ? 'Parsed date,value pairs from the official CSV header.' : 'No parsable date,value rows were found.',
+    };
+  }
+  return out;
+}
+
+/** Parse a FRED CSV download into [{date, value}] ('.' means missing observation). */
+export function parseFredCsv(text) {
+  const lines = String(text).trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const rows = [];
+  for (const line of lines.slice(1)) {
+    const [date, value] = line.split(',');
+    if (!date || value === undefined) continue;
+    const v = value.trim();
+    if (v === '.' || v === '') continue;
+    const n = Number(v);
+    if (!Number.isFinite(n)) continue;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date.trim())) continue;
+    rows.push({ date: date.trim(), value: n });
+  }
+  rows.sort((a, b) => a.date.localeCompare(b.date));
+  return rows;
 }
 
 /** Parse the EIA "LeafHandler" daily table: rows of `MM/DD/YYYY</td><td>VALUE` style cells. */
