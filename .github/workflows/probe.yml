@@ -12,61 +12,62 @@ jobs:
       - uses: actions/checkout@v4
       - name: probe3
         run: |
+          set +e
           mkdir -p probe
           K="https://api.elections.kalshi.com/trade-api/v2"
-          : > probe/results3.txt
-          echo "=== CORS headers (browser access test)" >> probe/results3.txt
-          curl -s -D - -o /dev/null -H "Origin: https://buffedlizard55-lab.github.io" --max-time 20 "$K/markets?limit=1" | grep -i -E "access-control|^HTTP" >> probe/results3.txt || true
-          echo "=== series (all categories)" >> probe/results3.txt
-          python3 - <<'PY'
-          import json,urllib.request,collections
+          {
+          echo "=== CORS headers (browser access test)"
+          curl -s -D - -o /dev/null -H "Origin: https://buffedlizard55-lab.github.io" --max-time 20 "$K/markets?limit=1" | grep -i -E "access-control|^HTTP"
+          echo "=== python env"
+          python3 -V
+          } > probe/results3.txt 2>&1
+          python3 - >> probe/results3.txt 2>&1 <<'PY'
+          import json,urllib.request,urllib.parse
           K="https://api.elections.kalshi.com/trade-api/v2"
           def get(u):
               r=urllib.request.Request(u,headers={"User-Agent":"research-probe/1.0"})
               return json.load(urllib.request.urlopen(r,timeout=30))
           out={}
-          for cat in ["Commodities","Financials","Economics","Crypto","Climate and Weather","World"]:
+          for cat in ["Commodities","Financials","Economics","Crypto"]:
               try:
                   d=get(f"{K}/series?category={urllib.parse.quote(cat)}")
                   out[cat]=[{"ticker":s["ticker"],"title":s["title"],"frequency":s.get("frequency"),"tags":s.get("tags"),"settlement_sources":s.get("settlement_sources")} for s in d.get("series",[])]
+                  print("series ok",cat,len(out[cat]))
               except Exception as e:
-                  out[cat]=f"ERROR {e}"
+                  out[cat]=f"ERROR {e}"; print("series ERR",cat,e)
           json.dump(out,open("probe/kalshi_series.json","w"),indent=1)
-          print("series counts:",{k:(len(v) if isinstance(v,list) else v) for k,v in out.items()})
           try:
               m=get(f"{K}/margin/markets?limit=200")
               json.dump(m,open("probe/kalshi_margin.json","w"),indent=1)
-              print("margin tickers:",[x.get("ticker") for x in m.get("markets",[])][:40])
+              print("margin tickers:",[x.get("ticker") for x in m.get("markets",[])])
           except Exception as e: print("margin err",e)
           PY
-          python3 - <<'PY'
+          python3 - >> probe/results3.txt 2>&1 <<'PY'
           import json,urllib.request,re
           def get(u,hdr=None):
               r=urllib.request.Request(u,headers=hdr or {"User-Agent":"Mozilla/5.0"})
               return urllib.request.urlopen(r,timeout=25).read()
           res={}
-          # MOEX FORTS commodity futures
           try:
               b=get("https://iss.moex.com/iss/engines/futures/markets/forts/securities.json?iss.meta=off&iss.only=securities&securities.columns=SECID,SHORTNAME,ASSETCODE,LASTTRADEDATE")
               d=json.loads(b)["securities"]
               rows=[dict(zip(d["columns"],r)) for r in d["data"]]
               kw=re.compile(r"GOLD|SILV|PLAT|PALL|WHEAT|SUGAR|CORN|OIL|BRENT|GAS|COPPER|NICKEL|ALUM|COCOA|COFFEE|COTTON|SOY|BARLEY|PLT|SLV",re.I)
-              res["moex_commodity_like"]=[r for r in rows if kw.search(str(r.get("SHORTNAME",""))+str(r.get("ASSETCODE",""))) or kw.search(str(r.get("SECID","")))]
-              res["moex_total"]=len(rows)
-              res["moex_sample"]=rows[:5]
-          except Exception as e: res["moex"]=f"ERR {e}"
+              res["moex_commodity_like"]=[r for r in rows if kw.search(json.dumps(r))]
+              res["moex_total"]=len(rows); res["moex_sample"]=rows[:5]
+              print("moex rows",len(rows),"commodity-like",len(res["moex_commodity_like"]))
+          except Exception as e:
+              res["moex"]=f"ERR {e}"; print("moex ERR",e)
           for name,u in [("fred_csv","https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"),
-                         ("eia_keyless","https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls"),
+                         ("eia_xls","https://www.eia.gov/dnav/pet/hist_xls/RCLC1d.xls"),
                          ("b3_settle","https://arquivos.b3.com.br/apinegocios/ticker/DI1"),
                          ("sgx_deriv","https://api.sgx.com/derivatives/v1.0/contracts?kind=commodity&by=code&value=TF"),
-                         ("usda_ams","https://mpr.datamart.ams.usda.gov/services/v1.1/reports?q=livestock"),
-                         ("kalshi_fees","https://kalshi.com/docs/kalshi-fee-schedule.pdf")]:
+                         ("usda_ams","https://mpr.datamart.ams.usda.gov/services/v1.1/reports?q=livestock")]:
               try:
-                  b=get(u); res[name]={"status":"ok","bytes":len(b),"head":b[:120].decode("utf8","ignore")}
+                  b=get(u); res[name]={"status":"ok","bytes":len(b),"head":b[:100].decode("utf8","ignore")}
               except Exception as e: res[name]=f"ERR {e}"
+              print(name,res[name] if isinstance(res[name],str) else res[name]["status"])
           json.dump(res,open("probe/sources.json","w"),indent=1,default=str)
-          print(json.dumps({k:(v if isinstance(v,str) else (v.get("status") if isinstance(v,dict) else len(v))) for k,v in res.items()},indent=1)[:2000])
           PY
           git config user.name "probe-bot"; git config user.email "probe@users.noreply.github.com"
-          git add -A && git commit -m "probe: harvest kalshi universe + sources [skip ci]" || true
-          git push || true
+          git add -A; git commit -m "probe: harvest [skip ci]"; git push
