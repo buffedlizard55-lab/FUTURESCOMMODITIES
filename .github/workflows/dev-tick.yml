@@ -7,29 +7,26 @@ permissions:
 jobs:
   tick:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: run tick + verify + report (capture output)
+      - name: run tick + verify + report + site
         run: |
           set +e
           mkdir -p data
           {
-            echo "=== $(date -u +%FT%TZ) egress probe"
-            curl -sS -o /tmp/fred.csv -w "fred http=%{http_code} bytes=%{size_download}\n" --max-time 20 "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO"
-            head -2 /tmp/fred.csv
-            echo "--- eia bulk"
-            curl -sS -o /tmp/pet.zip -w "eia_bulk http=%{http_code} bytes=%{size_download}\n" --max-time 25 "https://api.eia.gov/bulk/PET.zip"
-            echo "=== tick"
+            echo "=== $(date -u +%FT%TZ) tick"
             node engine/tick.mjs --max-requests=400
             echo "tick_exit=$?"
             node engine/verify.mjs
             echo "verify_exit=$?"
             node engine/report.mjs
             echo "report_exit=$?"
+            node engine/build-site.mjs
+            echo "site_exit=$?"
           } > data/_run.log 2>&1
           tail -c 6000 data/_run.log
           exit 0

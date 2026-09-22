@@ -49,7 +49,7 @@ import {
   num,
 } from './lib/universe.mjs';
 import { STRATEGIES, strategyCatalog } from './strategies/index.mjs';
-import { appendJsonl, ensureDir, fileAgeHours, paths, readJson, readJsonl, writeJson } from './lib/store.mjs';
+import { appendJsonl, ensureDir, fileAgeHours, paths, pruneDirectory, readJson, readJsonl, writeJson, writeJsonIfChanged } from './lib/store.mjs';
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
@@ -186,6 +186,7 @@ async function main() {
   let fx = null;
   let moexHistoryCache = {};
   let kalshiCandles = {};
+  let moexDiscoveryCount = 0;
 
   if (!OFFLINE) {
     const listing = await fetchFortsSecurities({ assetCodes: (watchlist.moex?.asset_codes ?? []).map((a) => a.asset_code ?? a) });
@@ -197,6 +198,7 @@ async function main() {
       const klass = classifyMoexContract(row);
       if (klass) classified.push({ row, klass });
     }
+    moexDiscoveryCount = classified.length;
     // Diversify: the nearest two expiries of every commodity the exchange lists, so one busy
     // contract cannot crowd the universe out of the request budget.
     const byAsset = new Map();
@@ -368,13 +370,29 @@ async function main() {
     },
     fx,
     quotes,
-    instruments: Object.fromEntries(allInstruments.map((i) => [i.instrument_id, i])),
     degraded,
   };
-  writeJson(`${paths.snapshots}/latest.json`, snapshot);
-  writeJson(`${paths.snapshots}/by-run/${runId}.json`, { ...snapshot, instruments: {}, quotes: Object.fromEntries(Object.entries(quotes).map(([k, v]) => [k, { ...v, source: v.source }])) });
+  // Only instruments that carry a verified quote in this run are published in full. Every other
+  // listed market was still read from the exchange in this run and is summarised, with its
+  // listing provenance, in data/universe/coverage.json - it is simply not duplicated into the
+  // repository on every tick.
+  const publishedInstruments = allInstruments.filter((i) => Boolean(quotes[i.instrument_id]));
+  snapshot.published_instruments = publishedInstruments.length;
+  snapshot.coverage_file = `${paths.universe}/coverage.json`;
+  snapshot.universe_file = `${paths.universe}/instruments.json`;
+  snapshot.published = allInstruments.length > 0 && Object.keys(quotes).length > 0;
+  if (!snapshot.published) {
+    // A run that reached no venue (for example an --offline dry run) must never erase the last
+    // verified snapshot: the published files keep the previous, real data and the run is noted.
+    notes.push({ publish_skipped: 'This run produced no instruments or no quotes, so the previously published universe and snapshot were left untouched.' });
+    degraded.push({ venue: 'all', step: 'publish', error: 'no instruments or quotes in this run; publication skipped' });
+  } else {
+    writeJsonIfChanged(`${paths.snapshots}/latest.json`, snapshot);
+    writeJsonIfChanged(`${paths.snapshots}/by-run/${runId}.json`, { ...snapshot, snapshot_of: runId });
+    pruneDirectory(`${paths.snapshots}/by-run`, 8, (f) => f.startsWith('run-') && f.endsWith('.json'));
+  }
 
-  writeJson(`${paths.universe}/instruments.json`, {
+  if (snapshot.published) writeJson(`${paths.universe}/instruments.json`, {
     generated_at: nowIso(),
     counts: {
       kalshi_event_contracts: instruments.length,
@@ -385,10 +403,65 @@ async function main() {
       series_quoted: quotedSeriesCount,
     },
     unclassified_series: unclassified.slice(0, 200),
-    instruments: allInstruments,
+    note: 'Detailed records are published for every instrument that carried a verified quote in this run. coverage.json records, per series, how many listed markets were read from the exchange and how many were quoted.',
+    instruments: publishedInstruments,
   });
 
-  writeJson(`${paths.universe}/registry.json`, {
+  const seriesCoverage = (() => {
+    const bySeries = new Map();
+    for (const i of instruments) {
+      const key = i.series_ticker ?? 'unknown';
+      if (!bySeries.has(key)) bySeries.set(key, []);
+      bySeries.get(key).push(i);
+    }
+    return [...bySeries.entries()].map(([seriesTicker, list]) => ({
+      venue: 'kalshi',
+      series_ticker: seriesTicker,
+      group: list[0]?.group ?? null,
+      commodity: list[0]?.commodity ?? null,
+      listed_open_markets: list.length,
+      quoted_markets: list.filter((i) => quotes[i.instrument_id]).length,
+      contract_terms_url: list[0]?.contract_specification?.terms_url ?? null,
+      settlement_sources: list[0]?.contract_specification?.settlement_sources ?? null,
+      listing_provenance: list[0]?.listing_provenance ?? null,
+    }));
+  })();
+  const moexSkips = notes.filter((n) => typeof n.instrument_id === 'string' && n.instrument_id.startsWith('moex:'));
+  if (snapshot.published) writeJsonIfChanged(`${paths.universe}/coverage.json`, {
+    generated_at: nowIso(),
+    run_id: runId,
+    note: 'Every market counted here was read from the official exchange API in this run; the request URL and response hash for each series are recorded in the run manifest.',
+    totals: {
+      kalshi_series_matched: seriesCoverage.length,
+      kalshi_listed_open_markets: instruments.length,
+      kalshi_quoted_markets: Object.keys(kalshiQuotes).length,
+      kalshi_perps: perpInstruments.length,
+      moex_listed_commodity_contracts: moexDiscoveryCount,
+      moex_tracked_contracts: moexInstruments.length,
+    },
+    kalshi_series: seriesCoverage.sort((a, b) => a.series_ticker.localeCompare(b.series_ticker)),
+    moex: {
+      listed_commodity_contracts: moexDiscoveryCount,
+      tracked: moexInstruments.map((i) => ({
+        instrument_id: i.instrument_id,
+        ticker: i.ticker,
+        commodity: i.commodity,
+        last_trade_date: i.last_trade_date ?? null,
+        listing_provenance: i.listing_provenance ?? null,
+      })),
+      skipped: moexSkips.slice(0, 60),
+    },
+    kalshi_perps: perpInstruments.map((i) => ({
+      instrument_id: i.instrument_id,
+      ticker: i.ticker,
+      commodity: i.commodity,
+      exchange_metrics: i.exchange_metrics ?? null,
+      listing_provenance: i.listing_provenance ?? null,
+    })),
+    unclassified_series: unclassified.slice(0, 200),
+  });
+
+  if (snapshot.published) writeJson(`${paths.universe}/registry.json`, {
     generated_at: nowIso(),
     source: 'engine/universe/futures-registry.json',
     exchanges: registry.exchanges ?? {},
@@ -417,7 +490,7 @@ async function main() {
   const portfolios = readJson(`${paths.state}/portfolios.json`, null) ?? {};
   const workingOrders = readJson(`${paths.state}/working_orders.json`, { orders: [] });
 
-  const instrumentById = snapshot.instruments;
+  const instrumentById = Object.fromEntries(allInstruments.map((i) => [i.instrument_id, i]));
   const ctxBase = {
     now: new Date(),
     runId,
@@ -680,6 +753,16 @@ async function main() {
   });
 
   const provenance = provenanceSnapshot();
+  // The per-run manifest carries the URL, status, hash and retrieval time of every response this
+  // run received. Verification uses it to prove that each ledger trade was priced from a payload
+  // that was actually fetched in that same run.
+  const provenanceRecord = provenance.map((p) => ({
+    url: p.url,
+    http_status: p.http_status ?? null,
+    sha256: p.sha256 ?? null,
+    retrieved_at: p.retrieved_at ?? null,
+    bytes: p.bytes ?? null,
+  }));
   writeJson(`${paths.manifest}/${runId}.json`, {
     run_id: runId,
     started_at: startedAt,
@@ -687,10 +770,11 @@ async function main() {
     request_count: provenance.length,
     hashes: provenance.map((p) => p.sha256).filter(Boolean),
     endpoints: [...new Set(provenance.map((p) => p.url))].slice(0, 400),
+    provenance: provenanceRecord,
     degraded,
     counts: competitionState.last_tick,
   });
-  pruneManifests(40);
+  pruneManifests(24);
   writeJson('data/manifest/latest.json', {
     run_id: runId,
     started_at: startedAt,
@@ -722,6 +806,62 @@ async function main() {
 /* ------------------------------------------------------------------ */
 /* fills                                                              */
 /* ------------------------------------------------------------------ */
+
+/**
+ * How much cash the simulated account has to set aside for a position. Event contracts are fully
+ * funded (the premium is the whole cost). Exchange-listed futures and Kalshi perpetuals are
+ * margined, so the collateral is taken from cash and returned when the position closes; the
+ * notional is never exchanged. Nothing here is assumed: if the exchange did not publish the input
+ * the order is refused rather than given a made-up margin.
+ */
+function positionMargin({ inst, contracts, price, fx }) {
+  if (inst.kind === 'event_contract') {
+    return { margin_usd: 0, margin_model: 'fully_funded_binary_contract_premium_paid_in_full' };
+  }
+  if (inst.kind === 'future') {
+    const perContractRub = inst.contract_specification?.initial_margin_rub ?? null;
+    if (!(perContractRub > 0)) {
+      return {
+        margin_usd: null,
+        margin_model: 'exchange_initial_margin_not_published',
+        note: 'The exchange payload for this contract did not include an initial margin, so the collateral requirement cannot be stated and the order was not placed.',
+      };
+    }
+    if (!(fx?.rate > 0)) {
+      return {
+        margin_usd: null,
+        margin_model: 'usd_rub_rate_unavailable',
+        note: 'MOEX publishes the initial margin in RUB and the official USD/RUB rate was unavailable, so the collateral requirement could not be converted.',
+      };
+    }
+    const marginRub = perContractRub * contracts;
+    return {
+      margin_usd: Number((marginRub / fx.rate).toFixed(6)),
+      margin_rub: Number(marginRub.toFixed(2)),
+      margin_per_contract_rub: perContractRub,
+      fx_rate: fx.rate,
+      margin_model: 'moex_published_initial_margin_rub_converted_at_official_usd_rub',
+    };
+  }
+  if (inst.kind === 'perpetual') {
+    const leverage = inst.contract_specification?.leverage_estimate ?? null;
+    if (!(leverage > 0)) {
+      return {
+        margin_usd: null,
+        margin_model: 'kalshi_perp_leverage_estimate_unavailable',
+        note: 'The exchange payload for this perpetual did not include the inputs needed to state a collateral requirement, so the order was not placed.',
+      };
+    }
+    const notional = price * contracts;
+    return {
+      margin_usd: Number((notional / leverage).toFixed(6)),
+      notional_usd: Number(notional.toFixed(6)),
+      leverage_estimate: leverage,
+      margin_model: 'kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate',
+    };
+  }
+  return { margin_usd: null, margin_model: 'unknown_instrument_kind', note: 'Unsupported instrument kind.' };
+}
 
 function executeEventContractOrder({ ord, inst, quote, portfolio, runId, newTrades, intents, instrumentById, competition, fx }) {
   if (!inst || !quote) {
@@ -826,6 +966,7 @@ function executeEventContractOrder({ ord, inst, quote, portfolio, runId, newTrad
     isExit,
     position: heldPosition,
     makerMultiplier,
+    margin: { margin_usd: 0, margin_model: 'fully_funded_binary_contract_premium_paid_in_full' },
   });
   newTrades.push(trade);
   applyFill(portfolio, trade);
@@ -901,23 +1042,17 @@ function executeQuoteOrder({ ord, inst, quote, portfolio, runId, newTrades, inte
   });
   fill.notional_usd = Number((fill.vwap * contracts * (usdPerPriceUnit ?? 1)).toFixed(6));
 
-  // Cash accounting: futures are funded, perps are margined (cash is not spent at entry).
-  if (inst.kind === 'future') {
-    const notional = fill.notional_usd ?? 0;
-    if (ord.action === 'buy' && portfolio.cash_usd < notional) {
-      intents.push(intentRecord(ord, runId, 'insufficient_cash', `Order needs $${notional.toFixed(2)} of cash but the portfolio holds $${portfolio.cash_usd.toFixed(2)}.`));
-      return { executed: false, reason: 'insufficient_cash' };
-    }
-  } else {
-    const leverage = inst.contract_specification?.leverage_estimate ?? 1;
-    const margin = (price * contracts) / Math.max(1, leverage);
-    if (margin > portfolio.cash_usd) {
-      intents.push(intentRecord(ord, runId, 'insufficient_margin', `Order requires about $${margin.toFixed(2)} of margin at the exchange-published leverage estimate but the portfolio holds $${portfolio.cash_usd.toFixed(2)}.`));
-      return { executed: false, reason: 'insufficient_margin' };
-    }
+  const margin = isExit && heldPosition ? { margin_usd: heldPosition.margin_usd ?? 0, margin_model: heldPosition.margin_model ?? null } : positionMargin({ inst, contracts, price: fill.vwap ?? price, fx });
+  if (margin.margin_usd == null) {
+    intents.push(intentRecord(ord, runId, 'margin_inputs_missing', margin.note ?? 'Collateral requirement could not be derived from exchange-published inputs.'));
+    return { executed: false, reason: 'margin_inputs_missing' };
+  }
+  if (margin.margin_usd > portfolio.cash_usd) {
+    intents.push(intentRecord(ord, runId, 'insufficient_margin', `Order requires about $${margin.margin_usd.toFixed(2)} of collateral (${margin.margin_model}) but the portfolio holds $${portfolio.cash_usd.toFixed(2)}.`));
+    return { executed: false, reason: 'insufficient_margin' };
   }
 
-  const trade = buildTrade({ ord, inst, quote, fill, contracts, runId, capacity: capInfo, fx, isExit, position: heldPosition, makerMultiplier: 0 });
+  const trade = buildTrade({ ord, inst, quote, fill, contracts, runId, capacity: capInfo, fx, isExit, position: heldPosition, makerMultiplier: 0, margin });
   newTrades.push(trade);
   applyFill(portfolio, trade);
   return { executed: true, trade };
@@ -1036,7 +1171,7 @@ function processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTr
       signal: wo.signal,
       prefill: true,
     };
-    const trade = buildTrade({ ord, inst, quote, fill, contracts: fill.filled, runId, capacity: { maker_fill: true, available_at_price: availableAtPrice }, fx: ctxBase.fx, isExit: false, position: null, makerMultiplier: 0 });
+    const trade = buildTrade({ ord, inst, quote, fill, contracts: fill.filled, runId, capacity: { maker_fill: true, available_at_price: availableAtPrice }, fx: ctxBase.fx, isExit: false, position: null, makerMultiplier: 0, margin: { margin_usd: 0, margin_model: 'fully_funded_binary_contract_premium_paid_in_full' } });
     newTrades.push(trade);
     applyFill(portfolio, trade);
     wo.remaining -= fill.filled;
@@ -1052,7 +1187,7 @@ function processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTr
 /* trade record                                                       */
 /* ------------------------------------------------------------------ */
 
-function buildTrade({ ord, inst, quote, fill, contracts, runId, capacity, fx, isExit, position, makerMultiplier }) {
+function buildTrade({ ord, inst, quote, fill, contracts, runId, capacity, fx, isExit, position, makerMultiplier, margin = null }) {
   const isEventContract = inst.kind === 'event_contract';
   const price = fill.vwap;
   const usdPerPriceUnit = isEventContract ? 1 : inst.kind === 'perpetual' ? 1 : inst.usd_valuation?.usd_per_price_unit ?? null;
@@ -1117,6 +1252,10 @@ function buildTrade({ ord, inst, quote, fill, contracts, runId, capacity, fx, is
     price,
     usd_per_price_unit: usdPerPriceUnit,
     notional_usd: notional,
+    position_notional_usd: notional,
+    margin_usd: margin?.margin_usd ?? null,
+    margin_model: margin?.margin_model ?? null,
+    margin_detail: margin ?? null,
     fill,
     market_at_decision: {
       best_yes_bid: quote.best_yes_bid ?? null,

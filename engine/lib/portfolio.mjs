@@ -227,19 +227,26 @@ export function applyFill(portfolio, trade) {
   const { instrument_id: instrumentId, action, contracts, fill, side, outcome } = trade;
   const price = fill.vwap;
   const fee = fill.fee_usd ?? 0;
-  const notional = price != null ? Number((price * contracts * (trade.usd_per_price_unit ?? 1)).toFixed(6)) : 0;
+  const kind = trade.instrument_kind;
+  const multiplier = trade.usd_per_price_unit ?? 1;
+  const notional = price != null ? Number((price * contracts * multiplier).toFixed(6)) : 0;
+  const margin = trade.margin_usd ?? 0;
+  const realized = trade.pnl?.realized_pnl_usd ?? null;
   portfolio.fees_paid_usd = Number(((portfolio.fees_paid_usd ?? 0) + fee).toFixed(6));
   portfolio.slippage_paid_usd = Number(((portfolio.slippage_paid_usd ?? 0) + (fill.slippage_usd ?? 0)).toFixed(6));
 
   const existing = portfolio.positions[instrumentId];
   const signedDelta = action === 'buy' ? contracts : -contracts;
+  let closedContracts = 0;
+  let marginReleased = 0;
+  let cashFlow = 0;
 
   if (!existing) {
     portfolio.positions[instrumentId] = {
       instrument_id: instrumentId,
       venue: trade.venue_id,
       ticker: trade.ticker,
-      kind: trade.instrument_kind,
+      kind,
       side: side ?? (action === 'buy' ? 'long' : 'short'),
       outcome: outcome ?? null,
       contracts,
@@ -247,7 +254,9 @@ export function applyFill(portfolio, trade) {
       entry_ts: trade.created_at,
       entry_trade_id: trade.id,
       entry_fee_usd: fee,
-      usd_per_price_unit: trade.usd_per_price_unit ?? 1,
+      usd_per_price_unit: multiplier,
+      margin_usd: margin,
+      margin_model: trade.margin_model ?? null,
       market: {
         exchange: trade.exchange,
         series_ticker: trade.series_ticker ?? null,
@@ -259,6 +268,7 @@ export function applyFill(portfolio, trade) {
       mark_source_url: null,
       unrealized_pnl_usd: null,
     };
+    cashFlow = kind === 'event_contract' ? (action === 'sell' ? notional : -notional) : -margin;
   } else {
     const sameSide = (existing.side === 'long' && signedDelta > 0) || (existing.side === 'short' && signedDelta < 0);
     const newContracts = existing.contracts + (existing.side === 'long' ? signedDelta : -signedDelta);
@@ -267,27 +277,40 @@ export function applyFill(portfolio, trade) {
       if (total > 0) existing.avg_entry_price = Number(((existing.avg_entry_price * existing.contracts + price * Math.abs(signedDelta)) / total).toFixed(8));
       existing.contracts = Math.abs(newContracts);
       existing.entry_fee_usd = Number(((existing.entry_fee_usd ?? 0) + fee).toFixed(6));
-    } else if (newContracts === 0) {
-      delete portfolio.positions[instrumentId];
-      portfolio.closed_trades += 1;
+      if (kind === 'event_contract') {
+        cashFlow = action === 'sell' ? notional : -notional;
+      } else {
+        existing.margin_usd = Number(((existing.margin_usd ?? 0) + margin).toFixed(6));
+        cashFlow = -margin;
+      }
+    } else {
+      // Position is being reduced or closed.
+      closedContracts = Math.min(existing.contracts, Math.abs(newContracts) === 0 ? existing.contracts : existing.contracts - Math.abs(newContracts));
+      if (kind === 'event_contract') {
+        cashFlow = action === 'sell' ? notional : -notional;
+      } else {
+        marginReleased = Number((((existing.margin_usd ?? 0) * closedContracts) / existing.contracts).toFixed(6));
+        existing.margin_usd = Number(((existing.margin_usd ?? 0) - marginReleased).toFixed(6));
+        // Margin comes back and the realised P&L is credited to cash; nothing else moves because a
+        // derivative's notional is never exchanged in a margin account.
+        cashFlow = marginReleased + (realized ?? 0);
+      }
+      if (newContracts === 0) {
+        delete portfolio.positions[instrumentId];
+        portfolio.closed_trades += 1;
+      } else {
+        existing.contracts = Math.abs(newContracts);
+      }
     }
   }
 
-  // Paper cash: Kalshi event contracts and MOEX futures are fully funded here (no margin), the
-  // cash movement is the traded notional plus the fee. Perps are margined, so only the fee is
-  // deducted at entry and the P&L accrues as unrealised until the position is closed.
-  if (trade.instrument_kind !== 'perpetual') {
-    portfolio.cash_usd = Number((portfolio.cash_usd + (action === 'buy' ? -1 : 1) * notional - fee).toFixed(6));
-  } else {
-    portfolio.cash_usd = Number((portfolio.cash_usd - fee).toFixed(6));
-  }
+  portfolio.cash_usd = Number((portfolio.cash_usd + cashFlow - fee).toFixed(6));
   return portfolio;
 }
 
-/** Mark every open position from the latest verified snapshot. Missing quotes stay null, never faked. */
 export function markPortfolio(portfolio, quotesById) {
   let unrealized = 0;
-  let openValue = 0;
+  let positionValue = 0;
   let complete = true;
   for (const position of Object.values(portfolio.positions ?? {})) {
     const quote = quotesById[position.instrument_id];
@@ -299,41 +322,47 @@ export function markPortfolio(portfolio, quotesById) {
       complete = false;
       continue;
     }
+    const multiplier = position.usd_per_price_unit ?? 1;
     let mark = null;
+    let pnl = null;
+    let value = null;
     if (position.kind === 'event_contract') {
-      mark = position.outcome === 'yes' ? quote.best_yes_bid : quote.best_no_bid;
-    } else if (position.kind === 'future' || position.kind === 'perpetual') {
+      // A long is marked at the price another participant is bidding for it; a short is marked at
+      // the price it would cost to buy the contract back. Both are published exchange prices.
+      mark = position.side === 'long'
+        ? (position.outcome === 'yes' ? quote.best_yes_bid : quote.best_no_bid)
+        : (position.outcome === 'yes' ? quote.best_yes_ask : quote.best_no_ask);
+      if (mark != null) {
+        const sign = position.side === 'short' ? -1 : 1;
+        pnl = (mark - position.avg_entry_price) * position.contracts * sign;
+        value = sign * mark * position.contracts;
+        position.mark_status = position.side === 'long' ? 'long_marked_at_bid_conservative' : 'short_marked_at_ask_conservative';
+      }
+    } else {
       mark = position.side === 'long' ? quote.bid : quote.offer;
+      if (mark != null) {
+        pnl = (mark - position.avg_entry_price) * position.contracts * multiplier * (position.side === 'short' ? -1 : 1);
+        // A derivative's market value here is the collateral it still holds plus its mark-to-market
+        // profit; its notional is never exchanged in a margin account.
+        value = (position.margin_usd ?? 0) + pnl;
+        position.mark_status = position.side === 'long' ? 'long_marked_at_bid' : 'short_marked_at_offer';
+      }
     }
-    if (mark == null) {
+    if (mark == null || pnl == null) {
       position.mark_status = 'one_sided_book_no_exit_price';
       complete = false;
       continue;
     }
-    const multiplier = position.usd_per_price_unit ?? 1;
-    const sign = position.side === 'short' || position.outcome === 'no' ? 1 : 1;
-    let pnl;
-    if (position.kind === 'event_contract') {
-      pnl = (mark - position.avg_entry_price) * position.contracts;
-      openValue += mark * position.contracts;
-    } else if (position.kind === 'perpetual') {
-      pnl = (mark - position.avg_entry_price) * position.contracts * (position.side === 'short' ? -1 : 1);
-      openValue += pnl;
-    } else {
-      pnl = (mark - position.avg_entry_price) * position.contracts * multiplier * (position.side === 'short' ? -1 : 1);
-      openValue += 0;
-    }
     position.mark_price = mark;
-    position.mark_status = position.kind === 'event_contract' ? 'exit_at_bid_conservative' : position.side === 'long' ? 'long_marked_at_bid' : 'short_marked_at_offer';
     position.mark_source_url = quote.source?.url ?? null;
     position.unrealized_pnl_usd = Number(pnl.toFixed(6));
     unrealized += pnl;
-    void sign;
+    positionValue += value;
   }
 
   portfolio.open_positions = Object.keys(portfolio.positions ?? {}).length;
   portfolio.unrealized_pnl_usd = Number(unrealized.toFixed(6));
-  const equity = portfolio.cash_usd + openValue;
+  const equity = portfolio.cash_usd + positionValue;
   portfolio.equity_usd = complete || portfolio.open_positions === 0 ? Number(equity.toFixed(6)) : portfolio.equity_usd ?? null;
   portfolio.equity_complete = complete;
   portfolio.updated_at = new Date().toISOString();

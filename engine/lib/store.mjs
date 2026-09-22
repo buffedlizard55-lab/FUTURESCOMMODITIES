@@ -12,7 +12,7 @@
  *    overwritten), which keeps the trade history immutable.
  */
 
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { stableStringify } from './http.mjs';
 
@@ -45,12 +45,41 @@ export function readJson(path, fallback = null) {
   }
 }
 
+export { stableStringify } from './http.mjs';
+
+/** Sorted, human-readable JSON. */
 export function writeJson(path, value) {
+  return writeJsonIfChanged(path, value);
+}
+
+/**
+ * Writes only when the content actually changed: a tick that reproduces the same facts leaves the
+ * repository untouched instead of committing a meaningless diff.
+ */
+export function writeJsonIfChanged(path, value) {
   ensureDir(dirname(path));
-  const next = `${stableStringify(value)}\n`;
-  if (existsSync(path) && readFileSync(path, 'utf8') === next) return false;
-  writeFileSync(path, next);
+  const body = stableStringify(value);
+  if (existsSync(path)) {
+    try {
+      if (stableStringify(JSON.parse(readFileSync(path, 'utf8'))) === body) return false;
+    } catch {
+      // A file that cannot be parsed is rewritten rather than trusted.
+    }
+  }
+  writeFileSync(path, `${body}\n`);
   return true;
+}
+
+/** Keeps the newest `keep` files in a directory (name order) and removes the rest. */
+export function pruneDirectory(dir, keep, filter = () => true) {
+  if (!existsSync(dir)) return 0;
+  const files = readdirSync(dir).filter(filter).sort();
+  let removed = 0;
+  for (const file of files.slice(0, Math.max(0, files.length - keep))) {
+    rmSync(join(dir, file), { force: true });
+    removed += 1;
+  }
+  return removed;
 }
 
 export function writeText(path, text) {
@@ -64,7 +93,8 @@ export function writeText(path, text) {
 export function appendJsonl(path, records) {
   if (!records.length) return;
   ensureDir(dirname(path));
-  const body = records.map((r) => stableStringify(r, 0)).join('\n');
+  // One compact JSON object per line: the ledger is append-only and read back line by line.
+  const body = records.map((r) => JSON.stringify(r)).join('\n');
   appendFileSync(path, `${body}\n`);
 }
 
