@@ -1,0 +1,734 @@
+{
+  "anomalies": [
+    {
+      "check": "required_fields_present",
+      "detail": {
+        "check": "required_fields_present",
+        "missing": [
+          "official_source",
+          "market_at_decision"
+        ],
+        "ok": false
+      },
+      "ticker": "KXGOLDPERP",
+      "trade_id": "2006729009f5819c61ae"
+    },
+    {
+      "check": "provenance_fields_present",
+      "detail": {
+        "check": "provenance_fields_present",
+        "missing": [
+          "source_url"
+        ],
+        "ok": false
+      },
+      "ticker": "KXGOLDPERP",
+      "trade_id": "2006729009f5819c61ae"
+    },
+    {
+      "check": "instrument_listed_with_its_own_provenance",
+      "detail": {
+        "check": "instrument_listed_with_its_own_provenance",
+        "note": "Instrument not found in the latest universe file (it may have settled and dropped out of the open-market listing).",
+        "ok": false
+      },
+      "ticker": "KXGOLDPERP",
+      "trade_id": "2006729009f5819c61ae"
+    },
+    {
+      "check": "required_fields_present",
+      "detail": {
+        "check": "required_fields_present",
+        "missing": [
+          "official_source",
+          "market_at_decision"
+        ],
+        "ok": false
+      },
+      "ticker": "KXSILVERPERP",
+      "trade_id": "8fa1c3f779e1332e9852"
+    },
+    {
+      "check": "provenance_fields_present",
+      "detail": {
+        "check": "provenance_fields_present",
+        "missing": [
+          "source_url"
+        ],
+        "ok": false
+      },
+      "ticker": "KXSILVERPERP",
+      "trade_id": "8fa1c3f779e1332e9852"
+    },
+    {
+      "check": "instrument_listed_with_its_own_provenance",
+      "detail": {
+        "check": "instrument_listed_with_its_own_provenance",
+        "note": "Instrument not found in the latest universe file (it may have settled and dropped out of the open-market listing).",
+        "ok": false
+      },
+      "ticker": "KXSILVERPERP",
+      "trade_id": "8fa1c3f779e1332e9852"
+    },
+    {
+      "check": "required_fields_present",
+      "detail": {
+        "check": "required_fields_present",
+        "missing": [
+          "official_source",
+          "contracts",
+          "market_at_decision"
+        ],
+        "ok": false
+      },
+      "ticker": "KXPLATINUMPERP",
+      "trade_id": "43b1fac08e4168bb701d"
+    },
+    {
+      "check": "provenance_fields_present",
+      "detail": {
+        "check": "provenance_fields_present",
+        "missing": [
+          "source_url"
+        ],
+        "ok": false
+      },
+      "ticker": "KXPLATINUMPERP",
+      "trade_id": "43b1fac08e4168bb701d"
+    },
+    {
+      "check": "instrument_listed_with_its_own_provenance",
+      "detail": {
+        "check": "instrument_listed_with_its_own_provenance",
+        "note": "Instrument not found in the latest universe file (it may have settled and dropped out of the open-market listing).",
+        "ok": false
+      },
+      "ticker": "KXPLATINUMPERP",
+      "trade_id": "43b1fac08e4168bb701d"
+    }
+  ],
+  "anomaly_count": 9,
+  "checks_failed": 3,
+  "checks_passed": 10,
+  "coverage": {
+    "brief_markets_without_automated_feed": [
+      {
+        "reason": "Daily spot benchmark pages are parsed from the published HTML table; the engine records parse failures explicitly instead of guessing.",
+        "status": "automated_partial",
+        "venue": "eia"
+      },
+      {
+        "reason": "Report payload schemas vary by report; the platform stores the retrieved report metadata and only wires a report into a signal once its fields are read and verified.",
+        "status": "automated_partial",
+        "venue": "usda_ams"
+      },
+      {
+        "reason": "No automated CME prices. Adding CME instruments to the leaderboard requires either a licensed data feed or an official file the operator is entitled to use; the import path is documented in docs/LIMITATIONS.md.",
+        "status": "blocked_by_data_terms",
+        "venue": "cme"
+      },
+      {
+        "reason": "ICE end-of-day commodity data is a paid subscription; no free official API was found. ICE-listed commodities (Brent, sugar No.11, cocoa, coffee, cotton, orange juice) are therefore catalogued but not priced automatically.",
+        "status": "not_automated_yet",
+        "venue": "ice"
+      },
+      {
+        "reason": "LME official prices are published on the website; automated retrieval is blocked by bot protection and LME data licensing. Aluminium, zinc, lead and nickel are therefore catalogued but priced only where another official venue quotes them (MOEX lists ALUM, NICKEL, COPPER).",
+        "status": "not_automated_yet",
+        "venue": "lme"
+      },
+      {
+        "reason": "Eurex publishes daily price files for registered users; the correct public endpoint still has to be identified and its terms reviewed.",
+        "status": "not_automated_yet",
+        "venue": "eurex"
+      },
+      {
+        "reason": "The service exists and is public, but the correct parameter scheme is unresolved; no SGX market is included in the universe yet.",
+        "status": "not_automated_yet",
+        "venue": "sgx"
+      },
+      {
+        "reason": "JPX publishes daily derivative data as files behind a page structure that must be located and checked for terms.",
+        "status": "not_automated_yet",
+        "venue": "jpx"
+      },
+      {
+        "reason": "Milling wheat and rapeseed (canola) futures are Euronext-listed; no endpoint has been tested yet, so nothing is claimed.",
+        "status": "not_yet_verified",
+        "venue": "euronext"
+      },
+      {
+        "reason": "B3 publishes settlement prices for its agricultural and FX futures; the correct public file/API path still has to be identified.",
+        "status": "not_automated_yet",
+        "venue": "b3"
+      },
+      {
+        "reason": "No endpoint tested yet.",
+        "status": "not_yet_verified",
+        "venue": "hkex"
+      },
+      {
+        "reason": "DME Oman crude is cleared by CME/ICE infrastructure; given the CME access restriction and no tested DME feed, no DME instrument is included.",
+        "status": "not_yet_verified",
+        "venue": "dme"
+      }
+    ],
+    "by_venue": {
+      "kalshi": {
+        "instruments": 894,
+        "quoted": 45
+      },
+      "kalshi_margin": {
+        "instruments": 25,
+        "quoted": 25
+      },
+      "moex_forts": {
+        "instruments": 26,
+        "quoted": 26
+      }
+    },
+    "instruments_total": 945,
+    "ledger_trades": 13,
+    "open_intents": 3,
+    "quotes_in_latest_snapshot": 96,
+    "strategies": 12,
+    "venue_status": {
+      "b3": "not_automated_yet",
+      "cme": "blocked_by_data_terms",
+      "dme": "not_yet_verified",
+      "eia": "automated_partial",
+      "eurex": "not_automated_yet",
+      "euronext": "not_yet_verified",
+      "hkex": "not_yet_verified",
+      "ice": "not_automated_yet",
+      "jpx": "not_automated_yet",
+      "kalshi": "automated",
+      "kalshi_margin": "automated",
+      "lme": "not_automated_yet",
+      "moex_forts": "automated",
+      "sgx": "not_automated_yet",
+      "usda_ams": "automated_partial"
+    }
+  },
+  "generated_at": "2026-09-22T18:39:58.017Z",
+  "methodology": [
+    "Every ledger trade is re-read from data/ledger/trades.jsonl and checked against the run manifest that produced it.",
+    "The trade carries the sha256 of the exact HTTP response that supplied its prices; the manifest holds the same hash for the call made in that run.",
+    "Fees are recomputed from the official Kalshi formula; the official schedule states there is no settlement fee.",
+    "Anomalies are reported and never auto-corrected."
+  ],
+  "results": [
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "4cda48fbe58b9657521548915209335462177c68ae0a00e85d4227f26b19aaad"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 4.66,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "taker",
+          "recorded_usd": 4.66
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-longshot-fade",
+      "ticker": "KXWTIMIN-26DEC31-T60",
+      "trade_id": "f78e47219a650358dd97"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "355e8ee04797c4b05139ac8ff56174e5356322b2698ead6e8f4a1ea3dd42086e"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 2.79,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "taker",
+          "recorded_usd": 2.79
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-longshot-fade",
+      "ticker": "KXWTIMIN-26DEC31-T55",
+      "trade_id": "4f8cc84a8d29c82054b7"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "ca25fcd13508b2781414d1408cae20aebe76c90b38438659c3a5d0e382c3fd46"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 1.6,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "taker",
+          "recorded_usd": 1.6
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-longshot-fade",
+      "ticker": "KXWTIMIN-26DEC31-T50",
+      "trade_id": "c2e11b0394e685efdd53"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "4ae5758b35b54a13b7a21c34dac64d3203d1a1ebf59c3624c45e59bed9fcbe5b"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 8.34,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "taker",
+          "recorded_usd": 8.34
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-carry-collector",
+      "ticker": "KXGOLDD-26SEP2217-T4325",
+      "trade_id": "b141dd976d8e20a336ce"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "b8c112952c8d8337a976a3ad74f27f9cc903449e157560cc8541b62820298ff0"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 12.68,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "taker",
+          "recorded_usd": 12.68
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-carry-collector",
+      "ticker": "KXGOLDD-26SEP2217-T4335",
+      "trade_id": "ec772a515b180f66efcf"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "f4720664ae5a1748038edce2f42fbc79663d43d00824aa42cd58b9b985769838"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 51.66,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "taker",
+          "recorded_usd": 51.66
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-carry-collector",
+      "ticker": "KXCOPPERD-26SEP2217-T6.82",
+      "trade_id": "ee044a0368064dfc4e71"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "56f4259ea151a8e7957b96482ff49f2f70167a93bac0cc3bafac2212d378b940"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 113.4,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "maker",
+          "recorded_usd": 0
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-spread-capture",
+      "ticker": "KXGOLDD-26SEP2217-T4345",
+      "trade_id": "0cc80977112fc183b977"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "486992114960f9c2e83fb3e1bbe887d837b367785c4303b11ec3bbf08d9d97ab"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 240.72,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "maker",
+          "recorded_usd": 0
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-spread-capture",
+      "ticker": "KXGOLDD-26SEP2217-T4355",
+      "trade_id": "d96cf0c2edaad821eaca"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "290fba45084d8ce129235582e090bfe6e1e8d8ed75f25a5840893b568b00c080"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 0.04,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "maker",
+          "recorded_usd": 0
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-spread-capture",
+      "ticker": "KXGOLDD-26SEP2217-T4315",
+      "trade_id": "730855413597d543ba11"
+    },
+    {
+      "checks": [
+        {
+          "check": "required_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "provenance_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "c09ca6d9a0b21f61c9d6f814ef4ba9b9b33624d381c022123bc0c5bbf1551a63"
+        },
+        {
+          "check": "instrument_listed_with_its_own_provenance",
+          "note": "Instrument is present in data/registry/universe.json with a listing provenance block.",
+          "ok": true
+        },
+        {
+          "check": "fee_matches_official_formula",
+          "expected_usd": 12.58,
+          "note": "Recomputed as roundup(M * 0.07 * C * P * (1-P)) to the cent (non-direct member precision, matching the published fee table).",
+          "ok": true,
+          "order_type": "taker",
+          "recorded_usd": 12.58
+        }
+      ],
+      "failed": [],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "kalshi-cheap-momentum",
+      "ticker": "KXGOLDD-26SEP2217-T4365",
+      "trade_id": "4ededa17602170f1e237"
+    },
+    {
+      "checks": [
+        "[circular]",
+        "[circular]",
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "73788ddacc9133a03f77fac6e8b54fd6ba1607aa1da6a5e0f6ae66f2a9b0a77b"
+        },
+        "[circular]"
+      ],
+      "failed": [
+        "required_fields_present",
+        "provenance_fields_present",
+        "instrument_listed_with_its_own_provenance"
+      ],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "cross-venue-basis",
+      "ticker": "KXGOLDPERP",
+      "trade_id": "2006729009f5819c61ae"
+    },
+    {
+      "checks": [
+        "[circular]",
+        "[circular]",
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "73788ddacc9133a03f77fac6e8b54fd6ba1607aa1da6a5e0f6ae66f2a9b0a77b"
+        },
+        "[circular]"
+      ],
+      "failed": [
+        "required_fields_present",
+        "provenance_fields_present",
+        "instrument_listed_with_its_own_provenance"
+      ],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "cross-venue-basis",
+      "ticker": "KXSILVERPERP",
+      "trade_id": "8fa1c3f779e1332e9852"
+    },
+    {
+      "checks": [
+        "[circular]",
+        "[circular]",
+        {
+          "check": "run_manifest_exists",
+          "ok": true,
+          "run_id": "run-2026-09-22T18-38-57-919Z"
+        },
+        {
+          "check": "response_hash_matches_a_call_made_in_that_run",
+          "note": "The response hash on this trade appears in the provenance log of the run that created it.",
+          "ok": true,
+          "trade_hash": "73788ddacc9133a03f77fac6e8b54fd6ba1607aa1da6a5e0f6ae66f2a9b0a77b"
+        },
+        "[circular]"
+      ],
+      "failed": [
+        "required_fields_present",
+        "provenance_fields_present",
+        "instrument_listed_with_its_own_provenance"
+      ],
+      "run_id": "run-2026-09-22T18-38-57-919Z",
+      "strategy_id": "cross-venue-basis",
+      "ticker": "KXPLATINUMPERP",
+      "trade_id": "43b1fac08e4168bb701d"
+    }
+  ],
+  "trades_checked": 13
+}
