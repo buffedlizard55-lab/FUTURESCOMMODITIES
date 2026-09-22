@@ -1,18 +1,29 @@
-=== 2026-09-22T18:56:59Z tick
-== FUTURESCOMMODITIES tick run-2026-09-22T18-56-59-205Z
-   kalshi series fetched: 60
-   kalshi markets: 694 listed, 45 quoted
+=== 2026-09-22T18:59:28Z egress probe
+fred http=200 bytes=175524
+observation_date,DCOILWTICO
+1986-01-02,25.56
+--- eia bulk
+eia_bulk http=301 bytes=249
+=== tick
+== FUTURESCOMMODITIES tick run-2026-09-22T18-59-29-365Z
+   kalshi series fetched: 150 total, 108 commodity series matched
+   kalshi open markets scanned: 1600, kept: 0
+   kalshi markets: 0 listed, 0 quoted
    kalshi perps: 4 tracked
-   moex commodity contracts discovered: 576, tracking 30
-   moex instruments tradable this tick: 18
-   kalshi candle series cached: 30
-   moex history series cached: 2
-tick failed: ReferenceError: competition is not defined
-    at registerWorkingOrder (file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/tick.mjs:935:20)
-    at main (file:///home/runner/work/FUTURESCOMMODITIES/FUTURESCOMMODITIES/engine/tick.mjs:549:28)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-tick_exit=1
-verification: 0/0 trades fully verified, 0 anomalies
+   moex commodity contracts discovered: 0 across 0 commodities, tracking 0
+   moex instruments tradable this tick: 0
+   kalshi candle series cached: 0
+   moex history series cached: 0
+   trades this tick: 2, intents: 0, settlements: 0
+   degraded venues: 0, requests used: 11
+tick_exit=0
+verification: 0/2 trades fully verified, 6 anomalies
+  - KXGOLDPERP: mandatory_fields_present
+  - KXGOLDPERP: payload_hash_recorded
+  - KXGOLDPERP: payload_hash_present_in_that_runs_provenance_log
+  - KXSILVERPERP: mandatory_fields_present
+  - KXSILVERPERP: payload_hash_recorded
+  - KXSILVERPERP: payload_hash_present_in_that_runs_provenance_log
 verify_exit=0
-report: 12 strategies analysed, 0 trades
+report: 12 strategies analysed, 2 trades
 report_exit=0
