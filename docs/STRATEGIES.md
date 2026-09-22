@@ -43,11 +43,14 @@ Two rules apply to all of them:
 
 | Username | Strategy id | Idea | Entry | Exit |
 | --- | --- | --- | --- | --- |
-| `@basis-hunter` | `cross-venue-basis` | A 24/7 perpetual and a session-based future on the same metal cannot diverge indefinitely | Basis ≥ 0.5% between the Kalshi perpetual mid and the MOEX future mid | Basis compresses below 0.1% |
+| `@basis-hunter` | `cross-venue-basis` | A 24/7 perpetual and a session-based future on the same metal cannot diverge indefinitely | **Not trading.** Comparing the two legs requires the underlying quantity per contract on both venues: Kalshi publishes `contract_size` in its payload, MOEX does not publish it in its machine-readable payload. The strategy is disabled rather than comparing prices in different units. | — |
 
-Pairs currently wired: `KXGOLDPERP` ↔ `GOLD`, `KXSILVERPERP` ↔ `SILV`, `KXPLATINUMPERP` ↔ `PLT`,
-`KXPALLADIUMPERP` ↔ `PALL`. Each leg is a real order on its own venue, priced from that venue's own
-published book, with its own fee and liquidity cap.
+The cross-venue strategy is **disabled** and places no orders. Its first iteration compared the Kalshi
+perpetual price directly with the MOEX future price, which are quoted in different units (Kalshi per
+contract of a published size, MOEX in its own price units); the engine's own reporting surfaced the
+inconsistency and the strategy was taken out of the competition. It stays published, with its reason, so the
+correction is visible rather than hidden. Re-enabling it requires verifying the underlying quantity per
+contract for each MOEX pair from an official MOEX source.
 
 ## Where the ideas came from
 

@@ -75,7 +75,20 @@ lists it as covered-but-not-tradable rather than silently dropping it.
 * Rebuilding the site and committing the artifacts on every tick keeps the repository self-contained, but
   it means the published artifacts are only as fresh as the last successful workflow run.
 
-## 7. What is deliberately absent
+## 7. A modelling correction that is on the record
+
+The cross-venue basis strategy (`@basis-hunter`) compared a Kalshi perpetual price directly with a MOEX
+future price. Those are quoted in different units: Kalshi's perpetual payload publishes `contract_size`
+(for example 0.001 oz on gold, 0.1 oz on silver), while the MOEX ISS payload for the matching future does
+not state the underlying quantity per contract. The comparison was therefore unit-inconsistent and the
+strategy is now **disabled** and places no orders; the paper trades it produced before the correction are
+kept in `data/ledger/archive/` and excluded from the scored season, and the reason is published on the site.
+
+Re-enabling it needs one verified figure per pair — the underlying quantity per MOEX contract from an
+official MOEX source (contract specification page, or a machine-readable field we have not yet found) —
+and no amount of inference is a substitute for it.
+
+## 8. What is deliberately absent
 
 Risk management, position limits, drawdown controls and portfolio-level hedging are intentionally **not**
 implemented: the competition is scored on returns only. A strategy that takes a large, unhedged position

@@ -9,9 +9,9 @@
         "trades": 2
       },
       "Sugar": {
-        "fees_usd": 0.038006,
+        "fees_usd": 0.045796,
         "realized_pnl_usd": 0,
-        "slippage_usd": 485,
+        "slippage_usd": 1660,
         "trades": 2
       }
     },
@@ -19,9 +19,9 @@
     "open_position_marks": [
       {
         "contracts": 86,
-        "entry_price": 487.3,
+        "entry_price": 487.2,
         "instrument_id": "moex:CCG7",
-        "mark_price": 487.5,
+        "mark_price": 487.4,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "CCG7",
@@ -29,9 +29,9 @@
       },
       {
         "contracts": 86,
-        "entry_price": 468.6,
+        "entry_price": 468.4,
         "instrument_id": "moex:CCX6",
-        "mark_price": 468.5,
+        "mark_price": 468.3,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCX6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "ticker": "CCX6",
@@ -39,23 +39,23 @@
       },
       {
         "contracts": 4,
-        "entry_price": 47650,
+        "entry_price": 48010,
         "instrument_id": "moex:SuV6",
         "mark_price": 47560,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SuV6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "ticker": "SuV6",
-        "unrealized_pnl_usd": -0.42493
+        "unrealized_pnl_usd": -2.124648
       },
       {
-        "contracts": 1,
+        "contracts": 2,
         "entry_price": 49100,
         "instrument_id": "moex:SuX6",
-        "mark_price": 49710,
+        "mark_price": 49860,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SuX6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "SuX6",
-        "unrealized_pnl_usd": -0.72002
+        "unrealized_pnl_usd": -1.794147
       }
     ],
     "trades_by_venue": {
@@ -66,11 +66,13 @@
   "blocked_orders": 0,
   "blocked_reasons": {},
   "closed_trades": 0,
+  "disabled_reason": null,
   "display_name": "Calendar Carry",
+  "enabled": true,
   "entries": 4,
-  "equity_usd": 99994.513023,
+  "equity_usd": 99991.731387,
   "exits": 0,
-  "fees_paid_usd": 1.296702,
+  "fees_paid_usd": 1.304492,
   "market_type": "Exchange-listed commodity future",
   "open_positions": 4,
   "origin": {
@@ -79,28 +81,28 @@
     "status": "structural - measured, not forecast"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.0055,
+  "return_pct": -0.0083,
   "rules": {
     "entry": "Annualised calendar spread >= 12% after measured round-trip fees.",
     "exit": "Exit when the annualised spread compresses below 4%, or when either contract is within 5 days of expiry.",
     "sizing": "Target notional per leg, capped by both contracts published liquidity."
   },
-  "slippage_paid_usd": 497.9,
+  "slippage_paid_usd": 1672.9,
   "strategy_id": "moex-calendar-carry",
   "thesis": "Buy the near expiry and sell the far expiry (or the reverse) whenever the annualised spread between the official mid prices exceeds the exchange published round-trip fee converted at the official USD/RUB rate. Both legs are real orders with real fees.",
   "traded_market_types": [
     "Exchange-listed commodity future"
   ],
   "trades": 4,
-  "unrealized_pnl_usd": -4.190275,
+  "unrealized_pnl_usd": -6.964121,
   "username": "@calendar-carry",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
     "4 ledger records so far: 2 distinct commodity exposures across moex_forts.",
-    "Closed-trade P&L is 0.00 USD against 1.30 USD of fees and 497.90 USD of measured slippage against the mid.",
-    "4 open positions carry verified marks totalling -4.19 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Closed-trade P&L is 0.00 USD against 1.30 USD of fees and 1672.90 USD of measured slippage against the mid.",
+    "4 open positions carry verified marks totalling -6.96 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

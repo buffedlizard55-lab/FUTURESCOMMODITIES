@@ -2,54 +2,60 @@
   "attribution": {
     "best_closed_trade": null,
     "by_commodity": {
-      "Gasoline (US retail average)": {
-        "fees_usd": 7.06,
+      "Brent Crude Oil": {
+        "fees_usd": 0.31,
         "realized_pnl_usd": 0,
-        "slippage_usd": 41.5701,
-        "trades": 4
+        "slippage_usd": 2.545911,
+        "trades": 2
+      },
+      "Gasoline (US retail average)": {
+        "fees_usd": 19.8,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 19.75762,
+        "trades": 2
       }
     },
     "closed_trades": 0,
     "open_position_marks": [
       {
-        "contracts": 950,
-        "entry_price": 0.963158,
-        "instrument_id": "kalshi:KXAAAGASDTN-26SEP23-4.0850",
-        "mark_price": 0.95,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0850/orderbook?depth=20",
+        "contracts": 46,
+        "entry_price": 0.92647,
+        "instrument_id": "kalshi:KXAAAGASMAX-26DEC31-6.80",
+        "mark_price": 0.9,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMAX-26DEC31-6.80/orderbook?depth=20",
         "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDTN-26SEP23-4.0850",
-        "unrealized_pnl_usd": -12.5001
+        "ticker": "KXAAAGASMAX-26DEC31-6.80",
+        "unrealized_pnl_usd": -1.21762
       },
       {
-        "contracts": 3071,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXAAAGASDTN-26SEP23-4.0900",
-        "mark_price": 0.98,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0900/orderbook?depth=20",
+        "contracts": 3800,
+        "entry_price": 0.92,
+        "instrument_id": "kalshi:KXAAAGASMAX-26DEC31-7.00",
+        "mark_price": 0.91,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMAX-26DEC31-7.00/orderbook?depth=20",
         "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDTN-26SEP23-4.0900",
-        "unrealized_pnl_usd": -30.71
+        "ticker": "KXAAAGASMAX-26DEC31-7.00",
+        "unrealized_pnl_usd": -38
       },
       {
-        "contracts": 3243,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXAAAGASDTN-26SEP23-4.0950",
-        "mark_price": 0.98,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0950/orderbook?depth=20",
+        "contracts": 87,
+        "entry_price": 0.949953,
+        "instrument_id": "kalshi:KXBRENTMON-26SEP3017-T107.99",
+        "mark_price": 0.91,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXBRENTMON-26SEP3017-T107.99/orderbook?depth=20",
         "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDTN-26SEP23-4.0950",
-        "unrealized_pnl_usd": -32.43
+        "ticker": "KXBRENTMON-26SEP3017-T107.99",
+        "unrealized_pnl_usd": -3.475911
       },
       {
-        "contracts": 450,
+        "contracts": 25,
         "entry_price": 0.99,
-        "instrument_id": "kalshi:KXAAAGASDTN-26SEP23-4.1000",
-        "mark_price": 0.98,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.1000/orderbook?depth=20",
+        "instrument_id": "kalshi:KXBRENTMON-26SEP3017-T117.99",
+        "mark_price": 0.96,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXBRENTMON-26SEP3017-T117.99/orderbook?depth=20",
         "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDTN-26SEP23-4.1000",
-        "unrealized_pnl_usd": -4.5
+        "ticker": "KXBRENTMON-26SEP3017-T117.99",
+        "unrealized_pnl_usd": -0.75
       }
     ],
     "trades_by_venue": {
@@ -60,11 +66,13 @@
   "blocked_orders": 0,
   "blocked_reasons": {},
   "closed_trades": 0,
+  "disabled_reason": null,
   "display_name": "Longshot Fade",
+  "enabled": true,
   "entries": 4,
-  "equity_usd": 99912.7999,
+  "equity_usd": 99936.446469,
   "exits": 0,
-  "fees_paid_usd": 7.06,
+  "fees_paid_usd": 20.11,
   "market_type": "Kalshi event contract",
   "open_positions": 4,
   "origin": {
@@ -73,28 +81,28 @@
     "status": "hypothesis under test - the competition is the test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.0872,
+  "return_pct": -0.0636,
   "rules": {
     "entry": "YES mid <= 0.10, spread <= 3 cents, at least 2 hours to close, top-3 liquidity strikes only.",
     "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 41.5701,
+  "slippage_paid_usd": 22.303531,
   "strategy_id": "kalshi-longshot-fade",
   "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
   "trades": 4,
-  "unrealized_pnl_usd": -80.1401,
+  "unrealized_pnl_usd": -43.443531,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "4 ledger records so far: 1 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 7.06 USD of fees and 41.57 USD of measured slippage against the mid.",
-    "4 open positions carry verified marks totalling -80.14 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "4 ledger records so far: 2 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 20.11 USD of fees and 22.30 USD of measured slippage against the mid.",
+    "4 open positions carry verified marks totalling -43.44 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

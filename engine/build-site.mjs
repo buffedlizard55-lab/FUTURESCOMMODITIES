@@ -252,12 +252,15 @@ const html = `<!doctype html>
     var byCommodity = Object.keys(attr.by_commodity || {}).map(function (k) { return '<li><strong>' + esc0(k) + '</strong>: ' + (attr.by_commodity[k].trades || 0) + ' trades, realised ' + usd(attr.by_commodity[k].realized_pnl_usd) + ', fees ' + usd(attr.by_commodity[k].fees_usd) + '</li>'; }).join('');
     var marks = (attr.open_position_marks || []).map(function (m) { return '<li><code>' + esc0(m.ticker) + '</code> ' + m.contracts + ' @ ' + m.entry_price + ' → mark ' + money(m.mark_price, 4) + ' <span class="muted tiny">(' + esc0(m.mark_status) + ')</span>: <span class="' + cls(m.unrealized_pnl_usd) + '">' + usd(m.unrealized_pnl_usd) + '</span> ' + link(m.mark_source_url, 'source') + '</li>'; }).join('');
     var blocked = Object.keys(s.blocked_reasons || {}).map(function (k) { return '<li><code>' + esc0(k) + '</code> × ' + s.blocked_reasons[k] + '</li>'; }).join('');
-    return '<div class="card"><h3>' + esc0(s.display_name || s.strategy_id) + ' <span class="muted small">' + esc0(s.username) + '</span></h3>' +
+    var disabled = s.enabled === false;
+    return '<div class="card">' + (disabled ? '<div class="badge warn" style="margin-bottom:6px">not trading</div>' : '') + '<h3>' + esc0(s.display_name || s.strategy_id) + ' <span class="muted small">' + esc0(s.username) + '</span></h3>' +
       '<div class="small muted">' + esc0(s.market_type || '') + ' · <code>' + esc0(s.strategy_id) + '</code></div>' +
       '<p class="small" style="margin:8px 0 0">' + esc0(s.thesis || '') + '</p>' +
       '<p class="small muted" style="margin:6px 0 0">Origin: ' + esc0((s.origin && (s.origin.claim || s.origin.kind)) || '—') + '</p>' +
       '<div class="small" style="margin-top:8px"><strong>Return</strong> ' + pct(s.return_pct) + ' · equity ' + usd(s.equity_usd) + ' · realised ' + usd(s.realized_pnl_usd) + ' · unrealised ' + usd(s.unrealized_pnl_usd) + ' · ' + (s.trades || 0) + ' trades</div>' +
-      (s.what_it_means ? '<p class="small" style="margin:8px 0 0">' + esc0(s.what_it_means) + '</p>' : '<p class="small muted" style="margin:8px 0 0">No closed trades yet, so no result analysis is claimed for this strategy.</p>') +
+      (disabled
+        ? '<p class="small warn" style="margin:8px 0 0">' + esc0(s.disabled_reason || 'Disabled in this build.') + '</p>'
+        : (s.what_it_means ? '<p class="small" style="margin:8px 0 0">' + esc0(s.what_it_means) + '</p>' : '<p class="small muted" style="margin:8px 0 0">No closed trades yet, so no result analysis is claimed for this strategy.</p>')) +
       (byCommodity ? '<div class="small"><strong>Where the result came from</strong><ul class="tight">' + byCommodity + '</ul></div>' : '') +
       (marks ? '<div class="small"><strong>Open marks</strong><ul class="tight">' + marks + '</ul></div>' : '') +
       (blocked ? '<details><summary class="small">Orders blocked by liquidity or data checks</summary><ul class="tight small">' + blocked + '</ul></details>' : '') +

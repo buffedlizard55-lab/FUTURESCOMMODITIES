@@ -57,6 +57,8 @@ function main() {
       slippage_paid_usd: portfolio?.slippage_paid_usd ?? null,
       open_positions: portfolio?.open_positions ?? null,
       closed_trades: portfolio?.closed_trades ?? null,
+      enabled: strategy.enabled !== false,
+      disabled_reason: strategy.disabled_reason ?? null,
       blocked_orders: intentsForStrategy.length,
       blocked_reasons: blockedReasons,
       traded_market_types: marketTypes,

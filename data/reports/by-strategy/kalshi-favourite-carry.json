@@ -1,100 +1,47 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {
-      "Gasoline (US retail average)": {
-        "fees_usd": 2.69,
-        "realized_pnl_usd": 0,
-        "slippage_usd": 8.565,
-        "trades": 4
-      }
-    },
+    "by_commodity": {},
     "closed_trades": 0,
-    "open_position_marks": [
-      {
-        "contracts": 384,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXAAAGASDMN-26SEP23-4.3600",
-        "mark_price": 0.01,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3600/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDMN-26SEP23-4.3600",
-        "unrealized_pnl_usd": -3.84
-      },
-      {
-        "contracts": 307,
-        "entry_price": 0.03,
-        "instrument_id": "kalshi:KXAAAGASDMN-26SEP23-4.3650",
-        "mark_price": 0.02,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3650/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDMN-26SEP23-4.3650",
-        "unrealized_pnl_usd": -3.07
-      },
-      {
-        "contracts": 257,
-        "entry_price": 0.07,
-        "instrument_id": "kalshi:KXAAAGASDMN-26SEP23-4.3700",
-        "mark_price": 0.04,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMN-26SEP23-4.3700/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDMN-26SEP23-4.3700",
-        "unrealized_pnl_usd": -7.71
-      },
-      {
-        "contracts": 251,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXAAAGASDTN-26SEP23-4.0450",
-        "mark_price": 0.01,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP23-4.0450/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXAAAGASDTN-26SEP23-4.0450",
-        "unrealized_pnl_usd": -2.51
-      }
-    ],
-    "trades_by_venue": {
-      "kalshi": 4
-    },
+    "open_position_marks": [],
+    "trades_by_venue": {},
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
   "closed_trades": 0,
+  "disabled_reason": null,
   "display_name": "Favourite Carry",
-  "entries": 4,
-  "equity_usd": 99980.18,
+  "enabled": true,
+  "entries": 0,
+  "equity_usd": 100000,
   "exits": 0,
-  "fees_paid_usd": 2.69,
+  "fees_paid_usd": 0,
   "market_type": "Kalshi event contract",
-  "open_positions": 4,
+  "open_positions": 0,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.0198,
+  "return_pct": 0,
   "rules": {
     "entry": "YES mid >= 0.90, spread <= 3 cents, closes within 48 hours.",
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 8.565,
+  "slippage_paid_usd": 0,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
-  "traded_market_types": [
-    "Kalshi event contract"
-  ],
-  "trades": 4,
-  "unrealized_pnl_usd": -17.13,
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": 0,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "4 ledger records so far: 1 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 2.69 USD of fees and 8.56 USD of measured slippage against the mid.",
-    "4 open positions carry verified marks totalling -17.13 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
+    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick."
   ]
 }
