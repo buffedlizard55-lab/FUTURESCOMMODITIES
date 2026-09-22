@@ -1,0 +1,38 @@
+name: dev-tick
+on:
+  push:
+    branches: [arena/01a0ca5d-futurescommodities]
+permissions:
+  contents: write
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: run tick + verify + report + site
+        run: |
+          set +e
+          mkdir -p data
+          {
+            echo "=== $(date -u +%FT%TZ) tick"
+            node engine/tick.mjs --max-requests=400
+            echo "tick_exit=$?"
+            node engine/verify.mjs
+            echo "verify_exit=$?"
+            node engine/report.mjs
+            echo "report_exit=$?"
+            node engine/build-site.mjs
+            echo "site_exit=$?"
+          } > data/_run.log 2>&1
+          tail -c 6000 data/_run.log
+          exit 0
+      - name: commit
+        run: |
+          git config user.name "dev-bot"; git config user.email "dev-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "dev: tick run [skip ci]" || echo "nothing to commit"
+          git push || echo "push failed"

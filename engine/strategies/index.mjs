@@ -768,6 +768,14 @@ export const STRATEGIES = [
     id: 'cross-venue-basis',
     username: '@basis-hunter',
     display_name: 'Cross-Venue Basis',
+    // Disabled until the two venues' contracts can be normalised with verified data. Kalshi publishes
+    // the underlying quantity per perpetual contract (contract_size), but the MOEX machine-readable
+    // payload for the matching future does not state it, so a price-versus-price comparison would be
+    // comparing different units. The first iteration did exactly that and was corrected; the strategy
+    // stays out of the competition rather than trade on an unverifiable comparison.
+    enabled: false,
+    disabled_reason:
+      'Unavailable: comparing the Kalshi perpetual price with the MOEX future price requires the underlying quantity per contract on both venues. Kalshi publishes contract_size in its payload; the MOEX machine-readable payload does not, so the legs cannot be normalised without assuming a contract size. The strategy therefore places no orders until that figure is verified from an official MOEX source.',
     market_type: 'Cross-venue: Kalshi perpetual future vs exchange-listed future',
     venues: ['kalshi_margin', 'moex_forts'],
     origin: {
@@ -895,6 +903,8 @@ export function strategyCatalog() {
     has_exit_rule: typeof s.exit === 'function',
     pairs: s.pairs ?? null,
     implemented: typeof s.decide === 'function',
+    enabled: s.enabled !== false,
+    disabled_reason: s.disabled_reason ?? null,
   }));
 }
 

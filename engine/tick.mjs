@@ -531,6 +531,11 @@ async function main() {
       startedAt: competition.starts_at,
     });
     portfolios[strategy.id] = portfolio;
+    if (strategy.enabled === false) {
+      // The strategy is published with its reason and keeps its untouched starting balance.
+      strategyNotesOf(activity, strategy, portfolio);
+      continue;
+    }
     const strategyNotes = [];
     const ctx = {
       ...ctxBase,
@@ -801,6 +806,17 @@ async function main() {
   console.log(`   trades this tick: ${newTrades.length}, intents: ${intents.length}, settlements: ${settlements.length}`);
   console.log(`   degraded venues: ${degraded.length}, requests used: ${kalshi.requests}`);
   if (DRY_RUN) console.log('   dry-run: artifacts written, ledger appended (use --dry-run only when you accept that)');
+}
+
+/** Records that a strategy is disabled in this build, with the reason it states. */
+function strategyNotesOf(activity, strategy, portfolio) {
+  activity.push({
+    step: 'strategy_disabled',
+    strategy_id: strategy.id,
+    username: strategy.username,
+    reason: strategy.disabled_reason ?? 'disabled',
+    equity_usd: portfolio.equity_usd,
+  });
 }
 
 /* ------------------------------------------------------------------ */
