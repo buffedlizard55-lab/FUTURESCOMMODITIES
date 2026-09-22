@@ -28,6 +28,33 @@ export function sha256(buffer) {
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
+ * Process-wide provenance log: every completed request appends a compact record, so each run
+ * manifest can carry the hash of every response the run actually received. Verification uses it
+ * to prove that a ledger trade was priced from a payload fetched in that same run.
+ */
+export const provenanceLog = [];
+
+function logProvenance(record) {
+  if (!record || !record.url) return;
+  if (provenanceLog.some((r) => r.url === record.url && r.sha256 === record.sha256)) return;
+  provenanceLog.push({
+    url: record.url,
+    http_status: record.http_status ?? null,
+    sha256: record.sha256 ?? null,
+    bytes: record.bytes ?? null,
+    content_type: record.content_type ?? null,
+    retrieved_at: record.retrieved_at ?? null,
+    ok: record.ok ?? null,
+    note: record.note ?? null,
+  });
+  if (provenanceLog.length > 4000) provenanceLog.splice(0, provenanceLog.length - 4000);
+}
+
+export function provenanceSnapshot() {
+  return provenanceLog.slice();
+}
+
+/**
  * Fetch a URL and return { ok, status, text, json, buffer, provenance }.
  * provenance = { url, http_status, bytes, sha256, content_type, request_started_at,
  *                retrieved_at, attempts[], note }
@@ -78,6 +105,8 @@ export async function get(url, options = {}) {
         method: 'GET',
       };
 
+      logProvenance(provenance);
+
       if (!res.ok) {
         return { ok: false, status: res.status, text: null, json: null, buffer, provenance };
       }
@@ -107,6 +136,7 @@ export async function get(url, options = {}) {
     }
   }
 
+  logProvenance({ url, http_status: null, ok: false, retrieved_at: new Date().toISOString(), note });
   return {
     ok: false,
     status: null,
