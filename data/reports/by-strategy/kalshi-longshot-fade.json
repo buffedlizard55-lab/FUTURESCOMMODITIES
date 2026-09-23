@@ -8,6 +8,12 @@
         "slippage_usd": 2.545911,
         "trades": 2
       },
+      "Copper": {
+        "fees_usd": 0.11,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 2.285013,
+        "trades": 2
+      },
       "Gasoline (US retail average)": {
         "fees_usd": 20.14,
         "realized_pnl_usd": 0,
@@ -116,6 +122,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 69,
+        "entry_price": 0.986377,
+        "instrument_id": "kalshi:KXCOPPERMON-26SEP3017-T7.53",
+        "mark_price": 0.95,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26SEP3017-T7.53/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERMON-26SEP3017-T7.53",
+        "unrealized_pnl_usd": -2.510013
+      },
+      {
+        "contracts": 54,
+        "entry_price": 0.99,
+        "instrument_id": "kalshi:KXCOPPERMON-26SEP3017-T7.71",
+        "mark_price": 0.96,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26SEP3017-T7.71/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERMON-26SEP3017-T7.71",
+        "unrealized_pnl_usd": -1.62
+      },
+      {
         "contracts": 387,
         "entry_price": 0.97,
         "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4465",
@@ -207,7 +233,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 17
+      "kalshi": 19
     },
     "worst_closed_trade": null
   },
@@ -217,12 +243,12 @@
   "disabled_reason": null,
   "display_name": "Longshot Fade",
   "enabled": true,
-  "entries": 17,
+  "entries": 19,
   "equity_usd": 99936.446469,
   "exits": 0,
-  "fees_paid_usd": 22.07,
+  "fees_paid_usd": 22.18,
   "market_type": "Kalshi event contract",
-  "open_positions": 17,
+  "open_positions": 19,
   "origin": {
     "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
     "kind": "documented_anomaly",
@@ -235,21 +261,22 @@
     "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 35.389545,
+  "slippage_paid_usd": 37.674558,
   "strategy_id": "kalshi-longshot-fade",
   "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 17,
-  "unrealized_pnl_usd": 0,
+  "trades": 19,
+  "unrealized_pnl_usd": -4.130013,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "17 ledger records so far: 5 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 22.07 USD of fees and 35.39 USD of measured slippage against the mid.",
+    "19 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 22.18 USD of fees and 37.67 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -4.13 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
