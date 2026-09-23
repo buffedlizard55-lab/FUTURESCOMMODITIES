@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-22T23:01:14.954Z",
+  "generated_at": "2026-09-23T00:32:39.494Z",
   "strategies": [
     {
       "disabled_reason": null,
@@ -363,6 +363,16 @@
           "metal": "Platinum",
           "moexAsset": "PLT",
           "perpTicker": "KXPLATINUMPERP"
+        },
+        {
+          "metal": "Bitcoin",
+          "moexAsset": "BTC",
+          "perpTitleMatch": "btc"
+        },
+        {
+          "metal": "Ether",
+          "moexAsset": "ETHA",
+          "perpTitleMatch": "eth"
         }
       ],
       "rules": {
@@ -542,6 +552,94 @@
       "username": "@snap-fader",
       "venues": [
         "kalshi"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "FX Trend",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "moex-fx-trend",
+      "implemented": true,
+      "market_type": "Exchange-listed FX future",
+      "origin": {
+        "claim": "FX futures on MOEX FORTS (USD/RUB \"Si\", CNY/RUB) trend over multi-week stretches of central-bank policy and flows; the official settlement history makes the trend measurable without any forecast.",
+        "kind": "market_structure",
+        "status": "hypothesis under test on contracts verified in the exchange listing on 2026-09-22"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
+        "exit": "Exit when the momentum flips sign.",
+        "sizing": "Target notional, capped by published volume and open interest."
+      },
+      "sizing": {
+        "min_momentum": 0.015,
+        "notional_usd": 5000
+      },
+      "thesis": "Follow the official settlement trend in MOEX FX futures - the USD/RUB and CNY/RUB contracts - taking the strongest movers and holding while the trend persists. Same measured-momentum rule as the energy desk, applied to the FX sector the brief requires the universe to cover.",
+      "username": "@usd-rub-desk",
+      "venues": [
+        "moex_forts"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "Index Trend",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "moex-index-trend",
+      "implemented": true,
+      "market_type": "Exchange-listed equity index future",
+      "origin": {
+        "claim": "Equity-index futures are the canonical momentum market: index-level trends persist over weeks, and momentum rules on index futures are among the most replicated results in the literature. MOEX FORTS lists IMOEX, RTS, Nasdaq-100 and S&P 500 index futures through the same keyless ISS API.",
+        "kind": "documented_anomaly",
+        "status": "hypothesis under test on contracts verified in the exchange listing on 2026-09-22"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "15-observation settlement momentum, |momentum| >= 2.0%.",
+        "exit": "Exit when the momentum flips sign.",
+        "sizing": "Target notional, capped by published volume and open interest."
+      },
+      "sizing": {
+        "min_momentum": 0.02,
+        "notional_usd": 5000
+      },
+      "thesis": "Trade the official settlement momentum in MOEX equity-index futures - IMOEX (MIX), RTS, Nasdaq-100 (NASD) and S&P 500 (SPYF) - long the 15-observation winners, short the losers, and exit when the momentum flips. The index sector is one of the market types the brief requires the universe to cover.",
+      "username": "@index-mover",
+      "venues": [
+        "moex_forts"
+      ]
+    },
+    {
+      "disabled_reason": null,
+      "display_name": "Rate Curve Carry",
+      "enabled": true,
+      "has_exit_rule": true,
+      "id": "moex-rate-curve",
+      "implemented": true,
+      "market_type": "Exchange-listed interest rate future",
+      "origin": {
+        "claim": "The spread between near and far rate futures is the market's own estimate of the future short rate; when its annualised value exceeds the round-trip cost, the carry is capturable. MOEX FORTS lists RUONIA and 1MFR rate futures through the same keyless ISS API.",
+        "kind": "market_structure",
+        "status": "structural - measured, not forecast"
+      },
+      "pairs": null,
+      "rules": {
+        "entry": "Annualised calendar spread >= 8% after measured round-trip fees.",
+        "exit": "Exit when the annualised spread compresses below 3%, or when either contract is within 5 days of expiry.",
+        "sizing": "Target notional per leg, sized against the exchange-published lot notional (1,000,000 RUB per RUONIA/1MFR contract per the official specification) and capped by both contracts published liquidity."
+      },
+      "sizing": {
+        "exit_annualised_carry": 0.03,
+        "min_annualised_carry": 0.08,
+        "notional_usd": 15000
+      },
+      "thesis": "Buy the near expiry and sell the far expiry (or the reverse) of the same MOEX rate future whenever the annualised spread between the official mid prices exceeds the exchange-published round-trip fee. The interest-rate sector is one of the market types the brief requires the universe to cover; the rule is the calendar-carry rule applied to the rate curve.",
+      "username": "@ruonia-curve",
+      "venues": [
+        "moex_forts"
       ]
     }
   ]

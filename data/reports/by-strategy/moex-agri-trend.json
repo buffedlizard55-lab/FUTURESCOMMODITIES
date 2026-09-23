@@ -14,6 +14,18 @@
         "slippage_usd": 0.4145,
         "trades": 2
       },
+      "Orange Juice (ORANGE)": {
+        "fees_usd": 0.680356,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.054,
+        "trades": 2
+      },
+      "Raw Sugar (SUGR)": {
+        "fees_usd": 0.623232,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 1.62,
+        "trades": 1
+      },
       "Sugar": {
         "fees_usd": 0.030216,
         "realized_pnl_usd": 0,
@@ -70,6 +82,36 @@
         "unrealized_pnl_usd": -10.779883
       },
       {
+        "contracts": 2,
+        "entry_price": 1.613,
+        "instrument_id": "moex:OJF7",
+        "mark_price": 1.607,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/OJF7.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "OJF7",
+        "unrealized_pnl_usd": -1.191153
+      },
+      {
+        "contracts": 32,
+        "entry_price": 1.539,
+        "instrument_id": "moex:OJX6",
+        "mark_price": 1.542,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/OJX6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "OJX6",
+        "unrealized_pnl_usd": -9.529224
+      },
+      {
+        "contracts": 12,
+        "entry_price": 33.98,
+        "instrument_id": "moex:SAV6",
+        "mark_price": 33.71,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SAV6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "SAV6",
+        "unrealized_pnl_usd": -38.855524
+      },
+      {
         "contracts": 4,
         "entry_price": 47620,
         "instrument_id": "moex:SuV6",
@@ -91,7 +133,7 @@
       }
     ],
     "trades_by_venue": {
-      "moex_forts": 6
+      "moex_forts": 9
     },
     "worst_closed_trade": null
   },
@@ -101,40 +143,40 @@
   "disabled_reason": null,
   "display_name": "Agri Trend",
   "enabled": true,
-  "entries": 6,
-  "equity_usd": 99963.908757,
+  "entries": 9,
+  "equity_usd": 99913.029268,
   "exits": 0,
-  "fees_paid_usd": 3.227603,
+  "fees_paid_usd": 4.531191,
   "market_type": "Exchange-listed commodity future",
-  "open_positions": 6,
+  "open_positions": 9,
   "origin": {
     "claim": "Soft-commodity futures on MOEX trade in long supply-driven trends that are visible in their own official settlement history.",
     "kind": "market_structure",
     "status": "hypothesis under test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.0361,
+  "return_pct": -0.087,
   "rules": {
     "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
     "exit": "Exit when the momentum flips sign.",
     "sizing": "Target notional, capped by published volume and open interest."
   },
-  "slippage_paid_usd": 1213.5145,
+  "slippage_paid_usd": 1215.1885,
   "strategy_id": "moex-agri-trend",
   "thesis": "Follow the official settlement trend in MOEX soft commodities and grains, taking the strongest movers on each side and holding while the trend persists.",
   "traded_market_types": [
     "Exchange-listed commodity future"
   ],
-  "trades": 6,
-  "unrealized_pnl_usd": -32.86364,
+  "trades": 9,
+  "unrealized_pnl_usd": -82.439541,
   "username": "@agri-trend",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "6 ledger records so far: 4 distinct commodity exposures across moex_forts.",
-    "Closed-trade P&L is 0.00 USD against 3.23 USD of fees and 1213.51 USD of measured slippage against the mid.",
-    "6 open positions carry verified marks totalling -32.86 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "9 ledger records so far: 6 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 4.53 USD of fees and 1215.19 USD of measured slippage against the mid.",
+    "9 open positions carry verified marks totalling -82.44 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

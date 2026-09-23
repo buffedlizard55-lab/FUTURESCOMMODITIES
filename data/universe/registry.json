@@ -72,6 +72,43 @@
       "automated_access": "open",
       "automated_access_evidence": "Keyless ISS endpoints returned HTTP 200 for the contract list (503 contracts), individual contract quotes and daily history (verified 2026-09-22).",
       "documentation": "https://iss.moex.com/iss/reference/",
+      "listing_evidence_2026_09_22": {
+        "commodity_asset_codes_verified": [
+          "GOLD",
+          "GOLDM",
+          "SILV",
+          "SILVM",
+          "PLT",
+          "PLTM",
+          "COPPER",
+          "NICKEL",
+          "ALUM",
+          "ZINC",
+          "COCOA",
+          "COFFEE",
+          "SUGAR",
+          "SUGR",
+          "WHEAT",
+          "WTI",
+          "BR",
+          "NG",
+          "NGM",
+          "TTF",
+          "DTL",
+          "AI92",
+          "AI95",
+          "ORANGE"
+        ],
+        "listing_endpoint": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json",
+        "non_commodity_sectors_verified": [
+          "equity indexes (MIX, RTS, NASD, SPYF, DJ30, DAX, NIKK, R2000, STOX, HANG and others)",
+          "interest rates (RUONIA, 1MFR, RGBI)",
+          "FX (Si, CNY, Eu, GBPU, AUDU, UJPY and others)",
+          "crypto (BTC, ETH, SOL, XRP, TRX)",
+          "perpetual-style continuous contracts (USDRUBF, GLDRUBF, SLVRUBF, BTCUSDF and others)"
+        ],
+        "palladium": "NO palladium asset code exists in the FORTS listing (P codes are PLT/PLTM platinum and PLD/PLDM/PLZLM equities) - verified 2026-09-22. The watchlist keeps PALL as a documented request; nothing is traded under it."
+      },
       "name": "Moscow Exchange (MOEX), FORTS derivatives market",
       "note": "This is the only futures exchange besides Kalshi whose live quotes this project can price trades from. Contracts are discovered live from the exchange listing; the codes below are the ones the exchange actually publishes."
     },
@@ -82,24 +119,24 @@
       "products_page": "https://www.sgx.com/derivatives"
     }
   },
-  "generated_at": "2026-09-22T22:23:55.880Z",
+  "generated_at": "2026-09-23T00:32:37.864Z",
   "live_venues": {
     "eia": {
       "note": "NYMEX futures series discontinued after 2024-04-05; spot benchmarks verified separately.",
       "status": "historical_only"
     },
     "kalshi_event_contracts": {
-      "instruments": 1818,
+      "instruments": 1838,
       "quoted": 45,
       "status": "automated"
     },
     "kalshi_perps": {
-      "instruments": 4,
-      "quoted": 4,
+      "instruments": 12,
+      "quoted": 12,
       "status": "automated"
     },
     "moex_futures": {
-      "instruments": 25,
+      "instruments": 50,
       "status": "automated"
     }
   },
@@ -900,6 +937,598 @@
       "spec_status": "unverified",
       "spec_url": null,
       "venue": "CME"
+    },
+    {
+      "category": "Energy",
+      "code": "WTI",
+      "commodity": "WTI Crude Oil",
+      "exchange": "moex",
+      "id": "moex-wti",
+      "live_in_this_competition": true,
+      "name": "WTI Crude Oil futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "WTI-9.26 … WTI-12.26 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code WTI present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Energy",
+      "code": "BR",
+      "commodity": "Brent Crude Oil",
+      "exchange": "moex",
+      "id": "moex-br",
+      "live_in_this_competition": true,
+      "name": "Brent Crude Oil futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "BR-10.26 … BR-12.26 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code BR present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Energy",
+      "code": "NG",
+      "commodity": "Natural Gas (NG)",
+      "exchange": "moex",
+      "id": "moex-ng",
+      "live_in_this_competition": true,
+      "name": "Natural Gas (NG) futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "NG-9.26 … NG-3.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NG present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Energy",
+      "code": "NGM",
+      "commodity": "Natural Gas (NGM)",
+      "exchange": "moex",
+      "id": "moex-ngm",
+      "live_in_this_competition": true,
+      "name": "Natural Gas (NGM) futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "NGM-9.26 … NGM-4.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NGM present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Energy",
+      "code": "TTF",
+      "commodity": "Natural Gas (TTF)",
+      "exchange": "moex",
+      "id": "moex-ttf",
+      "live_in_this_competition": true,
+      "name": "Natural Gas (TTF) futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "TTF-9.26 … TTF-11.26 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code TTF present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Energy",
+      "code": "DTL",
+      "commodity": "Diesel (DTL)",
+      "exchange": "moex",
+      "id": "moex-dtl",
+      "live_in_this_competition": true,
+      "name": "Diesel (DTL) futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "DTL-9.26 … DTL-11.26 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code DTL present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Energy",
+      "code": "AI92",
+      "commodity": "Gasoline AI-92",
+      "exchange": "moex",
+      "id": "moex-ai92",
+      "live_in_this_competition": true,
+      "name": "Gasoline AI-92 futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "AI92-9.26 … AI92-11.26 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code AI92 present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Energy",
+      "code": "AI95",
+      "commodity": "Gasoline AI-95",
+      "exchange": "moex",
+      "id": "moex-ai95",
+      "live_in_this_competition": true,
+      "name": "Gasoline AI-95 futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "AI95-9.26 … AI95-11.26 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code AI95 present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Precious Metals",
+      "code": "GOLD",
+      "commodity": "Gold",
+      "exchange": "moex",
+      "id": "moex-gold",
+      "live_in_this_competition": true,
+      "name": "Gold futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "GOLD-12.26 … GOLD-9.27 series; description publishes LOT SIZE=1, quotation UNIT=USD, FACEUNIT=USD (verified 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code GOLD present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Precious Metals",
+      "code": "SILV",
+      "commodity": "Silver",
+      "exchange": "moex",
+      "id": "moex-silv",
+      "live_in_this_competition": true,
+      "name": "Silver futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "SILV-12.26 … SILV-9.27 series; description publishes LOT SIZE=10, quotation UNIT=USD, FACEUNIT=USD (verified 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SILV present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Precious Metals",
+      "code": "PLT",
+      "commodity": "Platinum",
+      "exchange": "moex",
+      "id": "moex-plt",
+      "live_in_this_competition": true,
+      "name": "Platinum futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "PLT-12.26 … PLT-9.27 series; description publishes LOT SIZE=1, quotation UNIT=USD, FACEUNIT=USD (verified 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code PLT present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "COPPER",
+      "commodity": "Copper",
+      "exchange": "moex",
+      "id": "moex-copper",
+      "live_in_this_competition": true,
+      "name": "Copper futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "COPPER-12.26 / COPPER-3.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code COPPER present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "NICKEL",
+      "commodity": "Nickel",
+      "exchange": "moex",
+      "id": "moex-nickel",
+      "live_in_this_competition": true,
+      "name": "Nickel futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "NICKEL-12.26 / NICKEL-3.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NICKEL present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "ALUM",
+      "commodity": "Aluminium",
+      "exchange": "moex",
+      "id": "moex-alum",
+      "live_in_this_competition": true,
+      "name": "Aluminium futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "ALUM-12.26 / ALUM-3.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ALUM present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Industrial Metals",
+      "code": "ZINC",
+      "commodity": "Zinc",
+      "exchange": "moex",
+      "id": "moex-zinc",
+      "live_in_this_competition": true,
+      "name": "Zinc futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "ZINC-12.26 / ZINC-3.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ZINC present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "COCOA",
+      "commodity": "Cocoa",
+      "exchange": "moex",
+      "id": "moex-cocoa",
+      "live_in_this_competition": true,
+      "name": "Cocoa futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "COCOA-11.26 / COCOA-2.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code COCOA present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "COFFEE",
+      "commodity": "Coffee",
+      "exchange": "moex",
+      "id": "moex-coffee",
+      "live_in_this_competition": true,
+      "name": "Coffee futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "COFFEE-11.26 / COFFEE-2.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code COFFEE present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "SUGAR",
+      "commodity": "Sugar (white)",
+      "exchange": "moex",
+      "id": "moex-sugar",
+      "live_in_this_competition": true,
+      "name": "Sugar (white) futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "SUGAR-10.26 / SUGAR-11.26 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SUGAR present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "SUGR",
+      "commodity": "Raw Sugar (SUGR)",
+      "exchange": "moex",
+      "id": "moex-sugr",
+      "live_in_this_competition": true,
+      "name": "Raw Sugar (SUGR) futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "SUGR-10.26 … SUGR-5.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SUGR present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Grains & Oilseeds",
+      "code": "WHEAT",
+      "commodity": "Wheat",
+      "exchange": "moex",
+      "id": "moex-wheat",
+      "live_in_this_competition": true,
+      "name": "Wheat futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "WHEAT-9.26 … WHEAT-8.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code WHEAT present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Soft Commodities",
+      "code": "ORANGE",
+      "commodity": "Orange Juice (ORANGE)",
+      "exchange": "moex",
+      "id": "moex-orange",
+      "live_in_this_competition": true,
+      "name": "Orange Juice (ORANGE) futures",
+      "price_data": {
+        "note": "Live quotes, daily history and reference description pulled from the keyless official MOEX ISS API in every tick.",
+        "status": "automated_official_api"
+      },
+      "spec_evidence": "ORANGE-11.26 / ORANGE-1.27 series (verified in the exchange listing 2026-09-22)",
+      "spec_status": "verified",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ORANGE present in the exchange listing); per-contract reference fields (LOT SIZE / quotation UNIT / FACEUNIT) at https://iss.moex.com/iss/securities/<SECID>.json?iss.meta=off&iss.only=description",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Equity index futures",
+      "code": "MIX",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-mix",
+      "live_in_this_competition": true,
+      "name": "IMOEX index future",
+      "price_data": {
+        "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md).",
+        "status": "automated_official_api_available"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code MIX present in the exchange listing, verified 2026-09-22)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Equity index futures",
+      "code": "RTS",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-rts",
+      "live_in_this_competition": true,
+      "name": "RTS index future",
+      "price_data": {
+        "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md).",
+        "status": "automated_official_api_available"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code RTS present in the exchange listing, verified 2026-09-22)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Equity index futures",
+      "code": "NASD",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-nasd",
+      "live_in_this_competition": true,
+      "name": "Nasdaq-100 index future",
+      "price_data": {
+        "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md).",
+        "status": "automated_official_api_available"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code NASD present in the exchange listing, verified 2026-09-22)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Equity index futures",
+      "code": "SPYF",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-spyf",
+      "live_in_this_competition": true,
+      "name": "S&P 500 index future",
+      "price_data": {
+        "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md).",
+        "status": "automated_official_api_available"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code SPYF present in the exchange listing, verified 2026-09-22)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Interest-rate futures",
+      "code": "RUONIA",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-ruonia",
+      "live_in_this_competition": true,
+      "name": "RUONIA rate future",
+      "price_data": {
+        "note": "Traded by @ruonia-curve from 2026-09-22 (roadmap item 3). The engine values P&L from the exchange-published tick value (STEPPRICE/MINSTEP) and the lot notional from LOTVOLUME (RUB 1,000,000 per the official specification).",
+        "status": "automated_official_api_available"
+      },
+      "spec_fields_verified": {
+        "exchange_evidence": "RRU6 (RUON-9.26): ISS description LOTSIZE=1000000, UNIT=\"% (Процентная ставка)\"; listing STEPPRICE=8.21918 RUB per 0.01 step = 1000000 x 0.01/100 x 30/365 (formula verified against the exchange-published tick value, 2026-09-22)",
+        "notional": "RUB 1,000,000 per contract",
+        "quotation": "100 minus the expected average RUONIA rate for the month (tick 0.01%)",
+        "term": "1 month, cash-settled (EXECTYPE: Расчетный)",
+        "tick_value_formula": "W = N x R x T / 365 (T = calendar days in the settlement month)"
+      },
+      "spec_status": "verified",
+      "spec_url": "https://www.moex.com/files/4ch08v0xfdv9xwspszyj86m7w1 (official RUONIA Futures Contract Specification, order MB-P-2022-1210, in force from 28.06.2022)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Interest-rate futures",
+      "code": "1MFR",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-1mfr",
+      "live_in_this_competition": true,
+      "name": "1-month RUONIA rate future",
+      "price_data": {
+        "note": "Traded by @ruonia-curve from 2026-09-22 (roadmap item 3). The engine values P&L from the exchange-published tick value (STEPPRICE/MINSTEP) and the lot notional from LOTVOLUME (RUB 1,000,000 per the official specification).",
+        "status": "automated_official_api_available"
+      },
+      "spec_fields_verified": {
+        "exchange_evidence": "MFU6 (1MFR-9.26): listing STEPPRICE=8.21918 RUB per 0.01 step, LOTVOLUME=1000000, UNIT verified via ISS, 2026-09-22",
+        "notional": "RUB 1,000,000 per contract",
+        "quotation": "100 minus the expected average RUSFAR rate for a month"
+      },
+      "spec_status": "verified",
+      "spec_url": "https://www.moex.com/a7245 (official RUSFAR futures product page: contract code 1MFR, quotation 100 minus the expected average RUSFAR rate, nominal value 1 mln RUB, term 1 month)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "FX futures",
+      "code": "Si",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-si",
+      "live_in_this_competition": true,
+      "name": "USD/RUB future",
+      "price_data": {
+        "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md).",
+        "status": "automated_official_api_available"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code Si present in the exchange listing, verified 2026-09-22)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "FX futures",
+      "code": "CNY",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-cny",
+      "live_in_this_competition": true,
+      "name": "CNY/RUB future",
+      "price_data": {
+        "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md).",
+        "status": "automated_official_api_available"
+      },
+      "spec_status": "listed_only",
+      "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code CNY present in the exchange listing, verified 2026-09-22)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Crypto futures",
+      "code": "BTC",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-btc",
+      "live_in_this_competition": true,
+      "name": "Bitcoin future",
+      "price_data": {
+        "note": "Traded by @basis-hunter (Kalshi BTC perp vs MOEX BTC future) from 2026-09-22 (roadmap items 3/5). The engine values P&L from the exchange-published tick value (0.000989 USD per 1.0 USD of index movement per contract at USD/RUB 85.07).",
+        "status": "automated_official_api_available"
+      },
+      "spec_fields_verified": {
+        "exchange_evidence": "BTZ6 (BTC-12.26): ISS description UNIT=USD, FACEUNIT=USD, ASSETCODE=BTC; listing STEPPRICE=0.08410 RUB per 1.0 USD step, 2026-09-22",
+        "lot": "0.001 BTC per contract (1.0 USD of index movement = 0.001 USD per contract per the official Appendix 1; cross-checked against the exchange volume statistics 2026-09-22: 1,501,894,597.1 RUB / 207,750 contracts = 7,229 RUB per contract)",
+        "settlement": "Cash-settled vs the average of the MOEX Bitcoin Index 17:00-18:00 MSK on the last trading day",
+        "underlying": "MOEX Bitcoin Index (MOEXBTC), USD-quoted (UNIT=USD, FACEUNIT=USD)"
+      },
+      "spec_status": "verified",
+      "spec_url": "https://www.moex.com/files/4c3ky0hznedfbvev56ydz61e4w (official specification of futures on MOEX foreign-currency indices, order MB-P-2026-1883, in force from 14.05.2026; Appendix 1: BTC contract, 1 USD price step = 0.001 USD per contract)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
+    },
+    {
+      "category": "Crypto futures",
+      "code": "ETHA",
+      "commodity": null,
+      "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+      "competition_status": "active_in_competition_from_2026-09-22",
+      "exchange": "moex",
+      "id": "moex-eth",
+      "live_in_this_competition": true,
+      "name": "Ether (ETHA Trust ETF) future",
+      "price_data": {
+        "note": "Traded by @basis-hunter (Kalshi ETH perp vs MOEX ETHA ETF future) from 2026-09-22 (roadmap items 3/5). The engine values P&L from the exchange-published tick value (0.000989 USD per 1.0 USD of index movement per contract at USD/RUB 85.07).",
+        "status": "automated_official_api_available"
+      },
+      "spec_fields_verified": {
+        "exchange_evidence": "ETZ6 (ETHA-12.26): ISS description UNIT=USD, ASSETCODE=ETHA, CONTRACTNAME=\"фьючерсный контракт на акции инвестиционного фонда ETHA Trust ETF\"; open interest 485,868 contracts (2026-09-22)",
+        "lot": "1 ETHA share per contract (margin/STEPPRICE cross-check: STEPPRICE 0.84095 RUB per 0.01 USD = ~0.989 USD per 1.0 USD of price, 2026-09-22)",
+        "note": "The MOEX Ethereum Index futures (specification code ETH, MOEXETH index) were NOT found in the FORTS listing on 2026-09-22 (probed SECID patterns ETHU6/ETHZ6/ETHF7/ETU6, all absent). The competition therefore covers ether via the listed ETHA ETF futures; if MOEX lists the ETH index futures they will need their own verified registry entry before trading.",
+        "underlying": "ETHA Trust ETF (iShares Ethereum Trust) share, NAV tracks ETH; USD-quoted (UNIT=USD, FACEUNIT=USD)"
+      },
+      "spec_status": "verified",
+      "spec_url": "https://www.moex.com/en/index/MOEXETH (official MOEX Ethereum Index page) + ETZ6 ISS description (2026-09-22)",
+      "spec_verified_at": "2026-09-22",
+      "venue": "FORTS"
     }
   ],
   "source": "engine/universe/futures-registry.json"

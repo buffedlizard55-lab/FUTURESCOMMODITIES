@@ -1,0 +1,47 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {},
+    "closed_trades": 0,
+    "open_position_marks": [],
+    "trades_by_venue": {},
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "disabled_reason": null,
+  "display_name": "Rate Curve Carry",
+  "enabled": true,
+  "entries": 0,
+  "equity_usd": 100000,
+  "exits": 0,
+  "fees_paid_usd": 0,
+  "market_type": "Exchange-listed interest rate future",
+  "open_positions": 0,
+  "origin": {
+    "claim": "The spread between near and far rate futures is the market's own estimate of the future short rate; when its annualised value exceeds the round-trip cost, the carry is capturable. MOEX FORTS lists RUONIA and 1MFR rate futures through the same keyless ISS API.",
+    "kind": "market_structure",
+    "status": "structural - measured, not forecast"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": 0,
+  "rules": {
+    "entry": "Annualised calendar spread >= 8% after measured round-trip fees.",
+    "exit": "Exit when the annualised spread compresses below 3%, or when either contract is within 5 days of expiry.",
+    "sizing": "Target notional per leg, sized against the exchange-published lot notional (1,000,000 RUB per RUONIA/1MFR contract per the official specification) and capped by both contracts published liquidity."
+  },
+  "slippage_paid_usd": 0,
+  "strategy_id": "moex-rate-curve",
+  "thesis": "Buy the near expiry and sell the far expiry (or the reverse) of the same MOEX rate future whenever the annualised spread between the official mid prices exceeds the exchange-published round-trip fee. The interest-rate sector is one of the market types the brief requires the universe to cover; the rule is the calendar-carry rule applied to the rate curve.",
+  "traded_market_types": [],
+  "trades": 0,
+  "unrealized_pnl_usd": 0,
+  "username": "@ruonia-curve",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "No trade has been placed yet. The strategy is live and evaluating Exchange-listed interest rate future markets every tick."
+  ]
+}

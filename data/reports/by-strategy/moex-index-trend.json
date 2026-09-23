@@ -1,0 +1,98 @@
+{
+  "attribution": {
+    "best_closed_trade": null,
+    "by_commodity": {
+      "IMOEX Index": {
+        "fees_usd": 0.360717,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 112.5,
+        "trades": 2
+      },
+      "Nasdaq-100 Index": {
+        "fees_usd": 0.95184,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 72,
+        "trades": 1
+      }
+    },
+    "closed_trades": 0,
+    "open_position_marks": [
+      {
+        "contracts": 1,
+        "entry_price": 238875,
+        "instrument_id": "moex:MXH7",
+        "mark_price": 239000,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/MXH7.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "MXH7",
+        "unrealized_pnl_usd": -1.475449
+      },
+      {
+        "contracts": 1,
+        "entry_price": 233500,
+        "instrument_id": "moex:MXZ6",
+        "mark_price": 233600,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/MXZ6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "MXZ6",
+        "unrealized_pnl_usd": -1.180359
+      },
+      {
+        "contracts": 16,
+        "entry_price": 30700,
+        "instrument_id": "moex:NAZ6",
+        "mark_price": 30691,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NAZ6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "NAZ6",
+        "unrealized_pnl_usd": -1.429377
+      }
+    ],
+    "trades_by_venue": {
+      "moex_forts": 3
+    },
+    "worst_closed_trade": null
+  },
+  "blocked_orders": 0,
+  "blocked_reasons": {},
+  "closed_trades": 0,
+  "disabled_reason": null,
+  "display_name": "Index Trend",
+  "enabled": true,
+  "entries": 3,
+  "equity_usd": 99994.602258,
+  "exits": 0,
+  "fees_paid_usd": 1.312557,
+  "market_type": "Exchange-listed equity index future",
+  "open_positions": 3,
+  "origin": {
+    "claim": "Equity-index futures are the canonical momentum market: index-level trends persist over weeks, and momentum rules on index futures are among the most replicated results in the literature. MOEX FORTS lists IMOEX, RTS, Nasdaq-100 and S&P 500 index futures through the same keyless ISS API.",
+    "kind": "documented_anomaly",
+    "status": "hypothesis under test on contracts verified in the exchange listing on 2026-09-22"
+  },
+  "realized_pnl_usd": 0,
+  "return_pct": -0.0054,
+  "rules": {
+    "entry": "15-observation settlement momentum, |momentum| >= 2.0%.",
+    "exit": "Exit when the momentum flips sign.",
+    "sizing": "Target notional, capped by published volume and open interest."
+  },
+  "slippage_paid_usd": 184.5,
+  "strategy_id": "moex-index-trend",
+  "thesis": "Trade the official settlement momentum in MOEX equity-index futures - IMOEX (MIX), RTS, Nasdaq-100 (NASD) and S&P 500 (SPYF) - long the 15-observation winners, short the losers, and exit when the momentum flips. The index sector is one of the market types the brief requires the universe to cover.",
+  "traded_market_types": [
+    "Exchange-listed equity index future"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -4.085185,
+  "username": "@index-mover",
+  "venues": [
+    "moex_forts"
+  ],
+  "what_it_means": [
+    "3 ledger records so far: 2 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 1.31 USD of fees and 184.50 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -4.09 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
+  ]
+}

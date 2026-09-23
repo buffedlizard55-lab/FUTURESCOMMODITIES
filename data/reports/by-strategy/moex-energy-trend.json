@@ -1,47 +1,98 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "Gasoline AI-92": {
+        "fees_usd": 0.109065,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 275,
+        "trades": 1
+      },
+      "Gasoline AI-95": {
+        "fees_usd": 0.221318,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 130,
+        "trades": 2
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 1,
+        "entry_price": 70400,
+        "instrument_id": "moex:92V6",
+        "mark_price": 70950,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/92V6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "92V6",
+        "unrealized_pnl_usd": -6.491974
+      },
+      {
+        "contracts": 1,
+        "entry_price": 70820,
+        "instrument_id": "moex:95U6",
+        "mark_price": 71000,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/95U6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "95U6",
+        "unrealized_pnl_usd": -2.124646
+      },
+      {
+        "contracts": 1,
+        "entry_price": 71110,
+        "instrument_id": "moex:95V6",
+        "mark_price": 71190,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/95V6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "95V6",
+        "unrealized_pnl_usd": -0.944287
+      }
+    ],
+    "trades_by_venue": {
+      "moex_forts": 3
+    },
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
-  "closed_trades": null,
+  "closed_trades": 0,
   "disabled_reason": null,
   "display_name": "Energy Trend",
   "enabled": true,
-  "entries": 0,
-  "equity_usd": null,
+  "entries": 3,
+  "equity_usd": 99990.108709,
   "exits": 0,
-  "fees_paid_usd": null,
+  "fees_paid_usd": 0.330383,
   "market_type": "Exchange-listed commodity future",
-  "open_positions": null,
+  "open_positions": 3,
   "origin": {
     "claim": "Energy futures trend on supply shocks: crude, products and gas move in multi-week runs that their own settlement history makes measurable. MOEX lists WTI, Brent, natural gas (NG/NGM/TTF), diesel and AI-92/95 gasoline contracts, all readable from the official ISS API.",
     "kind": "market_structure",
     "status": "hypothesis under test on contracts verified in the exchange listing on 2026-09-22"
   },
-  "realized_pnl_usd": null,
-  "return_pct": null,
+  "realized_pnl_usd": 0,
+  "return_pct": -0.0099,
   "rules": {
     "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
     "exit": "Exit when the momentum flips sign.",
     "sizing": "Target notional, capped by published volume and open interest."
   },
-  "slippage_paid_usd": null,
+  "slippage_paid_usd": 405,
   "strategy_id": "moex-energy-trend",
   "thesis": "Follow the official settlement trend in MOEX energy futures - crude (WTI, Brent), products (diesel, AI-92/95 gasoline) and gas (NG, NGM, TTF) - taking the strongest movers on each side and holding while the trend persists.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": null,
+  "traded_market_types": [
+    "Exchange-listed commodity future"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -9.560908,
   "username": "@rig-count",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Exchange-listed commodity future markets every tick."
+    "3 ledger records so far: 2 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 0.33 USD of fees and 405.00 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -9.56 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
