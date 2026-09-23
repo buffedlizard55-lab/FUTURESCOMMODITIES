@@ -2,6 +2,18 @@
   "attribution": {
     "best_closed_trade": null,
     "by_commodity": {
+      "Brent Crude Oil": {
+        "fees_usd": 1.28836,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.4,
+        "trades": 2
+      },
+      "Diesel (DTL)": {
+        "fees_usd": 0.105052,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 135,
+        "trades": 1
+      },
       "Gasoline AI-92": {
         "fees_usd": 0.109065,
         "realized_pnl_usd": 0,
@@ -46,10 +58,40 @@
         "mark_status": "short_marked_at_offer",
         "ticker": "95V6",
         "unrealized_pnl_usd": -0.944287
+      },
+      {
+        "contracts": 5,
+        "entry_price": 98.69,
+        "instrument_id": "moex:BRV6",
+        "mark_price": 98.62,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BRV6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "BRV6",
+        "unrealized_pnl_usd": -3.474196
+      },
+      {
+        "contracts": 5,
+        "entry_price": 95.12,
+        "instrument_id": "moex:BRX6",
+        "mark_price": 95.03,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BRX6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "BRX6",
+        "unrealized_pnl_usd": -4.466824
+      },
+      {
+        "contracts": 1,
+        "entry_price": 67370,
+        "instrument_id": "moex:DLU6",
+        "mark_price": 67640,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/DLU6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "DLU6",
+        "unrealized_pnl_usd": -3.186969
       }
     ],
     "trades_by_venue": {
-      "moex_forts": 3
+      "moex_forts": 6
     },
     "worst_closed_trade": null
   },
@@ -59,40 +101,40 @@
   "disabled_reason": null,
   "display_name": "Energy Trend",
   "enabled": true,
-  "entries": 3,
-  "equity_usd": 99990.108709,
+  "entries": 6,
+  "equity_usd": 99977.587308,
   "exits": 0,
-  "fees_paid_usd": 0.330383,
+  "fees_paid_usd": 1.723795,
   "market_type": "Exchange-listed commodity future",
-  "open_positions": 3,
+  "open_positions": 6,
   "origin": {
     "claim": "Energy futures trend on supply shocks: crude, products and gas move in multi-week runs that their own settlement history makes measurable. MOEX lists WTI, Brent, natural gas (NG/NGM/TTF), diesel and AI-92/95 gasoline contracts, all readable from the official ISS API.",
     "kind": "market_structure",
     "status": "hypothesis under test on contracts verified in the exchange listing on 2026-09-22"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.0099,
+  "return_pct": -0.0224,
   "rules": {
     "entry": "15-observation settlement momentum, |momentum| >= 1.5%.",
     "exit": "Exit when the momentum flips sign.",
     "sizing": "Target notional, capped by published volume and open interest."
   },
-  "slippage_paid_usd": 405,
+  "slippage_paid_usd": 540.4,
   "strategy_id": "moex-energy-trend",
   "thesis": "Follow the official settlement trend in MOEX energy futures - crude (WTI, Brent), products (diesel, AI-92/95 gasoline) and gas (NG, NGM, TTF) - taking the strongest movers on each side and holding while the trend persists.",
   "traded_market_types": [
     "Exchange-listed commodity future"
   ],
-  "trades": 3,
-  "unrealized_pnl_usd": -9.560908,
+  "trades": 6,
+  "unrealized_pnl_usd": -20.688897,
   "username": "@rig-count",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "3 ledger records so far: 2 distinct commodity exposures across moex_forts.",
-    "Closed-trade P&L is 0.00 USD against 0.33 USD of fees and 405.00 USD of measured slippage against the mid.",
-    "3 open positions carry verified marks totalling -9.56 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "6 ledger records so far: 4 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 1.72 USD of fees and 540.40 USD of measured slippage against the mid.",
+    "6 open positions carry verified marks totalling -20.69 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

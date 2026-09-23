@@ -1,47 +1,95 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "Gold": {
+        "fees_usd": 0.67,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 2.709985,
+        "trades": 3
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 141,
+        "entry_price": 0.05078,
+        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4275",
+        "mark_price": 0.03,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26SEP2317-T4275/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26SEP2317-T4275",
+        "unrealized_pnl_usd": -2.92998
+      },
+      {
+        "contracts": 26,
+        "entry_price": 0.05,
+        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4285",
+        "mark_price": 0.04,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26SEP2317-T4285/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26SEP2317-T4285",
+        "unrealized_pnl_usd": -0.26
+      },
+      {
+        "contracts": 15,
+        "entry_price": 0.098667,
+        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4305",
+        "mark_price": 0.07,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26SEP2317-T4305/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26SEP2317-T4305",
+        "unrealized_pnl_usd": -0.430005
+      }
+    ],
+    "trades_by_venue": {
+      "kalshi": 3
+    },
     "worst_closed_trade": null
   },
-  "blocked_orders": 0,
-  "blocked_reasons": {},
+  "blocked_orders": 1,
+  "blocked_reasons": {
+    "insufficient_depth_within_price_tolerance": 1
+  },
   "closed_trades": 0,
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 0,
-  "equity_usd": 100000,
+  "entries": 3,
+  "equity_usd": 99995.710015,
   "exits": 0,
-  "fees_paid_usd": 0,
+  "fees_paid_usd": 0.67,
   "market_type": "Kalshi event contract",
-  "open_positions": 0,
+  "open_positions": 3,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "return_pct": -0.0043,
   "rules": {
     "entry": "YES mid >= 0.90, spread <= 3 cents, closes within 48 hours.",
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 0,
+  "slippage_paid_usd": 2.709985,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": 0,
+  "traded_market_types": [
+    "Kalshi event contract"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -3.619985,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick."
+    "3 ledger records so far: 1 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 0.67 USD of fees and 2.71 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -3.62 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (1).",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

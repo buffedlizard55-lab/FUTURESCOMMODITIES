@@ -1,10 +1,50 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "Gold": {
+        "fees_usd": 6.97,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 6.789945,
+        "trades": 3
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 151,
+        "entry_price": 0.715695,
+        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4335",
+        "mark_price": 0.68,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26SEP2317-T4335/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26SEP2317-T4335",
+        "unrealized_pnl_usd": -5.389945
+      },
+      {
+        "contracts": 131,
+        "entry_price": 0.45,
+        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4365",
+        "mark_price": 0.43,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26SEP2317-T4365/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26SEP2317-T4365",
+        "unrealized_pnl_usd": -2.62
+      },
+      {
+        "contracts": 157,
+        "entry_price": 0.36,
+        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4375",
+        "mark_price": 0.33,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26SEP2317-T4375/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26SEP2317-T4375",
+        "unrealized_pnl_usd": -4.71
+      }
+    ],
+    "trades_by_venue": {
+      "kalshi": 3
+    },
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
@@ -13,12 +53,12 @@
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 0,
-  "equity_usd": 100000,
+  "entries": 3,
+  "equity_usd": 99980.310055,
   "exits": 0,
-  "fees_paid_usd": 0,
+  "fees_paid_usd": 6.97,
   "market_type": "Kalshi event contract",
-  "open_positions": 0,
+  "open_positions": 3,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -31,23 +71,28 @@
     "status": "hypothesis under test - the competition is the test"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "return_pct": -0.0197,
   "rules": {
     "entry": "Depth ratio >= 70% or <= 30% on visible book depth, spread <= 3 cents, YES mid between 0.15 and 0.85, at least 2 hours to close.",
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 0,
+  "slippage_paid_usd": 6.789945,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": 0,
+  "traded_market_types": [
+    "Kalshi event contract"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -12.719945,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick."
+    "3 ledger records so far: 1 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 6.97 USD of fees and 6.79 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -12.72 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

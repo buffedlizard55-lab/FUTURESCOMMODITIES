@@ -119,7 +119,7 @@
       "products_page": "https://www.sgx.com/derivatives"
     }
   },
-  "generated_at": "2026-09-23T00:32:37.864Z",
+  "generated_at": "2026-09-23T00:48:31.769Z",
   "live_venues": {
     "eia": {
       "note": "NYMEX futures series discontinued after 2024-04-05; spot benchmarks verified separately.",
@@ -1516,12 +1516,12 @@
       "live_in_this_competition": true,
       "name": "Ether (ETHA Trust ETF) future",
       "price_data": {
-        "note": "Traded by @basis-hunter (Kalshi ETH perp vs MOEX ETHA ETF future) from 2026-09-22 (roadmap items 3/5). The engine values P&L from the exchange-published tick value (0.000989 USD per 1.0 USD of index movement per contract at USD/RUB 85.07).",
+        "note": "Covered in the universe from 2026-09-22 (roadmap item 3). Not yet traded by any strategy: @basis-hunter points at it but its unit-reconciliation gate refuses the pair while the ETHA share and the Kalshi ETH perp quote different units of the asset (see spec_fields_verified.lot). BTC is traded by @basis-hunter (Kalshi BTC perp vs MOEX BTC index future, lot 0.001 BTC per the official specification Appendix 1).",
         "status": "automated_official_api_available"
       },
       "spec_fields_verified": {
         "exchange_evidence": "ETZ6 (ETHA-12.26): ISS description UNIT=USD, ASSETCODE=ETHA, CONTRACTNAME=\"фьючерсный контракт на акции инвестиционного фонда ETHA Trust ETF\"; open interest 485,868 contracts (2026-09-22)",
-        "lot": "1 ETHA share per contract (margin/STEPPRICE cross-check: STEPPRICE 0.84095 RUB per 0.01 USD = ~0.989 USD per 1.0 USD of price, 2026-09-22)",
+        "lot": "1 ETHA share per contract. IMPORTANT: the share is NOT one ETH - on 2026-09-23 the share traded at 21.05 USD while the MOEX Ethereum Index (MOEXETH) was 2,761 USD, i.e. one share holds ~0.76% of an ETH. The share-to-ETH ratio is not published in the ISS fields this engine uses, so the ETHA future must not be used in a cross-venue ETH basis until that ratio is verified from an official source; the strategy unit-reconciliation gate blocks it automatically (2026-09-23).",
         "note": "The MOEX Ethereum Index futures (specification code ETH, MOEXETH index) were NOT found in the FORTS listing on 2026-09-22 (probed SECID patterns ETHU6/ETHZ6/ETHF7/ETU6, all absent). The competition therefore covers ether via the listed ETHA ETF futures; if MOEX lists the ETH index futures they will need their own verified registry entry before trading.",
         "underlying": "ETHA Trust ETF (iShares Ethereum Trust) share, NAV tracks ETH; USD-quoted (UNIT=USD, FACEUNIT=USD)"
       },

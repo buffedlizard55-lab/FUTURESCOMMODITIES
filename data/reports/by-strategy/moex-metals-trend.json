@@ -33,10 +33,16 @@
         "trades": 2
       },
       "Platinum (mini)": {
-        "fees_usd": 0.766752,
+        "fees_usd": 0.791185,
         "realized_pnl_usd": 0,
-        "slippage_usd": 43.2,
-        "trades": 1
+        "slippage_usd": 45.05,
+        "trades": 2
+      },
+      "Silver": {
+        "fees_usd": 1.426816,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.68,
+        "trades": 2
       },
       "Zinc": {
         "fees_usd": 0.5687,
@@ -88,6 +94,16 @@
         "unrealized_pnl_usd": -4.665349
       },
       {
+        "contracts": 1,
+        "entry_price": 1885.3,
+        "instrument_id": "moex:LTH7",
+        "mark_price": 1889,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/LTH7.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "LTH7",
+        "unrealized_pnl_usd": -0.36727
+      },
+      {
         "contracts": 32,
         "entry_price": 1851.5,
         "instrument_id": "moex:LTZ6",
@@ -128,6 +144,26 @@
         "unrealized_pnl_usd": -12.3
       },
       {
+        "contracts": 8,
+        "entry_price": 69.7,
+        "instrument_id": "moex:SVH7",
+        "mark_price": 69.79,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SVH7.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "SVH7",
+        "unrealized_pnl_usd": -7.146918
+      },
+      {
+        "contracts": 8,
+        "entry_price": 68.32,
+        "instrument_id": "moex:SVZ6",
+        "mark_price": 68.4,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SVZ6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "SVZ6",
+        "unrealized_pnl_usd": -6.352816
+      },
+      {
         "contracts": 11,
         "entry_price": 3929,
         "instrument_id": "moex:ZCZ6",
@@ -139,7 +175,7 @@
       }
     ],
     "trades_by_venue": {
-      "moex_forts": 9
+      "moex_forts": 12
     },
     "worst_closed_trade": null
   },
@@ -149,40 +185,40 @@
   "disabled_reason": null,
   "display_name": "Metals Trend",
   "enabled": true,
-  "entries": 9,
-  "equity_usd": 99863.540334,
+  "entries": 12,
+  "equity_usd": 99848.22208,
   "exits": 0,
-  "fees_paid_usd": 5.118267,
+  "fees_paid_usd": 6.569516,
   "market_type": "Exchange-listed commodity future",
-  "open_positions": 9,
+  "open_positions": 12,
   "origin": {
     "claim": "Cross-sectional momentum in metals futures is a long-documented effect; this strategy simply buys the strongest and shorts the weakest contract it can actually price.",
     "kind": "market_structure",
     "status": "hypothesis under test with a verified, free official data feed"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.1365,
+  "return_pct": -0.1518,
   "rules": {
     "entry": "20-observation settlement momentum, long the top mover and short the bottom mover on each side when |momentum| >= 1%.",
     "exit": "Exit when the momentum flips sign.",
     "sizing": "Target notional, capped by published volume and open interest."
   },
-  "slippage_paid_usd": 673.8,
+  "slippage_paid_usd": 676.33,
   "strategy_id": "moex-metals-trend",
   "thesis": "Rank the MOEX metal futures by their official settlement momentum over the cached history window and take the extremes, long the strongest and short the weakest. Trades only when the exchange publishes both a live quote and USD valuation inputs.",
   "traded_market_types": [
     "Exchange-listed commodity future"
   ],
-  "trades": 9,
-  "unrealized_pnl_usd": -131.341399,
+  "trades": 12,
+  "unrealized_pnl_usd": -145.208404,
   "username": "@metal-trend",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "9 ledger records so far: 7 distinct commodity exposures across moex_forts.",
-    "Closed-trade P&L is 0.00 USD against 5.12 USD of fees and 673.80 USD of measured slippage against the mid.",
-    "9 open positions carry verified marks totalling -131.34 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "12 ledger records so far: 8 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 6.57 USD of fees and 676.33 USD of measured slippage against the mid.",
+    "12 open positions carry verified marks totalling -145.21 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

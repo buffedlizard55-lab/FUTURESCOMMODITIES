@@ -1,18 +1,22 @@
 {
   "attribution": {
-    "best_closed_trade": null,
+    "best_closed_trade": {
+      "pnl_usd": -6.559641,
+      "reason": "unit_reconciliation_failed",
+      "ticker": "KXETHPERP"
+    },
     "by_commodity": {
       "0.001 ETH": {
-        "fees_usd": 3.1376,
-        "realized_pnl_usd": 0,
-        "slippage_usd": 0.1894,
-        "trades": 1
+        "fees_usd": 6.275541,
+        "realized_pnl_usd": -6.559641,
+        "slippage_usd": 0.23675,
+        "trades": 2
       },
       "Ether (ETHA Trust ETF)": {
-        "fees_usd": 7.936807,
-        "realized_pnl_usd": 0,
-        "slippage_usd": 42.615,
-        "trades": 1
+        "fees_usd": 15.873614,
+        "realized_pnl_usd": -101.103614,
+        "slippage_usd": 85.23,
+        "trades": 2
       },
       "Gold": {
         "fees_usd": 2.338218,
@@ -21,37 +25,17 @@
         "trades": 2
       }
     },
-    "closed_trades": 0,
+    "closed_trades": 2,
     "open_position_marks": [
-      {
-        "contracts": 947,
-        "entry_price": 2.761,
-        "instrument_id": "kalshiperp:KXETHPERP",
-        "mark_price": 2.7614,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
-        "mark_status": "short_marked_at_offer",
-        "ticker": "KXETHPERP",
-        "unrealized_pnl_usd": -0.3788
-      },
       {
         "contracts": 4,
         "entry_price": 4.362,
         "instrument_id": "kalshiperp:KXGOLDPERP",
-        "mark_price": 4.3619,
+        "mark_price": 4.3595,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "ticker": "KXGOLDPERP",
-        "unrealized_pnl_usd": -0.0004
-      },
-      {
-        "contracts": 947,
-        "entry_price": 21.1,
-        "instrument_id": "moex:ETZ6",
-        "mark_price": 21.01,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/ETZ6.json?iss.meta=off",
-        "mark_status": "long_marked_at_bid",
-        "ticker": "ETZ6",
-        "unrealized_pnl_usd": -85.23
+        "unrealized_pnl_usd": -0.01
       },
       {
         "contracts": 4,
@@ -65,23 +49,27 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi_margin": 2,
-      "moex_forts": 2
+      "kalshi_margin": 3,
+      "moex_forts": 3
     },
-    "worst_closed_trade": null
+    "worst_closed_trade": {
+      "pnl_usd": -101.103614,
+      "reason": "unit_reconciliation_failed",
+      "ticker": "ETZ6"
+    }
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
-  "closed_trades": 0,
+  "closed_trades": 2,
   "disabled_reason": null,
   "display_name": "Cross-Venue Basis",
   "enabled": true,
   "entries": 4,
-  "equity_usd": 99897.378175,
-  "exits": 0,
-  "fees_paid_usd": 13.412625,
+  "equity_usd": 99864.239372,
+  "exits": 2,
+  "fees_paid_usd": 24.487373,
   "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
-  "open_positions": 4,
+  "open_positions": 2,
   "origin": {
     "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge. The MOEX premium/discount to the world metal price since 2022 is a documented, persistent phenomenon.",
     "kind": "market_structure",
@@ -102,29 +90,31 @@
     "status": "structural - two real legs on two real venues, unit-normalised from official fields"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.1026,
+  "return_pct": -0.1358,
   "rules": {
     "entry": "Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).",
     "exit": "Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.",
     "sizing": "Target notional per leg, capped by each venue published liquidity."
   },
-  "slippage_paid_usd": 44.6046,
+  "slippage_paid_usd": 87.26695,
   "strategy_id": "cross-venue-basis",
   "thesis": "Compare the Kalshi metal perpetual (price / contract_size = USD per ounce) with the front MOEX future on the same metal (mid = USD per ounce when UNIT=USD). When the normalised basis is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
   "traded_market_types": [
     "Cross-venue: Kalshi perpetual future vs exchange-listed future"
   ],
-  "trades": 4,
-  "unrealized_pnl_usd": -89.2092,
+  "trades": 6,
+  "unrealized_pnl_usd": -3.61,
   "username": "@basis-hunter",
   "venues": [
     "kalshi_margin",
     "moex_forts"
   ],
   "what_it_means": [
-    "4 ledger records so far: 3 distinct commodity exposures across kalshi_margin, moex_forts.",
-    "Closed-trade P&L is 0.00 USD against 13.41 USD of fees and 44.60 USD of measured slippage against the mid.",
-    "4 open positions carry verified marks totalling -89.21 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "6 ledger records so far: 3 distinct commodity exposures across kalshi_margin, moex_forts.",
+    "Closed-trade P&L is -107.66 USD against 24.49 USD of fees and 87.27 USD of measured slippage against the mid.",
+    "Best closed trade: KXETHPERP at -6.559641 USD (unit_reconciliation_failed).",
+    "Worst closed trade: ETZ6 at -101.103614 USD (unit_reconciliation_failed).",
+    "2 open positions carry verified marks totalling -3.61 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
