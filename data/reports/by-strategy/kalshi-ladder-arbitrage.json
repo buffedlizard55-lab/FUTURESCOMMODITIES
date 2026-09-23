@@ -19,6 +19,12 @@
         "realized_pnl_usd": 0,
         "slippage_usd": 4.315035,
         "trades": 2
+      },
+      "WTI Crude Oil": {
+        "fees_usd": 0.89,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 6.949859,
+        "trades": 2
       }
     },
     "closed_trades": 0,
@@ -107,45 +113,65 @@
         "contracts": 6,
         "entry_price": 0.661667,
         "instrument_id": "kalshi:KXNGASMAX-26DEC31-P4.00",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.19,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNGASMAX-26DEC31-P4.00/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXNGASMAX-26DEC31-P4.00",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -2.830002
       },
       {
         "contracts": 5,
         "entry_price": 0.46,
         "instrument_id": "kalshi:KXNGASMAX-26DEC31-P4.50",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.39,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNGASMAX-26DEC31-P4.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXNGASMAX-26DEC31-P4.50",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -0.35
       },
       {
         "contracts": 14,
         "entry_price": 0.45,
         "instrument_id": "kalshi:KXNGASMAX-26DEC31-P5.00",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.13,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNGASMAX-26DEC31-P5.00/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXNGASMAX-26DEC31-P5.00",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -4.48
       },
       {
         "contracts": 10,
         "entry_price": 0.82,
         "instrument_id": "kalshi:KXNGASMAX-26DEC31-P5.50",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.52,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNGASMAX-26DEC31-P5.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXNGASMAX-26DEC31-P5.50",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -3
+      },
+      {
+        "contracts": 443,
+        "entry_price": 0.028713,
+        "instrument_id": "kalshi:KXWTIMAX-26SEP30-T115.50",
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMAX-26SEP30-T115.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIMAX-26SEP30-T115.50",
+        "unrealized_pnl_usd": -8.289859
+      },
+      {
+        "contracts": 25,
+        "entry_price": 0.99,
+        "instrument_id": "kalshi:KXWTIMAX-26SEP30-T116.00",
+        "mark_price": 0.92,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMAX-26SEP30-T116.00/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIMAX-26SEP30-T116.00",
+        "unrealized_pnl_usd": -1.75
       }
     ],
     "trades_by_venue": {
-      "kalshi": 12
+      "kalshi": 14
     },
     "worst_closed_trade": null
   },
@@ -155,12 +181,12 @@
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
-  "entries": 12,
+  "entries": 14,
   "equity_usd": 99968.85,
   "exits": 0,
-  "fees_paid_usd": 2.47,
+  "fees_paid_usd": 3.36,
   "market_type": "Kalshi event contract",
-  "open_positions": 12,
+  "open_positions": 14,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
@@ -173,21 +199,22 @@
     "exit": "Held to settlement (the two legs converge by construction).",
     "sizing": "Target notional per leg, capped by depth."
   },
-  "slippage_paid_usd": 25.255037,
+  "slippage_paid_usd": 32.204896,
   "strategy_id": "kalshi-ladder-arbitrage",
   "thesis": "Within one series and one expiry, the YES price must fall as the strike rises (for greater-than markets). When the published book violates that ordering by more than the configured tolerance, buy the underpriced YES leg and the NO of the overpriced leg.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 12,
-  "unrealized_pnl_usd": 0,
+  "trades": 14,
+  "unrealized_pnl_usd": -20.699861,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "12 ledger records so far: 3 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 2.47 USD of fees and 25.26 USD of measured slippage against the mid.",
+    "14 ledger records so far: 4 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 3.36 USD of fees and 32.20 USD of measured slippage against the mid.",
+    "6 open positions carry verified marks totalling -20.70 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
