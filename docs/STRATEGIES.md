@@ -91,10 +91,17 @@ and was **re-enabled the same day** after the missing normalisation was verified
   Bitcoin **Index** future: the official specification (Appendix 1, order MB-P-2026-1883, in force
   14.05.2026) fixes the value of the 1 USD price step at **0.001 USD per contract** (lot = 0.001 BTC),
   cross-checked against the exchange's own volume statistics (1,501,894,597.1 RUB / 207,750 contracts
-  = 7,229 RUB/contract). The MOEX ETH leg is the **ETHA Trust ETF** future (ASSETCODE `ETHA`; the
-  MOEX-Ether-Index futures were not found in the listing): one contract = one ETHA share whose NAV
-  tracks ETH. The engine detects these lot sizes from the exchange's published tick value (STEPPRICE)
-  rather than hard-coding them, and the basis trade records the lot facts used.
+  = 7,229 RUB/contract). The MOEX ETH leg points at the **ETHA Trust ETF** future (ASSETCODE `ETHA`;
+  the MOEX-Ether-Index futures were not found in the listing): one contract = one ETHA share.
+* **Unit-reconciliation gate (added 2026-09-23 after a live defect)** — a cross-venue "basis" is
+  only defined when both legs quote the **same asset unit**. The first live tick (2026-09-23 00:32Z)
+  opened the ETH pair comparing the Kalshi ETH perp (2,761 USD/ETH) with the ETHA ETF share
+  (21.05 USD/share — a share holds ~0.76% of an ETH, not one): the computed "basis" was a 13,000%
+  unit artefact. The position was unwound on the next tick and the strategy now refuses any pair
+  whose normalised leg prices differ by more than 10x, records the refusal, and unwinds any
+  position opened before the premise failed. The BTC pair passes the gate (both legs quote USD/BTC);
+  the ETH pair will trade automatically if MOEX ever lists a genuine Ether index future quoted in
+  USD/ETH.
 
 ## Where the ideas came from
 

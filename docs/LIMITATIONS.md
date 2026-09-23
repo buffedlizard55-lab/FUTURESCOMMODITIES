@@ -133,6 +133,21 @@ failure is recorded as a suspected transient and the engine was made unable to c
 degrade the venue, and per-strategy execution failures are recorded as degraded instead of aborting the
 run).
 
+### 2026-09-23: a cross-venue pair traded a unit artefact (resolved in the same day)
+
+The first live tick on the new universe (2026-09-23 00:32Z) opened the `@basis-hunter` ETH pair
+comparing the Kalshi ETH perpetual (normalised 2,761.20 USD/ETH) with the MOEX **ETHA Trust ETF**
+share (21.055 USD/share). The pair's premise had assumed the ETHA share represents one ETH; the
+exchange's own data showed it holds ~0.76% of one. The recorded "basis" was 13,014% — a unit artefact,
+not a market signal — and the two legs (947 ETF-share contracts ≈ 722 ETH of exposure vs 0.947 ETH of
+perp) were a large unhedged delta. **Resolution:** the position was unwound by the strategy's
+unit-reconciliation exit on the next tick (the unwind trades are in the ledger with their P&L), and the
+strategy now (a) refuses to open any pair whose normalised leg prices differ by more than 10x,
+(b) records the refusal with the measured values, and (c) unwinds any position on a pair whose
+premise later fails. The BTC pair, where both legs quote USD/BTC, passes the gate. The lesson is on
+the record: a "basis" between two venues is only defined once the units are proven to be the same
+asset unit from official data.
+
 ## 8. MOEX non-commodity sectors (trading since 2026-09-22)
 
 The exchange's own FORTS listing (verified 2026-09-22) contains equity-index futures (MIX, RTS, NASD,
@@ -148,10 +163,13 @@ futures, so the competition now trades a **deliberately limited** slice:
   as a per-cent, so price × USD-per-price-unit is **not** the contract notional for these two
   instruments.
 * FX: Si (USD/RUB), CNY (CNY/RUB) — `@usd-rub-desk`.
-* Crypto: BTC (Bitcoin Index future, lot 0.001 BTC per the official specification's Appendix 1) and
-  ETH (via the ETHA Trust ETF future, one contract = one share; the MOEX-Ether-Index futures were not
-  found in the FORTS listing on 2026-09-22) — `@basis-hunter` (Kalshi crypto perp vs MOEX crypto
-  future; the sector's most distinctive edge).
+* Crypto: BTC (Bitcoin Index future, lot 0.001 BTC per the official specification's Appendix 1) is
+  traded by `@basis-hunter` (Kalshi BTC perp vs MOEX BTC index future; the sector's most
+  distinctive edge). ETH points at the ETHA Trust ETF future (one contract = one share; the
+  MOEX-Ether-Index futures were not found in the FORTS listing on 2026-09-22), but the ETHA share is
+  **not** one ETH (~0.76% of one on 2026-09-23), so the strategy's unit-reconciliation gate keeps
+  the ETH pair from trading until the two legs quote the same asset unit (see §7, 2026-09-23
+  entry).
 
 The same asset-code + name-keyword gate applies: a contract enters the universe only when the exchange's
 own listing publishes that asset code and its name agrees with it, and sector contracts get a dedicated
