@@ -31,21 +31,21 @@
         "contracts": 4,
         "entry_price": 4.362,
         "instrument_id": "kalshiperp:KXGOLDPERP",
-        "mark_price": 4.3597,
+        "mark_price": 4.3385,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "ticker": "KXGOLDPERP",
-        "unrealized_pnl_usd": -0.0092
+        "unrealized_pnl_usd": -0.094
       },
       {
         "contracts": 4,
         "entry_price": 4432.8,
         "instrument_id": "moex:GDZ6",
-        "mark_price": 4433.7,
+        "mark_price": 4415.1,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "GDZ6",
-        "unrealized_pnl_usd": -3.6
+        "unrealized_pnl_usd": 70.8
       }
     ],
     "trades_by_venue": {
@@ -65,7 +65,7 @@
   "display_name": "Cross-Venue Basis",
   "enabled": true,
   "entries": 4,
-  "equity_usd": 99864.240172,
+  "equity_usd": 99938.555372,
   "exits": 2,
   "fees_paid_usd": 24.487373,
   "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
@@ -90,7 +90,7 @@
     "status": "structural - two real legs on two real venues, unit-normalised from official fields"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.1358,
+  "return_pct": -0.0614,
   "rules": {
     "entry": "Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).",
     "exit": "Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.",
@@ -103,7 +103,7 @@
     "Cross-venue: Kalshi perpetual future vs exchange-listed future"
   ],
   "trades": 6,
-  "unrealized_pnl_usd": -3.6092,
+  "unrealized_pnl_usd": 70.706,
   "username": "@basis-hunter",
   "venues": [
     "kalshi_margin",
@@ -114,7 +114,7 @@
     "Closed-trade P&L is -107.66 USD against 24.49 USD of fees and 87.27 USD of measured slippage against the mid.",
     "Best closed trade: KXETHPERP at -6.559641 USD (unit_reconciliation_failed).",
     "Worst closed trade: ETZ6 at -101.103614 USD (unit_reconciliation_failed).",
-    "2 open positions carry verified marks totalling -3.61 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "2 open positions carry verified marks totalling 70.71 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
