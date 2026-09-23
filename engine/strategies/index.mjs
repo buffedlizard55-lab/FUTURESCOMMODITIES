@@ -825,8 +825,11 @@ export const STRATEGIES = [
       // lists no BTC/ETH perp with a two-sided book, the pair finds nothing and trades nothing.
       // MOEX leg verified in the exchange listing 2026-09-22: BTC index futures (ASSETCODE
       // BTC, UNIT=USD, one contract = 0.001 BTC per the official specification's Appendix 1);
-      // ETH is covered by the ETHA Trust ETF futures (ASSETCODE ETHA, UNIT=USD, one contract =
-      // one ETHA share whose NAV tracks one ETH).
+      // ETH points at the ETHA Trust ETF futures (ASSETCODE ETHA, UNIT=USD, one contract = one
+      // ETHA share). The ETHA share is NOT one ETH (2026-09-23: 21.05 USD vs index 2,761 USD),
+      // so the unit-reconciliation gate in decide()/exit() blocks this pair until the two legs
+      // quote the same asset unit (it would trade a genuine MOEX Ether Index future if one is
+      // ever listed).
       { metal: 'Bitcoin', perpTitleMatch: 'btc', moexAsset: 'BTC' },
       { metal: 'Ether', perpTitleMatch: 'eth', moexAsset: 'ETHA' },
       // Palladium is deliberately absent: the MOEX FORTS listing verified on 2026-09-22 contains
@@ -878,6 +881,20 @@ export const STRATEGIES = [
         };
         const existingPerp = ctx.portfolio.positions[perp.instrument_id];
         const existingFuture = ctx.portfolio.positions[future.instrument_id];
+        // Unit reconciliation: both legs must quote the SAME asset unit. A genuine cross-venue
+        // basis for the same asset is a single-digit percentage; if the normalised leg prices
+        // differ by more than 10x, the venues quote different units of the asset (for example
+        // an ETF share vs the underlying coin) and the computed "basis" is a unit artefact, not
+        // a market signal. The pair is refused, the refusal is recorded, and any position the
+        // pair opened before the premise failed is unwound.
+        const unitRatio = perpUsdPerOunce / moexUsdPerOunce;
+        if (!(unitRatio >= 0.1 && unitRatio <= 10)) {
+          const reason = `Unit reconciliation failed: ${perp.ticker} ${perpUsdPerOunce.toFixed(2)} USD/unit vs ${future.ticker} ${moexUsdPerOunce.toFixed(2)} USD/unit differ by ${Number(unitRatio.toFixed(1))}x, so the two venues quote different units of the asset and no basis is defined.`;
+          ctx.note({ pair: pair.metal, skipped: 'unit_reconciliation_failed', perp_usd_per_unit: Number(perpUsdPerOunce.toFixed(6)), moex_usd_per_unit: Number(moexUsdPerOunce.toFixed(6)), unit_ratio: Number(unitRatio.toFixed(4)), note: reason });
+          if (existingPerp) ctx.exit(perp.instrument_id, reason + ' The position was opened before the premise failed and is unwound.', { name: 'unit_reconciliation_failed', unit_ratio: Number(unitRatio.toFixed(4)), normalization });
+          if (existingFuture) ctx.exit(future.instrument_id, reason + ' The position was opened before the premise failed and is unwound.', { name: 'unit_reconciliation_failed', unit_ratio: Number(unitRatio.toFixed(4)), normalization });
+          continue;
+        }
         if (Math.abs(basis) < this.sizing.min_basis) {
           if (Math.abs(basis) < this.sizing.exit_basis && (existingPerp || existingFuture)) {
             ctx.exit(perp.instrument_id, `Normalised basis compressed to ${(basis * 100).toFixed(3)}%, below the exit threshold.`, { name: 'basis_convergence', basis: Number(basis.toFixed(5)), normalization });
@@ -948,7 +965,15 @@ export const STRATEGIES = [
       if (!pq || !fq || pq.mid == null || fq.mid == null || !(perpContractSize > 0) || future.contract_specification?.quote_unit !== 'USD') {
         return { reason: 'Normalisation inputs for the pair are unavailable in this snapshot; the basis premise cannot be checked, so the leg is unwound rather than held unverified.', signal: { name: 'basis_normalisation_unavailable' } };
       }
-      const basis = (pq.mid / perpContractSize - fq.mid) / fq.mid;
+      // Unit reconciliation (same rule as decide): if the normalised leg prices differ by more
+      // than 10x the venues quote different units of the asset, the basis premise has failed
+      // and the position is unwound.
+      const perpUsd = pq.mid / perpContractSize;
+      const unitRatio = perpUsd / fq.mid;
+      if (!(unitRatio >= 0.1 && unitRatio <= 10)) {
+        return { reason: `Unit reconciliation failed: the normalised leg prices differ by ${Number(unitRatio.toFixed(1))}x, so the two venues quote different units of the asset and the basis premise has failed; the leg is unwound.`, signal: { name: 'unit_reconciliation_failed', unit_ratio: Number(unitRatio.toFixed(4)), perp_usd_per_unit: Number(perpUsd.toFixed(6)), moex_usd_per_unit: Number(fq.mid.toFixed(6)) } };
+      }
+      const basis = (perpUsd - fq.mid) / fq.mid;
       if (Math.abs(basis) >= this.sizing.exit_basis) return null;
       return {
         reason: `Normalised basis compressed to ${(basis * 100).toFixed(3)}% (below the ${(this.sizing.exit_basis * 100).toFixed(1)}% exit threshold).`,

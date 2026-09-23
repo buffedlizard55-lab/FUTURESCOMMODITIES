@@ -183,9 +183,13 @@ export const MOEX_COMMODITY_ASSETS = [
   { asset_code: 'Si', commodity: 'USD/RUB', group: 'FX Futures', sector: 'fx', keywords: ['si-'] },
   { asset_code: 'CNY', commodity: 'CNY/RUB', group: 'FX Futures', sector: 'fx', keywords: ['cny'] },
   // Ether is covered by the ETHA Trust ETF future (ASSETCODE ETHA, verified in the exchange
-  // listing 2026-09-22: ETZ6 "ETHA-12.26", UNIT=USD, one contract = one ETHA share whose NAV
-  // tracks one ETH). If MOEX lists the MOEX-Ether-Index futures (spec code ETH), they will need
-  // their own verified entry before they may trade.
+  // listing 2026-09-22: ETZ6 "ETHA-12.26", UNIT=USD, one contract = one ETHA share). NOTE: the
+  // ETHA share is NOT one ETH (2026-09-23: share 21.05 USD vs MOEX Ethereum Index 2,761 USD),
+  // so the share/ETH ratio is not available from the fields this engine uses and the ETHA
+  // future must not be used in a cross-venue ETH basis until the ratio is verified; the
+  // strategy's unit-reconciliation gate blocks that automatically. If MOEX lists the
+  // MOEX-Ether-Index futures (spec code ETH), they will need their own verified entry before
+  // they may trade.
   { asset_code: 'BTC', commodity: 'Bitcoin', group: 'Crypto Futures', sector: 'crypto', keywords: ['btc'] },
   { asset_code: 'ETHA', commodity: 'Ether (ETHA Trust ETF)', group: 'Crypto Futures', sector: 'crypto', keywords: ['etha', 'eth'] },];
 
