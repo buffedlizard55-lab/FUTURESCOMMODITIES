@@ -21,40 +21,10 @@
         "contracts": 4,
         "entry_price": 0.75,
         "instrument_id": "kalshi:KXBRENTW-26SEP2517-T94.99",
-        "mark_price": 0.74,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXBRENTW-26SEP2517-T94.99/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXBRENTW-26SEP2517-T94.99",
-        "unrealized_pnl_usd": -0.04
-      },
-      {
-        "contracts": 151,
-        "entry_price": 0.715695,
-        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4335",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26SEP2317-T4335",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 131,
-        "entry_price": 0.45,
-        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4365",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26SEP2317-T4365",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 157,
-        "entry_price": 0.36,
-        "instrument_id": "kalshi:KXGOLDD-26SEP2317-T4375",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26SEP2317-T4375",
         "unrealized_pnl_usd": null
       }
     ],
@@ -65,7 +35,7 @@
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
-  "closed_trades": 0,
+  "closed_trades": 3,
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
@@ -74,7 +44,7 @@
   "exits": 0,
   "fees_paid_usd": 7.03,
   "market_type": "Kalshi event contract",
-  "open_positions": 4,
+  "open_positions": 1,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -86,7 +56,7 @@
     ],
     "status": "hypothesis under test - the competition is the test"
   },
-  "realized_pnl_usd": 0,
+  "realized_pnl_usd": -230.509945,
   "return_pct": -0.0197,
   "rules": {
     "entry": "Depth ratio >= 70% or <= 30% on visible book depth, spread <= 3 cents, YES mid between 0.15 and 0.85, at least 2 hours to close.",
@@ -100,7 +70,7 @@
     "Kalshi event contract"
   ],
   "trades": 4,
-  "unrealized_pnl_usd": -0.04,
+  "unrealized_pnl_usd": 0,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
@@ -108,7 +78,6 @@
   "what_it_means": [
     "4 ledger records so far: 2 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 7.03 USD of fees and 6.81 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -0.04 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

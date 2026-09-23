@@ -15,10 +15,10 @@
         "trades": 4
       },
       "Gasoline (US retail average)": {
-        "fees_usd": 0.55,
+        "fees_usd": 5.45,
         "realized_pnl_usd": 0,
-        "slippage_usd": 5.935002,
-        "trades": 4
+        "slippage_usd": 135.150038,
+        "trades": 8
       },
       "Natural Gas": {
         "fees_usd": 0.31,
@@ -41,6 +41,46 @@
     },
     "closed_trades": 0,
     "open_position_marks": [
+      {
+        "contracts": 2,
+        "entry_price": 0.725,
+        "instrument_id": "kalshi:KXAAAGASDSC-26SEP24-4.0200",
+        "mark_price": 0.07,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSC-26SEP24-4.0200/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDSC-26SEP24-4.0200",
+        "unrealized_pnl_usd": -1.31
+      },
+      {
+        "contracts": 76,
+        "entry_price": 0.581711,
+        "instrument_id": "kalshi:KXAAAGASDSC-26SEP24-4.0250",
+        "mark_price": 0.24,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSC-26SEP24-4.0250/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDSC-26SEP24-4.0250",
+        "unrealized_pnl_usd": -25.970036
+      },
+      {
+        "contracts": 195,
+        "entry_price": 0.06,
+        "instrument_id": "kalshi:KXAAAGASDTN-26SEP24-4.0700",
+        "mark_price": 0.03,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP24-4.0700/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDTN-26SEP24-4.0700",
+        "unrealized_pnl_usd": -5.85
+      },
+      {
+        "contracts": 2040,
+        "entry_price": 0.98,
+        "instrument_id": "kalshi:KXAAAGASDTN-26SEP24-4.0750",
+        "mark_price": 0.87,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDTN-26SEP24-4.0750/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDTN-26SEP24-4.0750",
+        "unrealized_pnl_usd": -224.4
+      },
       {
         "contracts": 198,
         "entry_price": 0.09,
@@ -223,7 +263,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 22
+      "kalshi": 26
     },
     "worst_closed_trade": null
   },
@@ -235,12 +275,12 @@
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
-  "entries": 22,
+  "entries": 26,
   "equity_usd": 99968.85,
   "exits": 0,
-  "fees_paid_usd": 3.87,
+  "fees_paid_usd": 8.77,
   "market_type": "Kalshi event contract",
-  "open_positions": 18,
+  "open_positions": 22,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
@@ -253,21 +293,22 @@
     "exit": "Held to settlement (the two legs converge by construction).",
     "sizing": "Target notional per leg, capped by depth."
   },
-  "slippage_paid_usd": 36.994896,
+  "slippage_paid_usd": 166.209932,
   "strategy_id": "kalshi-ladder-arbitrage",
   "thesis": "Within one series and one expiry, the YES price must fall as the strike rises (for greater-than markets). When the published book violates that ordering by more than the configured tolerance, buy the underpriced YES leg and the NO of the overpriced leg.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 22,
-  "unrealized_pnl_usd": 0,
+  "trades": 26,
+  "unrealized_pnl_usd": -257.530036,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "22 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 3.87 USD of fees and 36.99 USD of measured slippage against the mid.",
+    "26 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 8.77 USD of fees and 166.21 USD of measured slippage against the mid.",
+    "4 open positions carry verified marks totalling -257.53 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: already_holding (2).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
