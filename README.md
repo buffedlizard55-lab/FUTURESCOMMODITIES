@@ -3,15 +3,21 @@
 A research, strategy and **paper-trading competition** platform for commodity markets, built so that every
 number it publishes can be traced back to an official public source.
 
-Seventeen strategies — one per username — trade three kinds of instrument against prices pulled from the
+Twenty strategies — one per username — trade four kinds of instrument against prices pulled from the
 exchanges' own APIs:
 
 * **Kalshi commodity/prediction event contracts** (binary commodity, energy and metals markets),
-* **Kalshi perpetual futures** where the exchange publishes them,
+* **Kalshi perpetual futures** where the exchange publishes them (metals and crypto, with the
+  official tier-0 taker fee and 8-hourly funding settled from the exchange's own finalised
+  funding events),
 * **exchange-listed commodity futures** on **MOEX FORTS** — metals, grains, softs and (verified into the
   universe on 2026-09-22) WTI, Brent, natural gas (NG/NGM/TTF), diesel, AI-92/95 gasoline and orange
-  juice — through a free, keyless official API with quotes, settlement prices, open interest, fee
-  schedules, reference contract data and full price history.
+  juice,
+* **exchange-listed non-commodity futures** on **MOEX FORTS** — equity index (IMOEX, RTS,
+  Nasdaq-100, S&P 500), interest rate (RUONIA, 1MFR), FX (USD/RUB, CNY/RUB) and crypto (Bitcoin
+  index future; Ether via the ETHA Trust ETF future) — the same free, keyless official API with
+  quotes, settlement prices, open interest, fee schedules, reference contract data and full price
+  history.
 
 The competition runs for one year from 2026-09-22. All executions are **simulated paper fills**: the
 engine never sends an order to an exchange. Fills are simulated against the *published order books* of
@@ -85,7 +91,7 @@ engine/
   lib/portfolio.mjs      fee formulas, ladder walking, fill simulation, margining, marking
   lib/universe.mjs       classification of series and construction of instrument records
   lib/venues/            kalshi.mjs, moex.mjs, eia.mjs, usda.mjs
-  strategies/index.mjs   the twelve strategies
+  strategies/index.mjs   the twenty strategies
   universe/futures-registry.json  verified exchange/product reference registry
 config/
   competition.json       season, starting capital, liquidity and fee settings

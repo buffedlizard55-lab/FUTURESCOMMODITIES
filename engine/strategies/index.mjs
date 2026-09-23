@@ -1,9 +1,14 @@
 /**
  * Strategy library.
  *
- * Twelve independent "competitors", each with its own username, its own market type and its own
+ * Twenty independent "competitors", each with its own username, its own market type and its own
  * thesis. Every strategy may only act on data that the run fetched from an official source, and
  * every order it returns is stamped by the engine with the exact observed values behind it.
+ *
+ * Market types covered (each strategy states its own):
+ *   - Kalshi event contracts (commodity prediction markets)
+ *   - Kalshi perpetual futures (metals and crypto)
+ *   - MOEX exchange-listed futures: commodities, equity index, interest rate, FX and crypto
  *
  * Deliberate design choices required by the project brief:
  *  - no risk management: sizing is "as large as the verified liquidity allows", the objective is
@@ -670,8 +675,14 @@ export const STRATEGIES = [
         const nearPrice = nearSide === 'long' ? qn.offer : qn.bid;
         const farPrice = side === 'long' ? qf.offer : qf.bid;
         if (nearPrice == null || farPrice == null) continue;
-        const nearContracts = sizeContracts({ notional: this.sizing.notional_usd, price: nearPrice * near.usd_valuation.usd_per_price_unit });
-        const farContracts = sizeContracts({ notional: this.sizing.notional_usd, price: farPrice * far.usd_valuation.usd_per_price_unit });
+        // Rate contracts are quoted as a rate, not a currency-per-unit price: the notional per
+        // contract comes from the exchange-published lot notional (LOTVOLUME, exposed as
+        // usd_notional_per_lot). For all other contracts the valuation has no lot notional and
+        // the historical price x usd_per_price_unit formula applies.
+        const nearNotionalPerContract = near.usd_valuation.usd_notional_per_lot ?? nearPrice * near.usd_valuation.usd_per_price_unit;
+        const farNotionalPerContract = far.usd_valuation.usd_notional_per_lot ?? farPrice * far.usd_valuation.usd_per_price_unit;
+        const nearContracts = sizeContracts({ notional: this.sizing.notional_usd, price: nearNotionalPerContract });
+        const farContracts = sizeContracts({ notional: this.sizing.notional_usd, price: farNotionalPerContract });
         const contracts = Math.min(nearContracts, farContracts);
         if (contracts < 1) continue;
         orders += 1;
@@ -808,15 +819,29 @@ export const STRATEGIES = [
       { metal: 'Gold', perpTicker: 'KXGOLDPERP', moexAsset: 'GOLD' },
       { metal: 'Silver', perpTicker: 'KXSILVERPERP', moexAsset: 'SILV' },
       { metal: 'Platinum', perpTicker: 'KXPLATINUMPERP', moexAsset: 'PLT' },
+      // Crypto pairs (added 2026-09-22, roadmap "cross-venue basis expansion - crypto"). The
+      // perp leg is identified by fields the exchange publishes (asset_class === 'Crypto' and
+      // the asset name in the official title) rather than by a hard-coded ticker: if Kalshi
+      // lists no BTC/ETH perp with a two-sided book, the pair finds nothing and trades nothing.
+      // MOEX leg verified in the exchange listing 2026-09-22: BTC index futures (ASSETCODE
+      // BTC, UNIT=USD, one contract = 0.001 BTC per the official specification's Appendix 1);
+      // ETH is covered by the ETHA Trust ETF futures (ASSETCODE ETHA, UNIT=USD, one contract =
+      // one ETHA share whose NAV tracks one ETH).
+      { metal: 'Bitcoin', perpTitleMatch: 'btc', moexAsset: 'BTC' },
+      { metal: 'Ether', perpTitleMatch: 'eth', moexAsset: 'ETHA' },
       // Palladium is deliberately absent: the MOEX FORTS listing verified on 2026-09-22 contains
       // no palladium asset code (the P codes are PLT/PLTM platinum and PLD/PLDM/PLZLM equities),
       // and the Kalshi palladium perp had no two-sided market in the last verified snapshot.
     ],
+    matchPerp(perps, pair) {
+      if (pair.perpTicker) return perps.find((i) => i.ticker === pair.perpTicker) ?? null;
+      return perps.find((i) => i.asset_class === 'Crypto' && new RegExp(pair.perpTitleMatch ?? '', 'i').test(i.title ?? i.ticker ?? '')) ?? null;
+    },
     decide(ctx) {
       let orders = 0;
       for (const pair of this.pairs ?? []) {
         if (orders >= 2) break;
-        const perp = ctx.listInstruments({ venue: 'kalshi_margin' }).find((i) => i.ticker === pair.perpTicker);
+        const perp = this.matchPerp(ctx.listInstruments({ venue: 'kalshi_margin' }), pair);
         const moexLegs = ctx.listInstruments({ venue: 'moex_forts' }).filter((i) => i.asset_code === pair.moexAsset);
         // front (nearest) expiry only
         const future = [...moexLegs].sort((a, b) => String(a.last_trade_date ?? '').localeCompare(String(b.last_trade_date ?? '')))[0] ?? null;
@@ -903,13 +928,16 @@ export const STRATEGIES = [
     exit(ctx, position) {
       // Re-derive the normalised basis for this position's pair; only exit when it has converged.
       const inst = ctx.instrument(position.instrument_id);
-      const pair = (this.pairs ?? []).find(
-        (p) => position.ticker === p.perpTicker || (inst && inst.asset_code === p.moexAsset),
-      );
+      const pair = (this.pairs ?? []).find((p) => {
+        if (inst && inst.asset_code === p.moexAsset) return true; // MOEX leg: the asset code identifies the pair
+        if (p.perpTicker && position.ticker === p.perpTicker) return true;
+        if (p.perpTitleMatch && inst?.venue === 'kalshi_margin' && inst.asset_class === 'Crypto') return new RegExp(p.perpTitleMatch, 'i').test(inst.title ?? '');
+        return false;
+      });
       if (!pair) {
         return { reason: 'This position no longer belongs to a verified cross-venue pair; unwinding rather than holding an unmodellable leg.', signal: { name: 'basis_pair_removed' } };
       }
-      const perp = ctx.listInstruments({ venue: 'kalshi_margin' }).find((i) => i.ticker === pair.perpTicker);
+      const perp = this.matchPerp(ctx.listInstruments({ venue: 'kalshi_margin' }), pair);
       const future = [...ctx.listInstruments({ venue: 'moex_forts' }).filter((i) => i.asset_code === pair.moexAsset)].sort((a, b) => String(a.last_trade_date ?? '').localeCompare(String(b.last_trade_date ?? '')))[0];
       if (!perp || !future) {
         return { reason: 'One leg of the pair is no longer published with a quote; the converged-price premise cannot be checked, so the leg is unwound.', signal: { name: 'basis_leg_unavailable' } };
@@ -1275,6 +1303,252 @@ export const STRATEGIES = [
         return { reason: 'The jump continued in the original direction by more than its full size against this fade; the reversion thesis is invalidated.', signal: { name: 'jump_continuation', gain: Number(gain.toFixed(4)) } };
       }
       return null;
+    },
+  },
+
+  /* ------------------------------------------------------------------ 18 */
+  {
+    id: 'moex-fx-trend',
+    username: '@usd-rub-desk',
+    display_name: 'FX Trend',
+    market_type: 'Exchange-listed FX future',
+    venues: ['moex_forts'],
+    origin: {
+      kind: 'market_structure',
+      claim: 'FX futures on MOEX FORTS (USD/RUB "Si", CNY/RUB) trend over multi-week stretches of central-bank policy and flows; the official settlement history makes the trend measurable without any forecast.',
+      status: 'hypothesis under test on contracts verified in the exchange listing on 2026-09-22',
+    },
+    thesis:
+      'Follow the official settlement trend in MOEX FX futures - the USD/RUB and CNY/RUB contracts - taking the strongest movers and holding while the trend persists. Same measured-momentum rule as the energy desk, applied to the FX sector the brief requires the universe to cover.',
+    rules: {
+      entry: '15-observation settlement momentum, |momentum| >= 1.5%.',
+      exit: 'Exit when the momentum flips sign.',
+      sizing: 'Target notional, capped by published volume and open interest.',
+    },
+    sizing: { notional_usd: 5000, min_momentum: 0.015 },
+    decide(ctx) {
+      let orders = 0;
+      for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups: ['FX Futures'] })) {
+        if (orders >= 2) break;
+        if (!inst.usd_valuation?.usd_per_price_unit) continue;
+        if (ctx.portfolio.positions[inst.instrument_id]) continue;
+        const q = ctx.quote(inst.instrument_id);
+        if (!q || q.offer == null || q.bid == null) continue;
+        const rows = ctx.moexHistory(inst.ticker);
+        const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+        if (closes.length < 8) continue;
+        const momentum = (closes[closes.length - 1] - closes[0]) / closes[0];
+        if (Math.abs(momentum) < this.sizing.min_momentum) continue;
+        const side = momentum > 0 ? 'long' : 'short';
+        const price = side === 'long' ? q.offer : q.bid;
+        const contracts = sizeContracts({ notional: this.sizing.notional_usd, price: price * inst.usd_valuation.usd_per_price_unit });
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: inst.instrument_id,
+          venue: 'moex_forts',
+          action: side === 'long' ? 'buy' : 'sell',
+          side,
+          contracts,
+          limit_price: price,
+          order_type: 'taker',
+          thesis: `${(momentum * 100).toFixed(1)}% settlement momentum in ${inst.ticker} (${inst.commodity}).`,
+          signal: { name: 'fx_settlement_momentum', momentum: Number(momentum.toFixed(4)), observations: closes.length, quote_unit: inst.contract_specification?.quote_unit ?? null },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const rows = ctx.moexHistory(position.ticker);
+      const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+      if (closes.length < 8) return null;
+      const momentum = (closes[closes.length - 1] - closes[0]) / closes[0];
+      const held = position.side === 'long' ? 1 : -1;
+      if (Math.sign(momentum) === held || momentum === 0) return null;
+      return { reason: 'Settlement momentum flipped against the FX position.', signal: { name: 'fx_momentum_flip', momentum: Number(momentum.toFixed(4)) } };
+    },
+  },
+
+  /* ------------------------------------------------------------------ 19 */
+  {
+    id: 'moex-index-trend',
+    username: '@index-mover',
+    display_name: 'Index Trend',
+    market_type: 'Exchange-listed equity index future',
+    venues: ['moex_forts'],
+    origin: {
+      kind: 'documented_anomaly',
+      claim: 'Equity-index futures are the canonical momentum market: index-level trends persist over weeks, and momentum rules on index futures are among the most replicated results in the literature. MOEX FORTS lists IMOEX, RTS, Nasdaq-100 and S&P 500 index futures through the same keyless ISS API.',
+      status: 'hypothesis under test on contracts verified in the exchange listing on 2026-09-22',
+    },
+    thesis:
+      'Trade the official settlement momentum in MOEX equity-index futures - IMOEX (MIX), RTS, Nasdaq-100 (NASD) and S&P 500 (SPYF) - long the 15-observation winners, short the losers, and exit when the momentum flips. The index sector is one of the market types the brief requires the universe to cover.',
+    rules: {
+      entry: '15-observation settlement momentum, |momentum| >= 2.0%.',
+      exit: 'Exit when the momentum flips sign.',
+      sizing: 'Target notional, capped by published volume and open interest.',
+    },
+    sizing: { notional_usd: 5000, min_momentum: 0.02 },
+    decide(ctx) {
+      let orders = 0;
+      for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups: ['Equity Index Futures'] })) {
+        if (orders >= 3) break;
+        if (!inst.usd_valuation?.usd_per_price_unit) continue;
+        if (ctx.portfolio.positions[inst.instrument_id]) continue;
+        const q = ctx.quote(inst.instrument_id);
+        if (!q || q.offer == null || q.bid == null) continue;
+        const rows = ctx.moexHistory(inst.ticker);
+        const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+        if (closes.length < 8) continue;
+        const momentum = (closes[closes.length - 1] - closes[0]) / closes[0];
+        if (Math.abs(momentum) < this.sizing.min_momentum) continue;
+        const side = momentum > 0 ? 'long' : 'short';
+        const price = side === 'long' ? q.offer : q.bid;
+        const contracts = sizeContracts({ notional: this.sizing.notional_usd, price: price * inst.usd_valuation.usd_per_price_unit });
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: inst.instrument_id,
+          venue: 'moex_forts',
+          action: side === 'long' ? 'buy' : 'sell',
+          side,
+          contracts,
+          limit_price: price,
+          order_type: 'taker',
+          thesis: `${(momentum * 100).toFixed(1)}% settlement momentum in ${inst.ticker} (${inst.commodity}).`,
+          signal: { name: 'index_settlement_momentum', momentum: Number(momentum.toFixed(4)), observations: closes.length, quote_unit: inst.contract_specification?.quote_unit ?? null },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const rows = ctx.moexHistory(position.ticker);
+      const closes = (rows ?? []).map((r) => r.CLOSE ?? r.SETTLEPRICE).filter((c) => c != null && Number(c) > 0);
+      if (closes.length < 8) return null;
+      const momentum = (closes[closes.length - 1] - closes[0]) / closes[0];
+      const held = position.side === 'long' ? 1 : -1;
+      if (Math.sign(momentum) === held || momentum === 0) return null;
+      return { reason: 'Settlement momentum flipped against the index position.', signal: { name: 'index_momentum_flip', momentum: Number(momentum.toFixed(4)) } };
+    },
+  },
+
+  /* ------------------------------------------------------------------ 20 */
+  {
+    id: 'moex-rate-curve',
+    username: '@ruonia-curve',
+    display_name: 'Rate Curve Carry',
+    market_type: 'Exchange-listed interest rate future',
+    venues: ['moex_forts'],
+    origin: {
+      kind: 'market_structure',
+      claim: 'The spread between near and far rate futures is the market\'s own estimate of the future short rate; when its annualised value exceeds the round-trip cost, the carry is capturable. MOEX FORTS lists RUONIA and 1MFR rate futures through the same keyless ISS API.',
+      status: 'structural - measured, not forecast',
+    },
+    thesis:
+      'Buy the near expiry and sell the far expiry (or the reverse) of the same MOEX rate future whenever the annualised spread between the official mid prices exceeds the exchange-published round-trip fee. The interest-rate sector is one of the market types the brief requires the universe to cover; the rule is the calendar-carry rule applied to the rate curve.',
+    rules: {
+      entry: 'Annualised calendar spread >= 8% after measured round-trip fees.',
+      exit: 'Exit when the annualised spread compresses below 3%, or when either contract is within 5 days of expiry.',
+      sizing: 'Target notional per leg, sized against the exchange-published lot notional (1,000,000 RUB per RUONIA/1MFR contract per the official specification) and capped by both contracts published liquidity.',
+    },
+    // notional_usd is a target per leg; RUONIA/1MFR lots carry an exchange-published notional
+    // of 1,000,000 RUB (~12-14k USD), so the target is set to cover at least one lot per leg.
+    sizing: { notional_usd: 15000, min_annualised_carry: 0.08, exit_annualised_carry: 0.03 },
+    decide(ctx) {
+      let orders = 0;
+      const byAsset = new Map();
+      for (const inst of ctx.listInstruments({ venue: 'moex_forts', groups: ['Interest Rate Futures'] })) {
+        if (!inst.asset_code || !inst.usd_valuation?.usd_per_price_unit) continue;
+        if (!byAsset.has(inst.asset_code)) byAsset.set(inst.asset_code, []);
+        byAsset.get(inst.asset_code).push(inst);
+      }
+      for (const [assetCode, legs] of byAsset) {
+        if (orders >= 2) break;
+        if (legs.length < 2) continue;
+        const sorted = [...legs].sort((a, b) => String(a.last_trade_date ?? '').localeCompare(String(b.last_trade_date ?? '')));
+        const near = sorted[0];
+        const far = sorted[sorted.length - 1];
+        const qn = ctx.quote(near.instrument_id);
+        const qf = ctx.quote(far.instrument_id);
+        if (!qn || !qf || qn.mid == null || qf.mid == null || qn.mid <= 0) continue;
+        if (ctx.portfolio.positions[near.instrument_id] || ctx.portfolio.positions[far.instrument_id]) continue;
+        const days = Math.max(1, (new Date(far.last_trade_date) - new Date(near.last_trade_date)) / 86400000);
+        if (!Number.isFinite(days) || days <= 0) continue;
+        const carry = (qf.mid - qn.mid) / qn.mid;
+        const annualised = carry * (365 / days);
+        const fxRate = ctx.fx?.rate ?? null;
+        const feeRub = (near.contract_specification?.buy_sell_fee_rub ?? 0) + (far.contract_specification?.buy_sell_fee_rub ?? 0);
+        const feeUsd = fxRate ? Number((feeRub / fxRate).toFixed(4)) : null;
+        const notionalPerContract = qn.mid * near.usd_valuation.usd_per_price_unit;
+        const feeDrag = feeUsd != null && notionalPerContract > 0 ? feeUsd / notionalPerContract : null;
+        if (Math.abs(annualised) < this.sizing.min_annualised_carry) {
+          ctx.note({ asset_code: assetCode, skipped: 'annualised carry below entry threshold', annualised_carry: Number(annualised.toFixed(4)), days });
+          continue;
+        }
+        const side = annualised > 0 ? 'short' : 'long'; // positive carry: sell the far, buy the near
+        const nearSide = side === 'short' ? 'long' : 'short';
+        const nearPrice = nearSide === 'long' ? qn.offer : qn.bid;
+        const farPrice = side === 'long' ? qf.offer : qf.bid;
+        if (nearPrice == null || farPrice == null) continue;
+        // Rate contracts are quoted as a rate, not a currency-per-unit price: the notional per
+        // contract comes from the exchange-published lot notional (LOTVOLUME, exposed as
+        // usd_notional_per_lot). For all other contracts the valuation has no lot notional and
+        // the historical price x usd_per_price_unit formula applies.
+        const nearNotionalPerContract = near.usd_valuation.usd_notional_per_lot ?? nearPrice * near.usd_valuation.usd_per_price_unit;
+        const farNotionalPerContract = far.usd_valuation.usd_notional_per_lot ?? farPrice * far.usd_valuation.usd_per_price_unit;
+        const nearContracts = sizeContracts({ notional: this.sizing.notional_usd, price: nearNotionalPerContract });
+        const farContracts = sizeContracts({ notional: this.sizing.notional_usd, price: farNotionalPerContract });
+        const contracts = Math.min(nearContracts, farContracts);
+        if (contracts < 1) continue;
+        orders += 1;
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: near.instrument_id,
+          venue: 'moex_forts',
+          action: nearSide === 'long' ? 'buy' : 'sell',
+          side: nearSide,
+          contracts,
+          limit_price: nearPrice,
+          order_type: 'taker',
+          thesis: `${(annualised * 100).toFixed(1)}% annualised curve carry between ${near.ticker} and ${far.ticker} (${assetCode}); near leg ${nearSide}.`,
+          signal: { name: 'rate_curve_carry', annualised_carry: Number(annualised.toFixed(4)), days, fee_drag: feeDrag, asset_code: assetCode },
+        });
+        ctx.order({
+          strategy_id: this.id,
+          instrument_id: far.instrument_id,
+          venue: 'moex_forts',
+          action: side === 'long' ? 'buy' : 'sell',
+          side,
+          contracts,
+          limit_price: farPrice,
+          order_type: 'taker',
+          thesis: `${(annualised * 100).toFixed(1)}% annualised curve carry between ${near.ticker} and ${far.ticker} (${assetCode}); far leg ${side}.`,
+          signal: { name: 'rate_curve_carry', annualised_carry: Number(annualised.toFixed(4)), days, fee_drag: feeDrag, asset_code: assetCode, leg: 'far' },
+        });
+      }
+      return { notes: [] };
+    },
+    exit(ctx, position) {
+      const inst = ctx.instrument(position.instrument_id);
+      if (!inst?.asset_code) return null;
+      const legs = ctx.listInstruments({ venue: 'moex_forts', groups: ['Interest Rate Futures'] }).filter((i) => i.asset_code === inst.asset_code);
+      const other = legs.find((i) => i.instrument_id !== position.instrument_id);
+      if (!other) return null;
+      const qp = ctx.quote(position.instrument_id);
+      const qo = ctx.quote(other.instrument_id);
+      if (!qp || !qo || qp.mid == null || qo.mid == null || qp.mid <= 0) return null;
+      const near = new Date(inst.last_trade_date) <= new Date(other.last_trade_date) ? inst : other;
+      const far = near === inst ? other : inst;
+      const qn = near === inst ? qp : qo;
+      const qf = far === inst ? qp : qo;
+      const days = Math.max(1, (new Date(far.last_trade_date) - new Date(near.last_trade_date)) / 86400000);
+      const annualised = ((qf.mid - qn.mid) / qn.mid) * (365 / days);
+      if (Math.abs(annualised) >= this.sizing.exit_annualised_carry) return null;
+      const daysToExpiry = (new Date(inst.last_trade_date) - ctx.now) / 86400000;
+      if (daysToExpiry <= 5) return { reason: 'Contract is within 5 days of expiry; the carry is no longer capturable at entry scale.', signal: { name: 'rate_carry_expiry', days_to_expiry: Number(daysToExpiry.toFixed(1)) } };
+      return { reason: `Annualised curve carry compressed to ${(annualised * 100).toFixed(2)}%, below the exit threshold.`, signal: { name: 'rate_carry_convergence', annualised_carry: Number(annualised.toFixed(4)) } };
     },
   },
 ];

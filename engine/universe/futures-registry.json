@@ -1264,7 +1264,9 @@
    "price_data": {
     "status": "automated_official_api_available",
     "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
-   }
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick."
   },
   {
    "id": "moex-rts",
@@ -1280,7 +1282,9 @@
    "price_data": {
     "status": "automated_official_api_available",
     "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
-   }
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick."
   },
   {
    "id": "moex-nasd",
@@ -1296,7 +1300,9 @@
    "price_data": {
     "status": "automated_official_api_available",
     "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
-   }
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick."
   },
   {
    "id": "moex-spyf",
@@ -1312,7 +1318,9 @@
    "price_data": {
     "status": "automated_official_api_available",
     "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
-   }
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick."
   },
   {
    "id": "moex-ruonia",
@@ -1322,12 +1330,21 @@
    "name": "RUONIA rate future",
    "commodity": null,
    "category": "Interest-rate futures",
-   "spec_status": "listed_only",
+   "spec_status": "verified",
    "spec_verified_at": "2026-09-22",
-   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code RUONIA present in the exchange listing, verified 2026-09-22)",
+   "spec_url": "https://www.moex.com/files/4ch08v0xfdv9xwspszyj86m7w1 (official RUONIA Futures Contract Specification, order MB-P-2022-1210, in force from 28.06.2022)",
    "price_data": {
     "status": "automated_official_api_available",
-    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+    "note": "Traded by @ruonia-curve from 2026-09-22 (roadmap item 3). The engine values P&L from the exchange-published tick value (STEPPRICE/MINSTEP) and the lot notional from LOTVOLUME (RUB 1,000,000 per the official specification)."
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+   "spec_fields_verified": {
+    "quotation": "100 minus the expected average RUONIA rate for the month (tick 0.01%)",
+    "notional": "RUB 1,000,000 per contract",
+    "term": "1 month, cash-settled (EXECTYPE: Расчетный)",
+    "tick_value_formula": "W = N x R x T / 365 (T = calendar days in the settlement month)",
+    "exchange_evidence": "RRU6 (RUON-9.26): ISS description LOTSIZE=1000000, UNIT=\"% (Процентная ставка)\"; listing STEPPRICE=8.21918 RUB per 0.01 step = 1000000 x 0.01/100 x 30/365 (formula verified against the exchange-published tick value, 2026-09-22)"
    }
   },
   {
@@ -1338,12 +1355,19 @@
    "name": "1-month RUONIA rate future",
    "commodity": null,
    "category": "Interest-rate futures",
-   "spec_status": "listed_only",
+   "spec_status": "verified",
    "spec_verified_at": "2026-09-22",
-   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code 1MFR present in the exchange listing, verified 2026-09-22)",
+   "spec_url": "https://www.moex.com/a7245 (official RUSFAR futures product page: contract code 1MFR, quotation 100 minus the expected average RUSFAR rate, nominal value 1 mln RUB, term 1 month)",
    "price_data": {
     "status": "automated_official_api_available",
-    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+    "note": "Traded by @ruonia-curve from 2026-09-22 (roadmap item 3). The engine values P&L from the exchange-published tick value (STEPPRICE/MINSTEP) and the lot notional from LOTVOLUME (RUB 1,000,000 per the official specification)."
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+   "spec_fields_verified": {
+    "quotation": "100 minus the expected average RUSFAR rate for a month",
+    "notional": "RUB 1,000,000 per contract",
+    "exchange_evidence": "MFU6 (1MFR-9.26): listing STEPPRICE=8.21918 RUB per 0.01 step, LOTVOLUME=1000000, UNIT verified via ISS, 2026-09-22"
    }
   },
   {
@@ -1360,7 +1384,9 @@
    "price_data": {
     "status": "automated_official_api_available",
     "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
-   }
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick."
   },
   {
    "id": "moex-cny",
@@ -1376,7 +1402,9 @@
    "price_data": {
     "status": "automated_official_api_available",
     "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
-   }
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick."
   },
   {
    "id": "moex-btc",
@@ -1386,28 +1414,44 @@
    "name": "Bitcoin future",
    "commodity": null,
    "category": "Crypto futures",
-   "spec_status": "listed_only",
+   "spec_status": "verified",
    "spec_verified_at": "2026-09-22",
-   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code BTC present in the exchange listing, verified 2026-09-22)",
+   "spec_url": "https://www.moex.com/files/4c3ky0hznedfbvev56ydz61e4w (official specification of futures on MOEX foreign-currency indices, order MB-P-2026-1883, in force from 14.05.2026; Appendix 1: BTC contract, 1 USD price step = 0.001 USD per contract)",
    "price_data": {
     "status": "automated_official_api_available",
-    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+    "note": "Traded by @basis-hunter (Kalshi BTC perp vs MOEX BTC future) from 2026-09-22 (roadmap items 3/5). The engine values P&L from the exchange-published tick value (0.000989 USD per 1.0 USD of index movement per contract at USD/RUB 85.07)."
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+   "spec_fields_verified": {
+    "underlying": "MOEX Bitcoin Index (MOEXBTC), USD-quoted (UNIT=USD, FACEUNIT=USD)",
+    "lot": "0.001 BTC per contract (1.0 USD of index movement = 0.001 USD per contract per the official Appendix 1; cross-checked against the exchange volume statistics 2026-09-22: 1,501,894,597.1 RUB / 207,750 contracts = 7,229 RUB per contract)",
+    "settlement": "Cash-settled vs the average of the MOEX Bitcoin Index 17:00-18:00 MSK on the last trading day",
+    "exchange_evidence": "BTZ6 (BTC-12.26): ISS description UNIT=USD, FACEUNIT=USD, ASSETCODE=BTC; listing STEPPRICE=0.08410 RUB per 1.0 USD step, 2026-09-22"
    }
   },
   {
    "id": "moex-eth",
    "exchange": "moex",
    "venue": "FORTS",
-   "code": "ETH",
-   "name": "Ether future",
+   "code": "ETHA",
+   "name": "Ether (ETHA Trust ETF) future",
    "commodity": null,
    "category": "Crypto futures",
-   "spec_status": "listed_only",
+   "spec_status": "verified",
    "spec_verified_at": "2026-09-22",
-   "spec_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities.json (asset code ETH present in the exchange listing, verified 2026-09-22)",
+   "spec_url": "https://www.moex.com/en/index/MOEXETH (official MOEX Ethereum Index page) + ETZ6 ISS description (2026-09-22)",
    "price_data": {
     "status": "automated_official_api_available",
-    "note": "The official keyless ISS API can price this sector, but the competition does not trade non-commodity sectors yet; classification and strategy rules are pending (see docs/ROADMAP.md)."
+    "note": "Traded by @basis-hunter (Kalshi ETH perp vs MOEX ETHA ETF future) from 2026-09-22 (roadmap items 3/5). The engine values P&L from the exchange-published tick value (0.000989 USD per 1.0 USD of index movement per contract at USD/RUB 85.07)."
+   },
+   "competition_status": "active_in_competition_from_2026-09-22",
+   "competition_note": "Traded from 2026-09-22: sector classification, contract whitelisting and a strategy per sector are in the engine (see docs/STRATEGIES.md, docs/LIMITATIONS.md section 8). The live asset-code + name gate re-verifies the listing on every tick.",
+   "spec_fields_verified": {
+    "underlying": "ETHA Trust ETF (iShares Ethereum Trust) share, NAV tracks ETH; USD-quoted (UNIT=USD, FACEUNIT=USD)",
+    "lot": "1 ETHA share per contract (margin/STEPPRICE cross-check: STEPPRICE 0.84095 RUB per 0.01 USD = ~0.989 USD per 1.0 USD of price, 2026-09-22)",
+    "exchange_evidence": "ETZ6 (ETHA-12.26): ISS description UNIT=USD, ASSETCODE=ETHA, CONTRACTNAME=\"фьючерсный контракт на акции инвестиционного фонда ETHA Trust ETF\"; open interest 485,868 contracts (2026-09-22)",
+    "note": "The MOEX Ethereum Index futures (specification code ETH, MOEXETH index) were NOT found in the FORTS listing on 2026-09-22 (probed SECID patterns ETHU6/ETHZ6/ETHF7/ETU6, all absent). The competition therefore covers ether via the listed ETHA ETF futures; if MOEX lists the ETH index futures they will need their own verified registry entry before trading."
    }
   }
  ],

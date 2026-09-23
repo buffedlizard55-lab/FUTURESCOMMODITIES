@@ -130,42 +130,64 @@ export async function moexSecurityDescription(secid) {
 }
 
 /**
- * Commodity contracts on MOEX FORTS. The whitelist is not taken on trust: a contract is only
- * included when the exchange's own listing (a) contains that asset code and (b) the contract's
- * name contains the same keyword, so a wrong mapping cannot slip into the database.
+ * Contracts on MOEX FORTS that this competition may trade. The whitelist is not taken on
+ * trust: a contract is only included when the exchange's own listing (a) contains that asset
+ * code and (b) the contract's name contains the same keyword, so a wrong mapping cannot slip
+ * into the database.
+ *
+ * `sector` separates commodity futures (the original competition scope) from the non-commodity
+ * sectors that the project brief requires the universe to cover: equity-index, interest-rate,
+ * FX and crypto futures. Those asset codes were verified to exist in the official FORTS listing
+ * on 2026-09-22 and are recorded `listed_only` in engine/universe/futures-registry.json; the
+ * same name-keyword gate re-verifies them against the live listing on every tick, so a code
+ * that the exchange removes simply trades nothing.
  */
 export const MOEX_COMMODITY_ASSETS = [
-  { asset_code: 'GOLD', commodity: 'Gold', group: 'Precious Metals', keywords: ['gold', 'gold-'] },
-  { asset_code: 'SILV', commodity: 'Silver', group: 'Precious Metals', keywords: ['silv', 'silver'] },
-  { asset_code: 'PLT', commodity: 'Platinum', group: 'Precious Metals', keywords: ['plt', 'platin'] },
-  { asset_code: 'PLTM', commodity: 'Platinum (mini)', group: 'Precious Metals', keywords: ['pltm', 'platin'] },
-  { asset_code: 'PALL', commodity: 'Palladium', group: 'Precious Metals', keywords: ['pall', 'pallad'] },
-  { asset_code: 'COPPER', commodity: 'Copper', group: 'Industrial Metals', keywords: ['copper', 'cop-'] },
-  { asset_code: 'NICKEL', commodity: 'Nickel', group: 'Industrial Metals', keywords: ['nickel'] },
-  { asset_code: 'ALUM', commodity: 'Aluminium', group: 'Industrial Metals', keywords: ['alum'] },
-  { asset_code: 'ZINC', commodity: 'Zinc', group: 'Industrial Metals', keywords: ['zinc'] },
-  { asset_code: 'LEAD', commodity: 'Lead', group: 'Industrial Metals', keywords: ['lead'] },
-  { asset_code: 'COCOA', commodity: 'Cocoa', group: 'Soft Commodities', keywords: ['cocoa'] },
-  { asset_code: 'COFFEE', commodity: 'Coffee', group: 'Soft Commodities', keywords: ['coffee'] },
-  { asset_code: 'SUGAR', commodity: 'Sugar', group: 'Soft Commodities', keywords: ['sugar'] },
-  { asset_code: 'WHEAT', commodity: 'Wheat', group: 'Grains & Oilseeds', keywords: ['wheat'] },
-  { asset_code: 'CORN', commodity: 'Corn', group: 'Grains & Oilseeds', keywords: ['corn'] },
-  { asset_code: 'SOY', commodity: 'Soybean', group: 'Grains & Oilseeds', keywords: ['soy'] },
-  { asset_code: 'RICE', commodity: 'Rice', group: 'Grains & Oilseeds', keywords: ['rice'] },
-  { asset_code: 'AI92', commodity: 'Gasoline AI-92', group: 'Energy', keywords: ['ai92', 'ai-92'] },
-  { asset_code: 'AI95', commodity: 'Gasoline AI-95', group: 'Energy', keywords: ['ai95', 'ai-95'] },
-  { asset_code: 'WTI', commodity: 'WTI Crude Oil', group: 'Energy', keywords: ['wti'] },
-  { asset_code: 'BR', commodity: 'Brent Crude Oil', group: 'Energy', keywords: ['br-'] },
-  { asset_code: 'NG', commodity: 'Natural Gas (NG)', group: 'Energy', keywords: ['ng-'] },
-  { asset_code: 'NGM', commodity: 'Natural Gas (NGM)', group: 'Energy', keywords: ['ngm-'] },
-  { asset_code: 'TTF', commodity: 'Natural Gas (TTF)', group: 'Energy', keywords: ['ttf'] },
-  { asset_code: 'DTL', commodity: 'Diesel (DTL)', group: 'Energy', keywords: ['dtl'] },
-  { asset_code: 'BRENT', commodity: 'Brent Crude Oil', group: 'Energy', keywords: ['brent'] },
-  { asset_code: 'NGAS', commodity: 'Natural Gas', group: 'Energy', keywords: ['ngas', 'gas'] },
-  { asset_code: 'DAMILK', commodity: 'Raw Milk', group: 'Dairy', keywords: ['milk'] },
-  { asset_code: 'SUGR', commodity: 'Raw Sugar (SUGR)', group: 'Soft Commodities', keywords: ['sugr'] },
-  { asset_code: 'ORANGE', commodity: 'Orange Juice (ORANGE)', group: 'Soft Commodities', keywords: ['orange'] },
-];
+  { asset_code: 'GOLD', commodity: 'Gold', group: 'Precious Metals', sector: 'commodity', keywords: ['gold', 'gold-'] },
+  { asset_code: 'SILV', commodity: 'Silver', group: 'Precious Metals', sector: 'commodity', keywords: ['silv', 'silver'] },
+  { asset_code: 'PLT', commodity: 'Platinum', group: 'Precious Metals', sector: 'commodity', keywords: ['plt', 'platin'] },
+  { asset_code: 'PLTM', commodity: 'Platinum (mini)', group: 'Precious Metals', sector: 'commodity', keywords: ['pltm', 'platin'] },
+  { asset_code: 'PALL', commodity: 'Palladium', group: 'Precious Metals', sector: 'commodity', keywords: ['pall', 'pallad'] },
+  { asset_code: 'COPPER', commodity: 'Copper', group: 'Industrial Metals', sector: 'commodity', keywords: ['copper', 'cop-'] },
+  { asset_code: 'NICKEL', commodity: 'Nickel', group: 'Industrial Metals', sector: 'commodity', keywords: ['nickel'] },
+  { asset_code: 'ALUM', commodity: 'Aluminium', group: 'Industrial Metals', sector: 'commodity', keywords: ['alum'] },
+  { asset_code: 'ZINC', commodity: 'Zinc', group: 'Industrial Metals', sector: 'commodity', keywords: ['zinc'] },
+  { asset_code: 'LEAD', commodity: 'Lead', group: 'Industrial Metals', sector: 'commodity', keywords: ['lead'] },
+  { asset_code: 'COCOA', commodity: 'Cocoa', group: 'Soft Commodities', sector: 'commodity', keywords: ['cocoa'] },
+  { asset_code: 'COFFEE', commodity: 'Coffee', group: 'Soft Commodities', sector: 'commodity', keywords: ['coffee'] },
+  { asset_code: 'SUGAR', commodity: 'Sugar', group: 'Soft Commodities', sector: 'commodity', keywords: ['sugar'] },
+  { asset_code: 'WHEAT', commodity: 'Wheat', group: 'Grains & Oilseeds', sector: 'commodity', keywords: ['wheat'] },
+  { asset_code: 'CORN', commodity: 'Corn', group: 'Grains & Oilseeds', sector: 'commodity', keywords: ['corn'] },
+  { asset_code: 'SOY', commodity: 'Soybean', group: 'Grains & Oilseeds', sector: 'commodity', keywords: ['soy'] },
+  { asset_code: 'RICE', commodity: 'Rice', group: 'Grains & Oilseeds', sector: 'commodity', keywords: ['rice'] },
+  { asset_code: 'AI92', commodity: 'Gasoline AI-92', group: 'Energy', sector: 'commodity', keywords: ['ai92', 'ai-92'] },
+  { asset_code: 'AI95', commodity: 'Gasoline AI-95', group: 'Energy', sector: 'commodity', keywords: ['ai95', 'ai-95'] },
+  { asset_code: 'WTI', commodity: 'WTI Crude Oil', group: 'Energy', sector: 'commodity', keywords: ['wti'] },
+  { asset_code: 'BR', commodity: 'Brent Crude Oil', group: 'Energy', sector: 'commodity', keywords: ['br-'] },
+  { asset_code: 'NG', commodity: 'Natural Gas (NG)', group: 'Energy', sector: 'commodity', keywords: ['ng-'] },
+  { asset_code: 'NGM', commodity: 'Natural Gas (NGM)', group: 'Energy', sector: 'commodity', keywords: ['ngm-'] },
+  { asset_code: 'TTF', commodity: 'Natural Gas (TTF)', group: 'Energy', sector: 'commodity', keywords: ['ttf'] },
+  { asset_code: 'DTL', commodity: 'Diesel (DTL)', group: 'Energy', sector: 'commodity', keywords: ['dtl'] },
+  { asset_code: 'BRENT', commodity: 'Brent Crude Oil', group: 'Energy', sector: 'commodity', keywords: ['brent'] },
+  { asset_code: 'NGAS', commodity: 'Natural Gas', group: 'Energy', sector: 'commodity', keywords: ['ngas', 'gas'] },
+  { asset_code: 'DAMILK', commodity: 'Raw Milk', group: 'Dairy', sector: 'commodity', keywords: ['milk'] },
+  { asset_code: 'SUGR', commodity: 'Raw Sugar (SUGR)', group: 'Soft Commodities', sector: 'commodity', keywords: ['sugr'] },
+  { asset_code: 'ORANGE', commodity: 'Orange Juice (ORANGE)', group: 'Soft Commodities', sector: 'commodity', keywords: ['orange'] },
+  // ---- Non-commodity sectors verified in the official FORTS listing on 2026-09-22 (registry: listed_only) ----
+  { asset_code: 'MIX', commodity: 'IMOEX Index', group: 'Equity Index Futures', sector: 'index', keywords: ['mix-'] },
+  { asset_code: 'RTS', commodity: 'RTS Index', group: 'Equity Index Futures', sector: 'index', keywords: ['rts-'] },
+  { asset_code: 'NASD', commodity: 'Nasdaq-100 Index', group: 'Equity Index Futures', sector: 'index', keywords: ['nasd'] },
+  { asset_code: 'SPYF', commodity: 'S&P 500 Index', group: 'Equity Index Futures', sector: 'index', keywords: ['spy'] },
+  { asset_code: 'RUONIA', commodity: 'RUONIA Rate', group: 'Interest Rate Futures', sector: 'rate', keywords: ['ruonia'] },
+  { asset_code: '1MFR', commodity: '1-Month RUONIA Rate', group: 'Interest Rate Futures', sector: 'rate', keywords: ['1mfr'] },
+  { asset_code: 'Si', commodity: 'USD/RUB', group: 'FX Futures', sector: 'fx', keywords: ['si-'] },
+  { asset_code: 'CNY', commodity: 'CNY/RUB', group: 'FX Futures', sector: 'fx', keywords: ['cny'] },
+  // Ether is covered by the ETHA Trust ETF future (ASSETCODE ETHA, verified in the exchange
+  // listing 2026-09-22: ETZ6 "ETHA-12.26", UNIT=USD, one contract = one ETHA share whose NAV
+  // tracks one ETH). If MOEX lists the MOEX-Ether-Index futures (spec code ETH), they will need
+  // their own verified entry before they may trade.
+  { asset_code: 'BTC', commodity: 'Bitcoin', group: 'Crypto Futures', sector: 'crypto', keywords: ['btc'] },
+  { asset_code: 'ETHA', commodity: 'Ether (ETHA Trust ETF)', group: 'Crypto Futures', sector: 'crypto', keywords: ['etha', 'eth'] },];
 
 /** Classify a listing row against the commodity whitelist (asset code AND name must agree). */
 export function classifyMoexContract(row) {

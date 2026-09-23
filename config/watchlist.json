@@ -17,8 +17,10 @@
     "max_quoted_markets": 45,
     "max_perps": 12,
     "perp_asset_classes": [
-      "Metals"
+      "Metals",
+      "Crypto"
     ],
+    "perp_asset_classes_note": "Crypto added 2026-09-22 for the cross-venue crypto basis (Kalshi crypto perps vs MOEX BTC/ETH futures); both venues publish keyless official data.",
     "classification_rules": [
       {
         "pattern": "gold[^a-z]{0,12}vs[^a-z]{0,12}silver|silver[^a-z]{0,12}vs[^a-z]{0,12}gold|goldvs",
@@ -155,9 +157,11 @@
     "max_market_pages": 8
   },
   "moex": {
-    "max_contracts": 44,
+    "max_contracts": 56,
+    "max_sector_contracts": 12,
+    "max_contracts_note": "Raised from 44 to 56 on 2026-09-22 to fund the non-commodity sectors (equity index, interest rate, FX, crypto) required by the project brief; sector contracts are capped separately at max_sector_contracts.",
     "min_volume_today": 10,
-    "asset_codes_note": "Asset codes verified against the exchange's own FORTS listing on 2026-09-22. Codes that do not exist in the listing (PALL, BRENT, NGAS, DAMILK, CORN, SOY, RICE, LEAD) are kept as documented requests: the classifier only ever trades a code the exchange itself publishes, so a missing code simply trades nothing rather than guessing a substitute.",
+    "asset_codes_note": "Asset codes verified against the exchange's own FORTS listing on 2026-09-22. Codes that do not exist in the listing (PALL, BRENT, NGAS, DAMILK, CORN, SOY, RICE, LEAD) are kept as documented requests: the classifier only ever trades a code the exchange itself publishes, so a missing code simply trades nothing rather than guessing a substitute. The non-commodity sector codes (MIX, RTS, NASD, SPYF, RUONIA, 1MFR, Si, CNY, BTC, ETHA) were verified in the listing on 2026-09-22 and are traded from 2026-09-22 onward; ether is covered via the ETHA Trust ETF futures (ASSETCODE ETHA) because the MOEX-Ether-Index futures were not found in the listing.",
     "asset_codes": [
       "GOLD",
       "GOLDM",
@@ -191,7 +195,17 @@
       "BR0",
       "BRENT",
       "NGAS",
-      "DAMILK"
+      "DAMILK",
+      "MIX",
+      "RTS",
+      "NASD",
+      "SPYF",
+      "RUONIA",
+      "1MFR",
+      "Si",
+      "CNY",
+      "BTC",
+      "ETHA"
     ]
   },
   "benchmarks": {
