@@ -33,14 +33,32 @@ committed to `data/verification/report.json` and rendered on the site.
    and not copied from anywhere else.
 5. **`fill_levels_reproduce_contracts_and_vwap`** — the recorded ladder levels re-compute to the recorded
    contract count and volume-weighted average price.
-6. **`kalshi_fee_matches_official_formula`** — Kalshi fees are re-derived from the published schedule
-   (`roundup(M × 0.07 × C × P × (1 − P))` for takers, `M × 0.0175 × …` for makers).
-7. **`instrument_present_in_published_universe`** — the instrument is still published with its own listing
+6. **`kalshi_fee_matches_official_formula`** — Kalshi event-contract fees are re-derived from the
+   published schedule (`roundup(M × 0.07 × C × P × (1 − P))` for takers, `M × 0.0175 × …` for makers).
+7. **`kalshi_perp_fee_matches_official_schedule`** (perp fills only) — the fee is re-derived from the
+   official perps fee schedule (kalshi.com/docs/kalshi-fee-schedule.pdf, effective 2026-07-07): tier-0
+   exchange taker fee = 12.0 bps of notional.
+8. **`instrument_present_in_published_universe`** — the instrument is still published with its own listing
    provenance.
-8. **`cross_venue_basis_normalisation_recorded`** (cross-venue basis trades only) — both legs carry the
+9. **`cross_venue_basis_normalisation_recorded`** (cross-venue basis trades only) — both legs carry the
    recorded normalisation to USD per underlying unit (Kalshi `contract_size`; MOEX ISS description
-   `UNIT`/`LOT SIZE`), and the MOEX quote unit is USD. This is the audit for the unit defect that produced
-   the archived, excluded pilot trades before 2026-09-22.
+   `UNIT`/`LOT SIZE`), the MOEX quote unit is USD, and the recorded basis re-derives from the recorded
+   leg mids. This is the audit for the unit defect that produced the archived, excluded pilot trades
+   before 2026-09-22.
+
+## What every perps funding payment must carry
+
+Funding payments live in their own append-only ledger, `data/ledger/funding.jsonl`, and are audited with
+the same discipline as trades:
+
+* `funding_time`, `funding_rate`, `mark_price` — the three exchange-published inputs of the event
+  (`GET /margin/funding_rates/historical`);
+* `contracts`, `side`, `payment_usd` — the position and the applied cash movement;
+* `official_source`, `official_source_sha256`, `retrieved_at` — the funding-rate payload's provenance.
+
+The verifier re-checks: mandatory fields, payload hash recorded, **the hash appears in the run that
+applied the payment**, `payment = contracts × mark_price × funding_rate × direction` re-derives to the
+recorded payment, and the official zero threshold (|rate| < 0.01% ⇒ no payment) is respected.
 
 Anomaly counts are broken down per check in `data/verification/report.json`
 (`anomalies_by_check`), and the report carries an explicit retention note: run manifests hold the

@@ -41,6 +41,29 @@ export function kalshiMakerFee({ contracts, price, multiplier = 0, precision = 2
   return roundUpTo(raw, precision === 2 ? 0.01 : 0.000001);
 }
 
+/*
+ * Kalshi PERPETUAL FUTURES fees.
+ *
+ * Official source: the Kalshi fee schedule "Fee Schedule for July 2026 - 7.7.26 Update"
+ * (https://kalshi.com/docs/kalshi-fee-schedule.pdf), section "Perpetual Futures Fees":
+ *   Table 1 (exchange taker): Tier 0, 30-day trailing perps+prediction volume $0 -> 12.0 bps
+ *   Table 2 (exchange maker): Tier 0 -> 5.0 bps
+ * Higher volume tiers (10.0 bps taker at >= $100K ... 2.6 bps at >= $3B) apply only to
+ * accounts with that volume; this competition account starts with no volume, so Tier 0 is
+ * the verified rate for every simulated fill. Kalshi help centre "Perps Fees Explained"
+ * (2026-07-24) confirms fees are charged as a percentage of the position's NOTIONAL value
+ * (not margin) and are charged on both open and close.
+ */
+export const KALSHI_PERP_TAKER_FEE_T0 = 0.0012; // 12.0 bps of notional, tier 0
+export const KALSHI_PERP_MAKER_FEE_T0 = 0.0005; // 5.0 bps of notional, tier 0 (unused: the engine places no perp maker orders)
+export const KALSHI_PERP_FEE_SCHEDULE_URL = 'https://kalshi.com/docs/kalshi-fee-schedule.pdf';
+
+/** Official perp taker fee: a percentage of notional (price x contracts for Kalshi perps). */
+export function kalshiPerpTakerFee({ notionalUsd, rate = KALSHI_PERP_TAKER_FEE_T0 }) {
+  if (!Number.isFinite(notionalUsd) || notionalUsd <= 0) return 0;
+  return Number((notionalUsd * rate).toFixed(6));
+}
+
 /* ------------------------------------------------------------------ fills */
 
 /**

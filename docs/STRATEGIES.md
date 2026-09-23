@@ -1,6 +1,6 @@
 # Strategies
 
-Seventeen strategies compete, one per username. Each one states which market type it trades, the claim it
+Twenty strategies compete, one per username. Each one states which market type it trades, the claim it
 came from, the rules it follows, and — once it has traded — what its own results actually show.
 The live version of this page, with each strategy's current return, attribution and blocked orders, is on
 the [competition site](https://buffedlizard55-lab.github.io/FUTURESCOMMODITIES/#strategies).
@@ -41,6 +41,23 @@ Two rules apply to all of them:
 | `@rig-count` | `moex-energy-trend` | Energy futures trend on supply shocks; the strategy trades the WTI, Brent, natural gas (NG/NGM/TTF), diesel and AI-92/95 gasoline contracts the exchange itself lists | 15-observation settlement momentum, \|momentum\| ≥ 1.5% | Momentum flips sign |
 | `@donchian-desk` | `moex-metal-breakout` | The public-domain Turtle channel-breakout rule ([original Turtle rules](https://www.turtletrader.com/turtle/)): buy a 20-period high, sell a 20-period low | Daily settlement CLOSE crosses the prior 20-observation high/low | Close crosses the opposite 10-observation extreme |
 
+## Exchange-listed non-commodity futures (MOEX FORTS)
+
+Added 2026-09-22 (roadmap item 3): the project brief requires the universe to cover equity-index,
+interest-rate, FX and crypto futures, and the same keyless MOEX ISS API verifies all four sectors.
+The asset codes were verified in the official FORTS listing on 2026-09-22 (`engine/universe/futures-registry.json`),
+and the live classifier re-verifies them against the exchange listing on every tick.
+
+| Username | Strategy id | Idea | Entry | Exit |
+| --- | --- | --- | --- | --- |
+| `@usd-rub-desk` | `moex-fx-trend` | FX futures trend over multi-week policy/flow stretches | 15-observation settlement momentum, \|momentum\| ≥ 1.5% | Momentum flips sign |
+| `@index-mover` | `moex-index-trend` | Equity-index futures are the canonical momentum market (IMOEX, RTS, Nasdaq-100, S&P 500) | 15-observation settlement momentum, \|momentum\| ≥ 2.0% | Momentum flips sign |
+| `@ruonia-curve` | `moex-rate-curve` | The near/far rate spread is the market's own estimate of the future short rate; capture the carry when it exceeds round-trip cost | Annualised curve spread ≥ 8% after measured fees, both legs quoted | Spread compresses below 3%, or a leg is within 5 days of expiry |
+
+Crypto futures are covered by the cross-venue strategy below (BTC and ETH pairs), which is the
+sector's most distinctive edge: the same asset is simultaneously traded on Kalshi (24/7 perp) and
+MOEX (session future).
+
 ## Cross-venue
 
 | Username | Strategy id | Idea | Entry | Exit |
@@ -65,6 +82,19 @@ and was **re-enabled the same day** after the missing normalisation was verified
 * **Guardrails** — the strategy refuses to trade any pair whose normalisation inputs are missing in the run,
   and the verifier re-checks every basis trade for the recorded normalisation (`cross_venue_basis_normalisation_recorded`).
 * Palladium has **no MOEX listing** (verified in the FORTS listing on 2026-09-22), so no palladium pair exists.
+* **Crypto pairs (added 2026-09-22, roadmap "cross-venue basis expansion")** — BTC and ETH join the
+  pairs list. The Kalshi perp leg is identified by exchange-published fields (`asset_class === 'Crypto'`
+  plus the asset name in the official title) rather than a hard-coded ticker, and the MOEX leg only
+  trades when its official description states quotation UNIT=USD. If either venue removes or relists
+  the contract, the pair finds nothing and trades nothing.
+* **Crypto contract units (verified 2026-09-22 from official sources)** — the MOEX BTC leg is the
+  Bitcoin **Index** future: the official specification (Appendix 1, order MB-P-2026-1883, in force
+  14.05.2026) fixes the value of the 1 USD price step at **0.001 USD per contract** (lot = 0.001 BTC),
+  cross-checked against the exchange's own volume statistics (1,501,894,597.1 RUB / 207,750 contracts
+  = 7,229 RUB/contract). The MOEX ETH leg is the **ETHA Trust ETF** future (ASSETCODE `ETHA`; the
+  MOEX-Ether-Index futures were not found in the listing): one contract = one ETHA share whose NAV
+  tracks ETH. The engine detects these lot sizes from the exchange's published tick value (STEPPRICE)
+  rather than hard-coding them, and the basis trade records the lot facts used.
 
 ## Where the ideas came from
 

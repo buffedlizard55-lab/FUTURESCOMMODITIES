@@ -40,6 +40,17 @@ import {
   walkLadder,
 } from './lib/portfolio.mjs';
 import {
+  buildTrade,
+  executeEventContractOrder,
+  executeQuoteOrder,
+  feeInUsd,
+  intentRecord,
+  positionMargin,
+  processWorkingOrders,
+  registerWorkingOrder,
+} from './lib/execution.mjs';
+
+import {
   buildKalshiInstruments,
   buildKalshiPerpInstruments,
   buildMoexInstrument,
@@ -55,6 +66,77 @@ const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const OFFLINE = args.includes('--offline');
 const MAX_REQUESTS = Number((args.find((a) => a.startsWith('--max-requests=')) ?? '--max-requests=400').split('=')[1]);
+
+// Pick which of the classified MOEX contracts to track: the nearest two expiries of every asset
+// the exchange lists, with a dedicated slot for the non-commodity sectors (max_sector_contracts)
+// and a total budget of max_contracts. Commodity assets keep the remainder of the budget.
+function selectMoexFutures(classified, watchlist) {
+  const byAsset = new Map();
+  for (const item of classified) {
+    const key = item.klass.asset_code;
+    if (!byAsset.has(key)) byAsset.set(key, []);
+    byAsset.get(key).push(item);
+  }
+  const nearestTwo = (items) => {
+    items.sort((a, b) => String(a.row.LASTTRADEDATE ?? '').localeCompare(String(b.row.LASTTRADEDATE ?? '')));
+    return items.slice(0, 2);
+  };
+  const commodityLimited = [];
+  const sectorLimited = [];
+  for (const [, items] of byAsset) {
+    if (items[0].klass.sector === 'commodity') commodityLimited.push(...nearestTwo(items));
+    else sectorLimited.push(...nearestTwo(items));
+  }
+  // The sector block is placed first so that, even under a tight total budget, the non-commodity
+  // sectors (which the brief explicitly requires) keep their dedicated slot before commodities
+  // fill the remainder.
+  const limited = [...sectorLimited.slice(0, watchlist.moex?.max_sector_contracts ?? 12), ...commodityLimited];
+  limited.splice(watchlist.moex?.max_contracts ?? 56);
+  return { limited, assetCount: byAsset.size, sectorCount: sectorLimited.length };
+}
+
+// Pure core of the perps-funding settlement (official semantics, Kalshi help centre
+// "How Funding Works"): for each open position on an instrument, settle every finalised
+// exchange funding event strictly after the position's last settled funding time (or its
+// entry time) and at or before now. Events with |rate| < 0.01% are treated as zero (no
+// payment, official rule). payment = contracts x mark_price x funding_rate x direction,
+// long = +1. Returns the payments in settlement order and advances each position's
+// last_funding_time in place.
+function settleFundingForPositions({ positions, eventsByInstrument, nowMs }) {
+  const payments = [];
+  for (const [instrumentId, position] of Object.entries(positions ?? {})) {
+    if (!position || position.status === 'closed' || !(Number(position.contracts) > 0)) continue;
+    const events = eventsByInstrument.get(instrumentId);
+    if (!events) continue;
+    const sinceMs = new Date(position.last_funding_time ?? position.entry_ts).getTime();
+    if (!Number.isFinite(sinceMs)) continue;
+    const rates = [...(events.rates ?? [])].sort(
+      (a, b) => Date.parse(a.funding_time) - Date.parse(b.funding_time),
+    );
+    for (const ev of rates) {
+      const tMs = Date.parse(ev.funding_time);
+      if (!Number.isFinite(tMs) || tMs <= sinceMs || tMs > nowMs) continue;
+      const rate = Number(ev.funding_rate);
+      if (!Number.isFinite(rate) || Math.abs(rate) < 0.0001) continue; // official zero threshold
+      const mark = Number(ev.mark_price);
+      if (!(mark > 0)) continue;
+      const direction = position.side === 'long' ? 1 : -1;
+      const paymentUsd = Number((Number(position.contracts) * mark * rate * direction).toFixed(6));
+      payments.push({
+        instrument_id: instrumentId,
+        funding_time: ev.funding_time,
+        mark,
+        rate,
+        contracts: Number(position.contracts),
+        side: position.side,
+        entryTs: position.entry_ts ?? null,
+        paymentUsd,
+      });
+      position.last_funding_time = ev.funding_time;
+    }
+  }
+  return payments;
+}
 
 async function main() {
   const startedAt = nowIso();
@@ -173,6 +255,26 @@ async function main() {
       const selectedIds = new Set(selected.map((i) => i.instrument_id));
       perpInstruments = selected;
       perpQuotes = Object.fromEntries(Object.entries(builtPerps.quotes).filter(([k]) => selectedIds.has(k)));
+      // In-progress funding estimate (official, keyless /margin/funding_rates/estimate):
+      // informational for the live desk. Actual funding is settled from finalised events.
+      for (const inst of selected) {
+        const q = perpQuotes[inst.instrument_id];
+        if (!q) continue;
+        const est = await kalshi.fundingRateEstimate(inst.ticker);
+        if (est.ok && est.estimate) {
+          q.funding_estimate = {
+            funding_rate: est.estimate.funding_rate ?? null,
+            next_funding_time: est.estimate.next_funding_time ?? null,
+            computed_time: est.estimate.computed_time ?? null,
+            note: 'Estimated funding rate for the in-progress 8h period (official /margin/funding_rates/estimate). Funding itself is settled from finalised events.',
+            source_url: est.provenance?.url ?? null,
+            sha256: est.provenance?.sha256 ?? null,
+            retrieved_at: est.provenance?.retrieved_at ?? null,
+          };
+        } else {
+          degraded.push({ venue: 'kalshi_margin', step: 'funding_estimate', ticker: inst.ticker, error: describe(est) });
+        }
+      }
     } else {
       degraded.push({ venue: 'kalshi_margin', step: 'markets', error: describe(perps) });
     }
@@ -189,7 +291,45 @@ async function main() {
   let kalshiCandles = {};
   let moexDiscoveryCount = 0;
 
-  const descriptionCacheFor = (secid) => moexDescriptionCache[secid] ?? null;
+  /**
+   * Per-contract reference description (LOT SIZE / quotation UNIT / FACEUNIT / EXECTYPE) from the
+   * MOEX ISS description table. Reference data changes rarely, so it is cached on disk for the
+   * configured refresh window (12h default) and the cache itself is committed for auditability.
+   * A failed fetch degrades the run, never crashes it: the instrument is still built from the
+   * quote payload, just without the description fields (and anything that needs them, e.g. the
+   * cross-venue basis normalisation, refuses to trade instead of guessing).
+   */
+  const getMoexDescription = async (secid) => {
+    if (moexDescriptionCache[secid] !== undefined) return moexDescriptionCache[secid];
+    const file = `data/history/moex-descriptions/${secid}.json`;
+    const cached = readJson(file, null);
+    const age = fileAgeHours(file);
+    if (cached?.fields && Object.keys(cached.fields).length > 0 && age != null && age < (competition.history_refresh_hours ?? 12)) {
+      moexDescriptionCache[secid] = cached;
+      return cached;
+    }
+    const res = await moexSecurityDescription(secid);
+    if (res.ok && res.fields && Object.keys(res.fields).length > 0) {
+      const rec = {
+        secid,
+        fields: res.fields,
+        provenance: {
+          url: res.provenance?.url ?? null,
+          sha256: res.provenance?.sha256 ?? null,
+          http_status: res.provenance?.http_status ?? null,
+          retrieved_at: res.provenance?.retrieved_at ?? null,
+        },
+        retrieved_at: res.provenance?.retrieved_at ?? null,
+        note: 'Official MOEX ISS security description (LOT SIZE / quotation UNIT / FACEUNIT / EXECTYPE). Reference data; cached for the configured refresh window.',
+      };
+      writeJson(file, rec);
+      moexDescriptionCache[secid] = rec;
+      return rec;
+    }
+    degraded.push({ venue: 'moex_forts', step: 'description', ticker: secid, error: describe(res) });
+    moexDescriptionCache[secid] = null;
+    return cached ?? null;
+  };
 
   if (!OFFLINE) {
     const listing = await fetchFortsSecurities({ assetCodes: (watchlist.moex?.asset_codes ?? []).map((a) => a.asset_code ?? a) });
@@ -202,21 +342,13 @@ async function main() {
       if (klass) classified.push({ row, klass });
     }
     moexDiscoveryCount = classified.length;
-    // Diversify: the nearest two expiries of every commodity the exchange lists, so one busy
-    // contract cannot crowd the universe out of the request budget.
-    const byAsset = new Map();
-    for (const item of classified) {
-      const key = item.klass.asset_code;
-      if (!byAsset.has(key)) byAsset.set(key, []);
-      byAsset.get(key).push(item);
-    }
-    const limited = [];
-    for (const [, items] of byAsset) {
-      items.sort((a, b) => String(a.row.LASTTRADEDATE ?? '').localeCompare(String(b.row.LASTTRADEDATE ?? '')));
-      limited.push(...items.slice(0, 2));
-    }
-    limited.splice(watchlist.moex?.max_contracts ?? 30);
-    console.log(`   moex commodity contracts discovered: ${classified.length} across ${byAsset.size} commodities, tracking ${limited.length}`);
+    // Diversify: the nearest two expiries of every asset the exchange lists, so one busy
+    // contract cannot crowd the universe out of the request budget. Non-commodity sectors
+    // (equity index, interest rate, FX, crypto - required by the project brief) get a dedicated
+    // slot of their own (max_sector_contracts, default 12) so they cannot be crowded out by
+    // the commodity universe, and commodities keep the remainder of the budget.
+    const { limited, assetCount, sectorCount } = selectMoexFutures(classified, watchlist);
+    console.log(`   moex contracts discovered: ${classified.length} across ${assetCount} assets (${sectorCount} sector contracts), tracking ${limited.length}`);
     notes.push({ moex_listing_instrument_types: listing.instrument_types ?? null, duplicates_removed: listing.duplicates_removed ?? null });
 
     const usdRub = await fetchUsdRub();
@@ -247,13 +379,15 @@ async function main() {
         notes.push({ instrument_id: `moex:${row.SECID}`, skipped: 'below minimum exchange-published volume for a tradable quote', ...liquidity });
         continue;
       }
-      const valuation = computeMoexValuation({ securities: res.securities, fx });
+      const description = await getMoexDescription(row.SECID);
+      const valuation = computeMoexValuation({ securities: res.securities, fx, descriptionFields: description?.fields ?? null });
       const instrument = buildMoexInstrument({
         row,
         classification: klass,
         valuation,
         provenance: { url: res.provenance?.url, sha256: res.provenance?.sha256 },
         listing: listingRow ? { url: listingRow.url, sha256: listingRow.sha256, retrieved_at: listingRow.retrieved_at } : null,
+        description,
       });
       const quote = moexQuoteFromPayload({ secid: row.SECID, marketdata, securities: res.securities, provenance: res.provenance, valuation });
       if (quote.bid == null || quote.offer == null) {
@@ -270,50 +404,87 @@ async function main() {
 
   const historyRefreshHours = competition.history_refresh_hours ?? 12;
   if (!OFFLINE) {
+    /*
+     * Kalshi candle history via the official BATCH endpoint (GET /markets/candlesticks,
+     * docs.kalshi.com "Batch Get Market Candlesticks": up to 100 tickers per request, candle
+     * schema identical to the single-market endpoint). This replaces the per-series single
+     * requests so the whole matched commodity universe (not just 30 series) is covered in one
+     * or two calls. One market per series: the last commodity market of each series in
+     * instrument order (the same market the per-series loop used to keep).
+     *
+     * Official candlestick schema (docs.kalshi.com get-market-candlesticks): OHLC values live
+     * in `price.close_dollars`, `yes_bid.close_dollars`, `yes_ask.close_dollars` (fixed-point
+     * dollar strings), volumes in `volume_fp`/`open_interest_fp`. Candles whose OHLC is null
+     * are the exchange's synthetic placeholder for "no data in this period" (documented in the
+     * schema) and are stored as nulls, never treated as prices.
+     */
+    const seriesOrder = [];
+    const tickerForSeries = {};
     for (const inst of instruments.filter((i) => i.commodity)) {
-      const file = `${paths.history}/kalshi/${inst.series_ticker}.json`;
+      if (!tickerForSeries[inst.series_ticker]) seriesOrder.push(inst.series_ticker);
+      tickerForSeries[inst.series_ticker] = inst.ticker;
+    }
+    const planned = seriesOrder.slice(0, competition.max_candle_series ?? 100);
+    const due = [];
+    for (const seriesTicker of planned) {
+      const file = `${paths.history}/kalshi/${seriesTicker}.json`;
       const age = fileAgeHours(file);
       const cached = readJson(file, null);
       const cachedHasPrices = (cached?.candles ?? []).some((c) => c && c.close != null);
       if (cached && cachedHasPrices && age != null && age < historyRefreshHours) {
-        kalshiCandles[inst.series_ticker] = cached.candles ?? [];
-        continue;
+        kalshiCandles[seriesTicker] = cached.candles ?? [];
+      } else {
+        due.push({ series_ticker: seriesTicker, ticker: tickerForSeries[seriesTicker], file, cached });
       }
+    }
+    if (due.length) {
       const nowSeconds = Math.floor(Date.now() / 1000);
       const start = nowSeconds - 90 * 86400;
-      const res = await kalshi.candlesticks({ seriesTicker: inst.series_ticker, marketTicker: inst.ticker, startTs: start, endTs: nowSeconds, periodInterval: 1440 });
-      if (!res.ok) {
-        degraded.push({ venue: 'kalshi', step: 'candlesticks', series: inst.series_ticker, tried: res.tried });
-        kalshiCandles[inst.series_ticker] = cached?.candles ?? [];
-        continue;
+      const batch = await kalshi.candlesticksBatch({ marketTickers: due.map((d) => d.ticker), startTs: start, endTs: nowSeconds, periodInterval: 1440 });
+      for (const entry of due) {
+        let raw = batch.byMarket?.[entry.ticker] ?? null;
+        let endpoint = batch.provenance?.url ?? null;
+        let sha256 = batch.provenance?.sha256 ?? null;
+        let status = batch.provenance?.http_status ?? null;
+        let retrievedAt = batch.provenance?.retrieved_at ?? null;
+        if (raw == null) {
+          // The market was absent from the batch response (unknown ticker or endpoint failure):
+          // fall back to the single-market endpoint for this one market before giving up.
+          const single = await kalshi.candlesticks({ seriesTicker: entry.series_ticker, marketTicker: entry.ticker, startTs: start, endTs: nowSeconds, periodInterval: 1440 });
+          if (single.ok) {
+            raw = single.candles;
+            endpoint = single.provenance?.url ?? null;
+            sha256 = single.provenance?.sha256 ?? null;
+            status = single.provenance?.http_status ?? null;
+            retrievedAt = single.provenance?.retrieved_at ?? null;
+          } else {
+            degraded.push({ venue: 'kalshi', step: 'candlesticks', series: entry.series_ticker, batch_status: status, tried: single.tried });
+            kalshiCandles[entry.series_ticker] = entry.cached?.candles ?? [];
+            continue;
+          }
+        }
+        const candles = (raw ?? []).map((c) => ({
+          end_period_ts: c.end_period_ts,
+          close: num(c.price?.close_dollars) ?? num(c.price?.close) ?? null,
+          yes_bid_close: num(c.yes_bid?.close_dollars) ?? null,
+          yes_ask_close: num(c.yes_ask?.close_dollars) ?? null,
+          volume: num(c.volume_fp) ?? num(c.volume) ?? null,
+          open_interest: num(c.open_interest_fp) ?? num(c.open_interest) ?? null,
+        }));
+        kalshiCandles[entry.series_ticker] = candles;
+        writeJson(entry.file, {
+          series_ticker: entry.series_ticker,
+          market_ticker_used: entry.ticker,
+          endpoint,
+          http_status: status,
+          sha256,
+          retrieved_at: retrievedAt,
+          candles,
+          note: 'Official Kalshi candlesticks. `close` is the price at the end of the period as published by the exchange.',
+        });
       }
-      // Official candlestick schema (docs.kalshi.com get-market-candlesticks): OHLC values live
-      // in `price.close_dollars`, `yes_bid.close_dollars`, `yes_ask.close_dollars` (fixed-point
-      // dollar strings), volumes in `volume_fp`/`open_interest_fp`. Candles whose OHLC is null
-      // are the exchange's synthetic placeholder for "no data in this period" (documented in the
-      // schema) and are stored as nulls, never treated as prices.
-      const candles = (res.candles ?? []).map((c) => ({
-        end_period_ts: c.end_period_ts,
-        close: num(c.price?.close_dollars) ?? num(c.price?.close) ?? null,
-        yes_bid_close: num(c.yes_bid?.close_dollars) ?? null,
-        yes_ask_close: num(c.yes_ask?.close_dollars) ?? null,
-        volume: num(c.volume_fp) ?? num(c.volume) ?? null,
-        open_interest: num(c.open_interest_fp) ?? num(c.open_interest) ?? null,
-      }));
-      kalshiCandles[inst.series_ticker] = candles;
-      writeJson(file, {
-        series_ticker: inst.series_ticker,
-        market_ticker_used: inst.ticker,
-        endpoint: res.provenance?.url ?? null,
-        http_status: res.provenance?.http_status ?? null,
-        sha256: res.provenance?.sha256 ?? null,
-        retrieved_at: res.provenance?.retrieved_at ?? null,
-        candles,
-        note: 'Official Kalshi candlesticks. `close` is the price at the end of the period as published by the exchange.',
-      });
-      if (Object.keys(kalshiCandles).length >= (competition.max_candle_series ?? 30)) break;
     }
-    console.log(`   kalshi candle series cached: ${Object.keys(kalshiCandles).length}`);
+    console.log(`   kalshi candle series cached: ${Object.keys(kalshiCandles).length} (${due.length} re-fetched this run)`);
 
     for (const inst of moexInstruments) {
       const file = `${paths.history}/moex/${inst.ticker}.json`;
@@ -577,20 +748,20 @@ async function main() {
       }
       if (decision) ctx.exits.push({ instrument_id: position.instrument_id, reason: decision.reason, signal: decision.signal ?? null });
     }
-    for (const requested of ctx.exits) {
+    const runExit = (requested) => {
       const position = portfolio.positions[requested.instrument_id];
-      if (!position) continue;
+      if (!position) return;
       const inst = instrumentById[requested.instrument_id];
       const quote = quotes[requested.instrument_id];
       if (!inst || !quote) {
         intents.push(intentRecord({ strategy_id: strategy.id, username: strategy.username, instrument_id: requested.instrument_id, action: 'exit' }, runId, 'no_verified_quote', 'Cannot exit: this run produced no verified quote for the instrument.'));
-        continue;
+        return;
       }
       if (inst.kind === 'event_contract') {
         const exitPrice = position.outcome === 'yes' ? quote.best_yes_bid : quote.best_no_bid;
         if (exitPrice == null) {
           intents.push(intentRecord({ strategy_id: strategy.id, username: strategy.username, instrument_id: requested.instrument_id, action: 'exit' }, runId, 'one_sided_book', 'No resting bid for the side held, so the position cannot be exited at this moment.'));
-          continue;
+          return;
         }
         executeEventContractOrder({
           ord: {
@@ -645,6 +816,16 @@ async function main() {
           fx,
         });
       }
+    };
+    for (const requested of ctx.exits) {
+      try {
+        runExit(requested);
+      } catch (error) {
+        // One strategy's faulty order must never take down the whole competition tick: the
+        // failure is recorded as degraded and the strategy's remaining orders are dropped.
+        strategyNotes.push({ instrument_id: requested.instrument_id, exit_execution_error: String(error?.message ?? error) });
+        degraded.push({ venue: 'engine', step: 'exit_execution', strategy: strategy.id, error: String(error?.message ?? error) });
+      }
     }
 
     if (typeof strategy.decide === 'function') {
@@ -656,20 +837,34 @@ async function main() {
       }
     }
 
-    for (const ord of ctx.orders) {
+    const runEntry = (ord) => {
       if (ord.order_type === 'maker') {
         const registered = registerWorkingOrder({ ord, instrumentById, quotes, workingOrders, intents, runId, competition });
-        if (!registered) continue;
-        continue;
+        if (!registered) return;
+        return;
       }
       if (ord.venue === 'kalshi') {
         executeEventContractOrder({ ord, inst: instrumentById[ord.instrument_id], quote: quotes[ord.instrument_id], portfolio, runId, newTrades, intents, instrumentById, competition, fx });
       } else {
         executeQuoteOrder({ ord, inst: instrumentById[ord.instrument_id], quote: quotes[ord.instrument_id], portfolio, runId, newTrades, intents, instrumentById, competition, fx });
       }
+    };
+    for (const ord of ctx.orders) {
+      try {
+        runEntry(ord);
+      } catch (error) {
+        // Same rule as for exits: record, degrade, keep the competition alive.
+        strategyNotes.push({ instrument_id: ord.instrument_id, entry_execution_error: String(error?.message ?? error) });
+        degraded.push({ venue: 'engine', step: 'entry_execution', strategy: strategy.id, error: String(error?.message ?? error) });
+      }
     }
 
-    markPortfolio(portfolio, quotes);
+    try {
+      markPortfolio(portfolio, quotes);
+    } catch (error) {
+      strategyNotes.push({ mark_error: String(error?.message ?? error) });
+      degraded.push({ venue: 'engine', step: 'mark', strategy: strategy.id, error: String(error?.message ?? error) });
+    }
     activity.push({
       strategy_id: strategy.id,
       username: strategy.username,
@@ -687,29 +882,104 @@ async function main() {
 
   for (const portfolio of Object.values(portfolios)) {
     for (const position of Object.values(portfolio.positions)) {
-      if (position.kind !== 'event_contract') continue;
-      const inst = instrumentById[position.instrument_id];
-      const closeTime = position.market?.close_time ?? inst?.close_time ?? null;
-      if (!closeTime || new Date(closeTime).getTime() > Date.now()) continue;
-      const res = await kalshi.market(position.ticker);
-      const market = res.json?.market ?? null;
-      const result = market?.result ?? null;
-      if (!result) {
-        intents.push(intentRecord({ strategy_id: portfolio.strategy_id, username: portfolio.username, instrument_id: position.instrument_id, action: 'settle' }, runId, 'settlement_result_not_published', `Market closed at ${closeTime} but the exchange has not published a result yet; the position is left open rather than assumed.`));
-        continue;
+      try {
+        if (position.kind !== 'event_contract') continue;
+        const inst = instrumentById[position.instrument_id];
+        const closeTime = position.market?.close_time ?? inst?.close_time ?? null;
+        if (!closeTime || new Date(closeTime).getTime() > Date.now()) continue;
+        const res = await kalshi.market(position.ticker);
+        const market = res.json?.market ?? null;
+        const result = market?.result ?? null;
+        if (!result) {
+          intents.push(intentRecord({ strategy_id: portfolio.strategy_id, username: portfolio.username, instrument_id: position.instrument_id, action: 'settle' }, runId, 'settlement_result_not_published', `Market closed at ${closeTime} but the exchange has not published a result yet; the position is left open rather than assumed.`));
+          continue;
+        }
+        const settled = settlePosition({
+          portfolio,
+          position,
+          result,
+          settledAt: nowIso(),
+          marketRecordUrl: res.provenance?.url ?? null,
+          marketRecordSha256: res.provenance?.sha256 ?? null,
+          expiry: market.expiration_time ?? closeTime,
+        });
+        if (settled) settlements.push({ ...settled, strategy_id: portfolio.strategy_id, username: portfolio.username });
+      } catch (error) {
+        // A failed settlement fetch must not kill the run: the position stays open and the
+        // failure is reported as degraded (the next tick retries).
+        degraded.push({ venue: 'engine', step: 'settlement', strategy: portfolio.strategy_id, instrument_id: position.instrument_id, error: String(error?.message ?? error) });
       }
-      const settled = settlePosition({
-        portfolio,
-        position,
-        result,
-        settledAt: nowIso(),
-        marketRecordUrl: res.provenance?.url ?? null,
-        marketRecordSha256: res.provenance?.sha256 ?? null,
-        expiry: market.expiration_time ?? closeTime,
-      });
-      if (settled) settlements.push({ ...settled, strategy_id: portfolio.strategy_id, username: portfolio.username });
     }
   }
+  /* ------------------------------------------- 6b. Perps funding */
+  /*
+   * Kalshi applies funding to perpetual futures every 8 hours (12:00 AM / 8:00 AM / 4:00 PM ET,
+   * official contract specifications). The simulation settles funding ONLY from the exchange's
+   * own finalised funding events (official keyless endpoint GET /margin/funding_rates/historical,
+   * docs.kalshi.com "Get Historical Funding Rates"): each event carries funding_time,
+   * funding_rate and the mark_price at the funding moment, all exchange-published.
+   *
+   * Payment semantics (Kalshi help centre "How Funding Works", official):
+   *   - rate > 0: longs pay shorts; rate < 0: shorts pay longs;
+   *   - |rate| < 0.01%: the rate is treated as zero and no payment is made;
+   *   - payment = contracts x mark_price x funding_rate x direction (long = +1 pays when
+   *     rate > 0), i.e. a percentage of the position's notional at the exchange mark.
+   * A position only participates in funding events at or after it was opened. Every payment is
+   * written to data/ledger/funding.jsonl with the provenance of the funding-rate payload.
+   */
+  const fundingEntries = [];
+  if (!OFFLINE && perpInstruments.length) {
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const seasonStartSeconds = Math.floor(new Date(competition.starts_at).getTime() / 1000);
+    const eventsByInstrument = new Map(); // instrument_id -> { rates, provenance }
+    for (const perp of perpInstruments) {
+      const res = await kalshi.fundingRatesHistorical(perp.ticker, { startTs: seasonStartSeconds, endTs: nowSeconds });
+      if (!res.ok) {
+        degraded.push({ venue: 'kalshi_margin', step: 'funding_rates', ticker: perp.ticker, error: describe(res) });
+        continue;
+      }
+      eventsByInstrument.set(perp.instrument_id, { ticker: perp.ticker, rates: res.rates, provenance: res.provenance });
+    }
+    for (const p of Object.values(portfolios)) {
+      const payments = settleFundingForPositions({ positions: p.positions, eventsByInstrument, nowMs: Date.now() });
+      for (const pay of payments) {
+        const perp = eventsByInstrument.get(pay.instrument_id);
+        p.cash_usd = Number((p.cash_usd - pay.paymentUsd).toFixed(6));
+        fundingEntries.push({
+          // entry_ts is part of the id so that two lifecycles of a position on the same
+          // instrument (closed and reopened between ticks) can never collide on a funding id.
+          id: tradeId('funding', runId, p.strategy_id, pay.instrument_id, pay.funding_time, pay.entryTs ?? 'entry', pay.side),
+          run_id: runId,
+          strategy_id: p.strategy_id,
+          username: p.username,
+          market_type: p.market_type,
+          venue_id: 'kalshi_margin',
+          exchange: 'Kalshi (CFTC-regulated designated contract market)',
+          ticker: perp.ticker,
+          instrument_id: pay.instrument_id,
+          funding_time: pay.funding_time,
+          mark_price: pay.mark,
+          funding_rate: pay.rate,
+          contracts: pay.contracts,
+          side: pay.side,
+          payment_usd: pay.paymentUsd,
+          formula: 'payment = contracts x exchange mark_price x exchange funding_rate x direction (long pays when the rate is positive); official zero threshold |rate| < 0.01% skipped',
+          official_source: perp.provenance?.url ?? null,
+          official_source_sha256: perp.provenance?.sha256 ?? null,
+          retrieved_at: perp.provenance?.retrieved_at ?? null,
+          verification_timestamp: nowIso(),
+          documentation: {
+            historical_funding_rates: 'https://docs.kalshi.com/margin-rest/funding/get-historical-funding-rates.md',
+            how_funding_works: 'https://help.kalshi.com/en/articles/15357613-how-funding-works',
+            contract_specifications: 'https://help.kalshi.com/en/articles/15357587-btc-perpetual-futures-contract-specifications',
+          },
+          created_at: nowIso(),
+        });
+      }
+    }
+  }
+  if (fundingEntries.length) appendJsonl(`${paths.ledger}/funding.jsonl`, fundingEntries);
+
   for (const portfolio of Object.values(portfolios)) markPortfolio(portfolio, quotes);
 
   /* ------------------------------------------------- 7. Publish state */
@@ -836,532 +1106,6 @@ function strategyNotesOf(activity, strategy, portfolio) {
   });
 }
 
-/* ------------------------------------------------------------------ */
-/* fills                                                              */
-/* ------------------------------------------------------------------ */
-
-/**
- * How much cash the simulated account has to set aside for a position. Event contracts are fully
- * funded (the premium is the whole cost). Exchange-listed futures and Kalshi perpetuals are
- * margined, so the collateral is taken from cash and returned when the position closes; the
- * notional is never exchanged. Nothing here is assumed: if the exchange did not publish the input
- * the order is refused rather than given a made-up margin.
- */
-function positionMargin({ inst, contracts, price, fx }) {
-  if (inst.kind === 'event_contract') {
-    return { margin_usd: 0, margin_model: 'fully_funded_binary_contract_premium_paid_in_full' };
-  }
-  if (inst.kind === 'future') {
-    const perContractRub = inst.contract_specification?.initial_margin_rub ?? null;
-    if (!(perContractRub > 0)) {
-      return {
-        margin_usd: null,
-        margin_model: 'exchange_initial_margin_not_published',
-        note: 'The exchange payload for this contract did not include an initial margin, so the collateral requirement cannot be stated and the order was not placed.',
-      };
-    }
-    if (!(fx?.rate > 0)) {
-      return {
-        margin_usd: null,
-        margin_model: 'usd_rub_rate_unavailable',
-        note: 'MOEX publishes the initial margin in RUB and the official USD/RUB rate was unavailable, so the collateral requirement could not be converted.',
-      };
-    }
-    const marginRub = perContractRub * contracts;
-    return {
-      margin_usd: Number((marginRub / fx.rate).toFixed(6)),
-      margin_rub: Number(marginRub.toFixed(2)),
-      margin_per_contract_rub: perContractRub,
-      fx_rate: fx.rate,
-      margin_model: 'moex_published_initial_margin_rub_converted_at_official_usd_rub',
-    };
-  }
-  if (inst.kind === 'perpetual') {
-    const leverage = inst.contract_specification?.leverage_estimate ?? null;
-    if (!(leverage > 0)) {
-      return {
-        margin_usd: null,
-        margin_model: 'kalshi_perp_leverage_estimate_unavailable',
-        note: 'The exchange payload for this perpetual did not include the inputs needed to state a collateral requirement, so the order was not placed.',
-      };
-    }
-    const notional = price * contracts;
-    return {
-      margin_usd: Number((notional / leverage).toFixed(6)),
-      notional_usd: Number(notional.toFixed(6)),
-      leverage_estimate: leverage,
-      margin_model: 'kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate',
-    };
-  }
-  return { margin_usd: null, margin_model: 'unknown_instrument_kind', note: 'Unsupported instrument kind.' };
-}
-
-function executeEventContractOrder({ ord, inst, quote, portfolio, runId, newTrades, intents, instrumentById, competition, fx }) {
-  if (!inst || !quote) {
-    intents.push(intentRecord(ord, runId, 'instrument_not_in_snapshot', 'The instrument was not present in this run snapshot.'));
-    return { executed: false, reason: 'instrument_not_in_snapshot' };
-  }
-  if (!inst.commodity) {
-    intents.push(intentRecord(ord, runId, 'instrument_unclassified', 'The instrument could not be mapped to a verified commodity, so no trade is placed.'));
-    return { executed: false, reason: 'instrument_unclassified' };
-  }
-  const closeTime = inst.close_time ?? inst.expiration_time;
-  if (closeTime && new Date(closeTime).getTime() <= Date.now()) {
-    intents.push(intentRecord(ord, runId, 'market_closed', `Market closed at ${closeTime}; an order at this moment could not have been filled.`));
-    return { executed: false, reason: 'market_closed' };
-  }
-
-  const isExit = !!ord.is_exit;
-  const contractsRequested = Math.floor(ord.contracts);
-  if (contractsRequested < 1) {
-    intents.push(intentRecord(ord, runId, 'size_below_one_contract', 'The sized order was smaller than one contract.'));
-    return { executed: false, reason: 'size_below_one_contract' };
-  }
-
-  const heldPosition = portfolio.positions[ord.instrument_id] ?? null;
-  if (isExit && (!heldPosition || (ord.outcome && heldPosition.outcome !== ord.outcome))) {
-    intents.push(intentRecord(ord, runId, 'no_position_to_exit', 'Exit requested but the portfolio holds no matching position.'));
-    return { executed: false, reason: 'no_position_to_exit' };
-  }
-  if (!isExit && heldPosition) {
-    intents.push(intentRecord(ord, runId, 'already_holding', 'The strategy already holds this instrument; the simulator keeps one position per instrument per strategy.'));
-    return { executed: false, reason: 'already_holding' };
-  }
-
-  const ladder = isExit
-    ? ord.outcome === 'yes'
-      ? quote.sell_yes_levels
-      : quote.sell_no_levels
-    : ord.outcome === 'yes'
-      ? quote.buy_yes_levels
-      : quote.buy_no_levels;
-  const bestOffer = isExit
-    ? ord.outcome === 'yes'
-      ? quote.best_yes_bid
-      : quote.best_no_bid
-    : ord.outcome === 'yes'
-      ? quote.best_yes_ask
-      : quote.best_no_ask;
-
-  if (bestOffer == null || !ladder?.length) {
-    intents.push(intentRecord(ord, runId, 'no_offer_side_in_book', 'No resting size was published on the side this order needs, so no fill could occur.'));
-    return { executed: false, reason: 'no_offer_side_in_book' };
-  }
-
-  const tolerance = isExit ? 0 : competition.event_contract_price_tolerance ?? 0.02;
-  const participation = competition.taker_participation_of_visible_depth ?? 0.25;
-  const maxPrice = isExit ? null : bestOffer + tolerance;
-  let allowed = contractsRequested;
-  let capacity = null;
-  if (!isExit) {
-    const usable = ladder.filter((l) => l.price <= maxPrice + 1e-9);
-    const visible = usable.reduce((sum, l) => sum + l.contracts, 0);
-    capacity = {
-      best_offer: bestOffer,
-      price_tolerance: tolerance,
-      max_acceptable_price: Number(maxPrice.toFixed(6)),
-      visible_contracts_within_tolerance: Number(visible.toFixed(2)),
-      participation_rate: participation,
-      total_visible_contracts_this_side: Number(ladder.reduce((sum, l) => sum + l.contracts, 0).toFixed(2)),
-    };
-    allowed = Math.min(contractsRequested, Math.floor(visible * participation));
-    if (allowed < 1) {
-      intents.push(intentRecord(ord, runId, 'insufficient_depth_within_price_tolerance', `Only ${visible.toFixed(2)} contracts rested within ${tolerance} of the best offer (${bestOffer}); at ${(participation * 100).toFixed(0)}% participation no fill was possible.`));
-      return { executed: false, reason: 'insufficient_depth_within_price_tolerance', capacity };
-    }
-  }
-  if (isExit && allowed > heldPosition.contracts) allowed = heldPosition.contracts;
-
-  const feeMultiplier = inst.contract_specification?.fee_multiplier ?? 1;
-  const makerMultiplier = /maker/i.test(inst.contract_specification?.fee_type ?? '') ? feeMultiplier : 0;
-  const fill = simulateEventContractTakerFill({
-    ladder,
-    contracts: allowed,
-    limitPrice: isExit ? null : Number(maxPrice.toFixed(6)),
-    feeMultiplier: isExit ? feeMultiplier : feeMultiplier,
-    feePrecision: 2,
-    referencePrice: ord.outcome === 'yes' ? quote.mid : quote.mid != null ? Number((1 - quote.mid).toFixed(6)) : null,
-  });
-  if (fill.filled < 1) {
-    intents.push(intentRecord(ord, runId, 'unfilled', 'No contracts could be filled inside the recorded price limit.'));
-    return { executed: false, reason: 'unfilled' };
-  }
-
-  const trade = buildTrade({
-    ord,
-    inst,
-    quote,
-    fill,
-    contracts: fill.filled,
-    runId,
-    capacity,
-    fx,
-    isExit,
-    position: heldPosition,
-    makerMultiplier,
-    margin: { margin_usd: 0, margin_model: 'fully_funded_binary_contract_premium_paid_in_full' },
-  });
-  newTrades.push(trade);
-  applyFill(portfolio, trade);
-  return { executed: true, trade };
-}
-
-function executeQuoteOrder({ ord, inst, quote, portfolio, runId, newTrades, intents, instrumentById, competition, fx }) {
-  if (!inst || !quote) {
-    intents.push(intentRecord(ord, runId, 'instrument_not_in_snapshot', 'The instrument was not present in this run snapshot.'));
-    return { executed: false, reason: 'instrument_not_in_snapshot' };
-  }
-  const isExit = !!ord.is_exit;
-  const heldPosition = portfolio.positions[ord.instrument_id] ?? null;
-  if (isExit && !heldPosition) {
-    intents.push(intentRecord(ord, runId, 'no_position_to_exit', 'Exit requested but no position is held.'));
-    return { executed: false, reason: 'no_position_to_exit' };
-  }
-  if (!isExit && heldPosition) {
-    intents.push(intentRecord(ord, runId, 'already_holding', 'The strategy already holds this instrument.'));
-    return { executed: false, reason: 'already_holding' };
-  }
-
-  const price = ord.action === 'buy' ? quote.offer : quote.bid;
-  if (price == null || !(price > 0)) {
-    intents.push(intentRecord(ord, runId, 'no_verified_quote', 'The exchange published no two-sided quote for this instrument in this run.'));
-    return { executed: false, reason: 'no_verified_quote' };
-  }
-
-  let contracts = Math.floor(ord.contracts);
-  if (isExit && heldPosition) contracts = heldPosition.contracts;
-  let capInfo = null;
-  if (inst.kind === 'future') {
-    const volumeToday = quote.volume_today ?? 0;
-    const openInterest = quote.open_interest ?? 0;
-    const maxByVolume = Math.max(1, Math.floor(volumeToday * (competition.moex_max_volume_share ?? 0.02)));
-    const maxByOi = openInterest ? Math.max(1, Math.floor(openInterest * (competition.moex_max_oi_share ?? 0.05))) : Infinity;
-    contracts = Math.min(contracts, maxByVolume, maxByOi);
-    capInfo = { max_by_volume: maxByVolume, max_by_open_interest: Number.isFinite(maxByOi) ? maxByOi : null, volume_today: volumeToday, open_interest: openInterest };
-  } else if (inst.kind === 'perpetual') {
-    const notional = quote.volume_24h_notional_usd ?? quote.open_interest_notional_usd ?? null;
-    const participation = competition.perp_participation_rate ?? 0.001;
-    if (notional && price > 0) {
-      const cap = Math.max(1, Math.floor((notional * participation) / price));
-      contracts = Math.min(contracts, cap);
-      capInfo = { participation_rate: participation, volume_24h_notional_usd: notional, cap };
-    }
-  }
-  if (contracts < 1) {
-    intents.push(intentRecord(ord, runId, 'size_below_liquidity_cap', 'The exchange-published liquidity for this instrument is smaller than one contract at the configured participation rate.', capInfo));
-    return { executed: false, reason: 'size_below_liquidity_cap' };
-  }
-
-  const usdPerPriceUnit = inst.kind === 'future' ? inst.usd_valuation?.usd_per_price_unit ?? null : 1;
-  if (inst.kind === 'future' && !(usdPerPriceUnit > 0)) {
-    intents.push(intentRecord(ord, runId, 'valuation_inputs_missing', inst.usd_valuation?.note ?? 'USD valuation inputs (exchange STEPPRICE/MINSTEP plus USD/RUB) were unavailable, so PnL could not be computed and the order was not placed.'));
-    return { executed: false, reason: 'valuation_inputs_missing' };
-  }
-
-  const feePerContractUsd = inst.kind === 'future' ? feeInUsd({ inst, fx }) : null;
-  const fill = simulateQuoteFill({
-    action: ord.action,
-    side: ord.side ?? (ord.action === 'buy' ? 'long' : 'short'),
-    contracts,
-    bid: quote.bid,
-    offer: quote.offer,
-    tickSize: inst.contract_specification?.min_step ?? inst.contract_specification?.tick_size ?? null,
-    feeUsd: feePerContractUsd != null ? Number((feePerContractUsd * contracts).toFixed(6)) : null,
-    feeModel:
-      inst.kind === 'future'
-        ? 'MOEX BUYSELLFEE (exchange-published per-contract fee in RUB) converted at the official MOEX USD/RUB rate'
-        : 'Kalshi perp fee schedule not retrieved in this project: fee is reported as unknown rather than assumed to be zero',
-    availableLiquidity: capInfo,
-  });
-  fill.notional_usd = Number((fill.vwap * contracts * (usdPerPriceUnit ?? 1)).toFixed(6));
-
-  const margin = isExit && heldPosition ? { margin_usd: heldPosition.margin_usd ?? 0, margin_model: heldPosition.margin_model ?? null } : positionMargin({ inst, contracts, price: fill.vwap ?? price, fx });
-  if (margin.margin_usd == null) {
-    intents.push(intentRecord(ord, runId, 'margin_inputs_missing', margin.note ?? 'Collateral requirement could not be derived from exchange-published inputs.'));
-    return { executed: false, reason: 'margin_inputs_missing' };
-  }
-  if (margin.margin_usd > portfolio.cash_usd) {
-    intents.push(intentRecord(ord, runId, 'insufficient_margin', `Order requires about $${margin.margin_usd.toFixed(2)} of collateral (${margin.margin_model}) but the portfolio holds $${portfolio.cash_usd.toFixed(2)}.`));
-    return { executed: false, reason: 'insufficient_margin' };
-  }
-
-  const trade = buildTrade({ ord, inst, quote, fill, contracts, runId, capacity: capInfo, fx, isExit, position: heldPosition, makerMultiplier: 0, margin });
-  newTrades.push(trade);
-  applyFill(portfolio, trade);
-  return { executed: true, trade };
-}
-
-/* ------------------------------------------------------------------ */
-/* working orders                                                     */
-/* ------------------------------------------------------------------ */
-
-function registerWorkingOrder({ ord, instrumentById, quotes, workingOrders, intents, runId, competition }) {
-  const inst = instrumentById[ord.instrument_id];
-  const quote = quotes[ord.instrument_id];
-  if (!inst || !quote) {
-    intents.push(intentRecord(ord, runId, 'instrument_not_in_snapshot', 'Maker order skipped: instrument not in this run snapshot.'));
-    return null;
-  }
-  const resting = Number(ord.limit_price);
-  if (!Number.isFinite(resting) || resting <= 0 || resting >= 1) {
-    intents.push(intentRecord(ord, runId, 'invalid_maker_price', 'Maker order rejected: resting price must be strictly between 0 and 1.'));
-    return null;
-  }
-  const opposingBest = ord.outcome === 'yes' ? quote.best_yes_ask : quote.best_no_ask;
-  if (opposingBest != null && resting >= opposingBest) {
-    intents.push(intentRecord(ord, runId, 'maker_price_crosses_book', `Resting bid ${resting} is at or above the best offer ${opposingBest}; such an order would execute as a taker and is not recorded as a maker fill.`));
-    return null;
-  }
-  const openForStrategy = workingOrders.orders.filter((o) => o.strategy_id === ord.strategy_id && o.status === 'resting');
-  if (openForStrategy.length >= 6) {
-    intents.push(intentRecord(ord, runId, 'working_order_limit', 'Strategy already has the maximum number of resting orders.'));
-    return null;
-  }
-  const ttlHours = competition?.maker_order_ttl_hours ?? 6;
-  const entry = {
-    id: tradeId('working', runId, ord.strategy_id, ord.instrument_id, ord.outcome, String(resting), String(ord.contracts)),
-    strategy_id: ord.strategy_id,
-    username: ord.username,
-    market_type_label: ord.market_type_label,
-    instrument_id: ord.instrument_id,
-    ticker: inst.ticker,
-    outcome: ord.outcome,
-    resting_price: resting,
-    contracts: Math.floor(ord.contracts),
-    remaining: Math.floor(ord.contracts),
-    status: 'resting',
-    placed_at: nowIso(),
-    expires_at: new Date(Date.now() + ttlHours * 3600000).toISOString(),
-    thesis: ord.thesis,
-    signal: ord.signal ?? null,
-    quote_at_placement: {
-      best_yes_bid: quote.best_yes_bid,
-      best_yes_ask: quote.best_yes_ask,
-      best_no_bid: quote.best_no_bid,
-      best_no_ask: quote.best_no_ask,
-      mid: quote.mid,
-      spread: quote.spread,
-      source_url: quote.source?.url ?? null,
-      sha256: quote.source?.sha256 ?? null,
-      retrieved_at: quote.source?.retrieved_at ?? null,
-    },
-  };
-  workingOrders.orders.push(entry);
-  intents.push({ ...intentRecord(ord, runId, 'resting_order_registered', `Resting maker order registered at ${resting}. It can only fill if a later snapshot shows the market trading through that price.`), working_order_id: entry.id, resting_price: resting });
-  return entry;
-}
-
-function processWorkingOrders({ workingOrders, ctxBase, portfolios, runId, newTrades, intents, competition }) {
-  const fills = [];
-  for (const wo of workingOrders.orders) {
-    if (wo.status !== 'resting') continue;
-    const inst = ctxBase.instrument(wo.instrument_id);
-    const quote = ctxBase.quote(wo.instrument_id);
-    const portfolio = portfolios[wo.strategy_id];
-    if (!inst || !quote || !portfolio) {
-      wo.status = 'cancelled';
-      wo.cancelled_reason = 'instrument or quote absent from this snapshot';
-      continue;
-    }
-    if (inst.close_time && new Date(inst.close_time).getTime() <= Date.now()) {
-      wo.status = 'expired';
-      wo.expired_reason = `market closed at ${inst.close_time}`;
-      continue;
-    }
-    if (wo.expires_at && new Date(wo.expires_at).getTime() <= Date.now()) {
-      wo.status = 'expired';
-      wo.expired_reason = `resting TTL of ${competition.maker_order_ttl_hours ?? 6}h elapsed without the market trading through the resting price`;
-      continue;
-    }
-    const opposingBest = wo.outcome === 'yes' ? quote.best_yes_ask : quote.best_no_ask;
-    const ladder = wo.outcome === 'yes' ? quote.buy_yes_levels : quote.buy_no_levels;
-    const availableAtPrice = (ladder ?? []).filter((l) => l.price <= wo.resting_price + 1e-9).reduce((sum, l) => sum + l.contracts, 0);
-    // Conservative fill condition: the market must have traded THROUGH the resting price, which is
-    // observed as the best offer moving below it, with resting size available at or better.
-    if (opposingBest == null || opposingBest >= wo.resting_price || availableAtPrice < 1) continue;
-    const contracts = Math.min(Math.floor(wo.remaining), Math.floor(availableAtPrice));
-    if (contracts < 1) continue;
-    const fill = simulateEventContractMakerFill({
-      contracts,
-      restingPrice: wo.resting_price,
-      availableAtPrice,
-      feeMultiplier: 0,
-      feePrecision: 2,
-      referencePrice: wo.outcome === 'yes' ? quote.mid : quote.mid != null ? 1 - quote.mid : null,
-      tradeThroughEvidence: { best_offer_now: opposingBest, resting_price: wo.resting_price, size_at_or_better: availableAtPrice, observed_at: quote.source?.retrieved_at ?? null },
-    });
-    const ord = {
-      strategy_id: wo.strategy_id,
-      username: wo.username,
-      market_type_label: wo.market_type_label,
-      instrument_id: wo.instrument_id,
-      action: 'buy',
-      outcome: wo.outcome,
-      contracts: fill.filled,
-      limit_price: wo.resting_price,
-      order_type: 'maker',
-      thesis: wo.thesis,
-      signal: wo.signal,
-      prefill: true,
-    };
-    const trade = buildTrade({ ord, inst, quote, fill, contracts: fill.filled, runId, capacity: { maker_fill: true, available_at_price: availableAtPrice }, fx: ctxBase.fx, isExit: false, position: null, makerMultiplier: 0, margin: { margin_usd: 0, margin_model: 'fully_funded_binary_contract_premium_paid_in_full' } });
-    newTrades.push(trade);
-    applyFill(portfolio, trade);
-    wo.remaining -= fill.filled;
-    wo.status = wo.remaining <= 0 ? 'filled' : 'partially_filled';
-    wo.filled_at = nowIso();
-    wo.filled_trade_ids = [...(wo.filled_trade_ids ?? []), trade.id];
-    fills.push({ working_order_id: wo.id, instrument_id: wo.instrument_id, contracts: fill.filled, price: wo.resting_price });
-  }
-  return fills;
-}
-
-/* ------------------------------------------------------------------ */
-/* trade record                                                       */
-/* ------------------------------------------------------------------ */
-
-function buildTrade({ ord, inst, quote, fill, contracts, runId, capacity, fx, isExit, position, makerMultiplier, margin = null }) {
-  const isEventContract = inst.kind === 'event_contract';
-  const price = fill.vwap;
-  const usdPerPriceUnit = isEventContract ? 1 : inst.kind === 'perpetual' ? 1 : inst.usd_valuation?.usd_per_price_unit ?? null;
-  const notional = price != null && usdPerPriceUnit != null ? Number((price * contracts * usdPerPriceUnit).toFixed(6)) : null;
-
-  let pnl = { realized_pnl_usd: null, status: 'open_position_cost_recorded' };
-  if (isExit && position) {
-    const multiplier = position.usd_per_price_unit ?? usdPerPriceUnit ?? 1;
-    const sign = isEventContract || position.side === 'long' || position.outcome === 'no' ? 1 : -1;
-    const gross = (price - position.avg_entry_price) * contracts * multiplier * (position.side === 'short' && !isEventContract ? 1 : sign);
-    const gross2 = isEventContract ? (price - position.avg_entry_price) * contracts : (position.side === 'long' ? price - position.avg_entry_price : position.avg_entry_price - price) * contracts * multiplier;
-    const exitFee = fill.fee_usd ?? 0;
-    const entryFee = position.entry_fee_usd ?? 0;
-    const realized = Number((gross2 - exitFee - entryFee).toFixed(6));
-    pnl = {
-      realized_pnl_usd: realized,
-      status: 'closed',
-      entry_price: position.avg_entry_price,
-      exit_price: price,
-      entry_fee_usd: Number(entryFee.toFixed(6)),
-      exit_fee_usd: Number(exitFee.toFixed(6)),
-      entry_trade_id: position.entry_trade_id,
-      formula: isEventContract
-        ? '(exit_price - entry_price) x contracts - entry_fee - exit_fee'
-        : `(exit_price - entry_price) x contracts x ${multiplier} x direction - entry_fee - exit_fee`,
-    };
-    void gross;
-  }
-
-  return {
-    id: tradeId(runId, ord.strategy_id, inst.instrument_id, ord.action, ord.outcome ?? ord.side ?? '', String(contracts), String(price), isExit ? 'exit' : 'entry'),
-    run_id: runId,
-    strategy_id: ord.strategy_id,
-    username: ord.username,
-    market_type: ord.market_type_label ?? inst.market_type_label,
-    instrument_kind: inst.kind,
-    venue: inst.venue_name,
-    venue_id: inst.venue,
-    exchange: inst.venue === 'kalshi' || inst.venue === 'kalshi_margin' ? 'Kalshi (CFTC-regulated designated contract market)' : inst.venue_name,
-    official_source: quote.source?.url ?? null,
-    official_source_sha256: quote.source?.sha256 ?? null,
-    retrieved_at: quote.source?.retrieved_at ?? null,
-    verification_timestamp: nowIso(),
-    ticker: inst.ticker,
-    instrument_id: inst.instrument_id,
-    instrument_title: inst.title ?? null,
-    series_ticker: inst.series_ticker ?? null,
-    commodity: inst.commodity ?? null,
-    group: inst.group ?? null,
-    contract_specification: inst.contract_specification ?? null,
-    market_dates: {
-      open_time: inst.open_time ?? null,
-      close_time: inst.close_time ?? null,
-      expiration_time: inst.expiration_time ?? null,
-      last_trade_date: inst.last_trade_date ?? null,
-      trade_date: quote.trade_date ?? null,
-    },
-    action: ord.action,
-    outcome: isEventContract ? ord.outcome : null,
-    side: isEventContract ? null : ord.side ?? (ord.action === 'buy' ? 'long' : 'short'),
-    contracts,
-    price,
-    usd_per_price_unit: usdPerPriceUnit,
-    notional_usd: notional,
-    position_notional_usd: notional,
-    margin_usd: margin?.margin_usd ?? null,
-    margin_model: margin?.margin_model ?? null,
-    margin_detail: margin ?? null,
-    fill,
-    market_at_decision: {
-      best_yes_bid: quote.best_yes_bid ?? null,
-      best_yes_ask: quote.best_yes_ask ?? null,
-      best_no_bid: quote.best_no_bid ?? null,
-      best_no_ask: quote.best_no_ask ?? null,
-      bid: quote.bid ?? null,
-      offer: quote.offer ?? null,
-      mid: quote.mid ?? null,
-      spread: quote.spread ?? null,
-      settle_price: quote.settle_price ?? null,
-      volume_today: quote.volume_today ?? null,
-      open_interest: quote.open_interest ?? null,
-      source_url: quote.source?.url ?? null,
-      source_sha256: quote.source?.sha256 ?? null,
-      retrieved_at: quote.source?.retrieved_at ?? null,
-    },
-    liquidity_consumed: {
-      contracts,
-      requested_contracts: Math.floor(fill.requested ?? contracts),
-      unfilled_contracts: fill.unfilled ?? 0,
-      depth_yes_contracts: quote.depth_yes_contracts ?? null,
-      depth_no_contracts: quote.depth_no_contracts ?? null,
-      capacity_check: capacity ?? null,
-      note: isEventContract
-        ? 'Kalshi publishes resting bids only; the ladder this order consumed is derived from the opposite side and the fill is capped at 25% of the size resting within 2 cents of the offer.'
-        : inst.kind === 'future'
-          ? 'MOEX publishes aggregate volume and open interest, not per-level depth; the fill is at the quoted price and size is capped by a share of the published volume and open interest.'
-          : 'Kalshi perps publish a best bid/offer and 24h notional volume; per-level depth is not published.',
-    },
-    slippage: {
-      reference_price: fill.reference_price ?? null,
-      per_contract_usd: fill.slippage_per_contract_usd ?? null,
-      total_usd: fill.slippage_usd ?? null,
-      note: isEventContract
-        ? 'Reference is the implied mid of the same outcome (1 - YES mid for a NO leg) taken from the same snapshot.'
-        : 'Reference is the exchange midpoint of the published bid/offer in the same payload.',
-    },
-    fees: {
-      fee_usd: fill.fee_usd ?? null,
-      fee_model: fill.fee_model ?? null,
-      maker_fee_multiplier_used: makerMultiplier ?? null,
-      fx_rate_used: fx?.rate ?? null,
-      fx_source: fx?.source_url ?? null,
-      status: fill.fee_usd == null ? 'not_applied_fee_schedule_unverified' : 'applied',
-    },
-    pnl,
-    is_exit: !!isExit,
-    exit_reason: ord.exit_reason ?? null,
-    thesis: ord.thesis ?? null,
-    signal: ord.signal ?? null,
-    created_at: nowIso(),
-  };
-}
-
-function intentRecord(ord, runId, reason, detail, extra = null) {
-  return {
-    id: tradeId('intent', runId, ord.strategy_id, ord.instrument_id ?? '', ord.action, reason, String(Math.random()).slice(2, 8)),
-    run_id: runId,
-    strategy_id: ord.strategy_id,
-    username: ord.username ?? null,
-    instrument_id: ord.instrument_id ?? null,
-    action: ord.action ?? null,
-    status: 'not_executed',
-    reason,
-    detail,
-    extra: extra ?? null,
-    created_at: nowIso(),
-  };
-}
-
-/* ------------------------------------------------------------------ */
-
 /** Keep only the most recent run manifests so the repository stays small but auditable. */
 function pruneManifests(keep) {
   try {
@@ -1380,18 +1124,42 @@ function computeMoexValuation({ securities, fx, descriptionFields = null }) {
   const fxRate = fx?.rate ?? null;
   const quoteUnit = descriptionFields?.UNIT ?? null;
   const lotSize = descriptionFields?.LOTSIZE != null ? num(descriptionFields.LOTSIZE) : null;
+  // Rate contracts (RUONIA, 1MFR) are quoted as a per-cent rate, not a currency-per-unit price
+  // (official ISS description: UNIT = "% (Процентная ставка)"; official contract specification:
+  // notional value RUB 1,000,000). For them, price x usd_per_price_unit is NOT the contract
+  // notional. The exchange publishes the lot's RUB notional in LOTVOLUME (verified 2026-09-22:
+  // RRU6/MFU6 LOTVOLUME = 1,000,000, matching the official specification's "Nominal value
+  // 1 mln RUB"), so the USD notional per lot is derived from that published field.
+  const isRateContract = !!quoteUnit && quoteUnit.includes('%');
+  const lotNotionalRub = isRateContract ? num(securities?.LOTVOLUME) : null;
+  const usdNotionalPerLot = lotNotionalRub && fxRate ? Number((lotNotionalRub / fxRate).toFixed(4)) : null;
   if (quoteUnit === 'USD') {
     // The exchange's own reference data states that the price is quoted in USD per unit of the
-    // underlying (UNIT=USD) and settled in USD (FACEUNIT=USD), so 1.0 of price movement is
-    // exactly 1 USD per unit. This replaces the older STEPPRICE-derived approximation below
-    // (which mixed in MOEX's own RUB step valuation and a separately captured USD/RUB rate and
-    // therefore understated the USD value of a USD-quoted contract by the fixing difference).
+    // underlying (UNIT=USD) and settled in USD (FACEUNIT=USD). For such a contract the exchange
+    // publishes the tick value in RUB (STEPPRICE, spec: "calculated in rubles at the USD rate"),
+    // so STEPPRICE / MINSTEP is the exchange's own RUB-per-USD. If that converts to ~1 USD per
+    // 1.0 of price at the published USD/RUB rate, one lot equals one price-denominator unit and
+    // 1.0 of price movement is exactly 1 USD per contract (verified 2026-09-22: GOLD-12.26
+    // 8.40954/0.1 = 84.0954 RUB/USD; ETHA-12.26 0.84095/0.01 = 84.095 RUB/USD). If it does not,
+    // the lot is a fraction of the price unit — e.g. the MOEX Bitcoin Index futures, where the
+    // official specification (Appendix 1, order MB-P-2026-1883, in force 14.05.2026) fixes the
+    // value of the 1 USD price step at 0.001 USD per contract (lot = 0.001 BTC; verified against
+    // the exchange's own volume statistics on 2026-09-22: 1,501,894,597.1 RUB / 207,750
+    // contracts = 7,229 RUB/contract) — and the exchange's own tick value is then the verified
+    // USD value of a 1.0 price move per lot.
+    const tickRubPerUsd = minStep && stepPriceRub ? stepPriceRub / minStep : null;
+    const tickUsdPerPriceUnit = tickRubPerUsd && fxRate ? tickRubPerUsd / fxRate : null;
+    const lotIsOnePriceUnit = tickUsdPerPriceUnit == null || Math.abs(tickUsdPerPriceUnit - 1) < 0.05;
+    const usdPerPriceUnit = lotIsOnePriceUnit ? 1.0 : Number(tickUsdPerPriceUnit.toFixed(8));
     return {
-      usd_per_price_unit: 1.0,
+      usd_per_price_unit: usdPerPriceUnit,
       quote_unit: quoteUnit,
       lot_size: lotSize,
-      basis: `MOEX ISS description for this contract publishes UNIT=USD (quotation currency) and FACEUNIT=${descriptionFields?.FACEUNIT ?? 'n/a'} (settlement currency): the quote is USD per underlying unit, so 1.0 of price movement is 1 USD per unit.`,
-      note: `Derived only from exchange-published reference fields: UNIT=${quoteUnit}, FACEUNIT=${descriptionFields?.FACEUNIT ?? 'n/a'}, LOTSIZE=${descriptionFields?.LOTSIZE ?? 'n/a'}.`,
+      usd_notional_per_lot: null,
+      basis: lotIsOnePriceUnit
+        ? `MOEX ISS description for this contract publishes UNIT=USD (quotation currency) and FACEUNIT=${descriptionFields?.FACEUNIT ?? 'n/a'} (settlement currency); the exchange-published tick value (STEPPRICE ${stepPriceRub ?? 'n/a'} RUB per MINSTEP ${minStep ?? 'n/a'} = ${tickRubPerUsd ? Number(tickRubPerUsd.toFixed(4)) : 'n/a'} RUB/USD) converts to ~1 USD per 1.0 of price, so one lot is one underlying unit and 1.0 of price movement is exactly 1 USD per contract.`
+        : `MOEX ISS description publishes UNIT=USD, but the exchange-published tick value (STEPPRICE ${stepPriceRub ?? 'n/a'} RUB per MINSTEP ${minStep ?? 'n/a'} = ${tickRubPerUsd ? Number(tickRubPerUsd.toFixed(4)) : 'n/a'} RUB/USD at USD/RUB ${fxRate}) shows the lot is a fraction of the price unit: 1.0 of price movement is ${Number(tickUsdPerPriceUnit.toFixed(8))} USD per contract (exchange tick value per contract, per the official specification's variation-margin formula VM = dPrice x W/R).`,
+      note: `Derived only from exchange-published fields: UNIT=${quoteUnit}, FACEUNIT=${descriptionFields?.FACEUNIT ?? 'n/a'}, LOTSIZE=${descriptionFields?.LOTSIZE ?? 'n/a'}, STEPPRICE=${stepPriceRub ?? 'n/a'} RUB, MINSTEP=${minStep ?? 'n/a'}, USD/RUB=${fxRate ?? 'n/a'}.`,
     };
   }
   if (minStep && stepPriceRub && fxRate) {
@@ -1400,24 +1168,23 @@ function computeMoexValuation({ securities, fx, descriptionFields = null }) {
       usd_per_price_unit: usdPerPriceUnit,
       quote_unit: quoteUnit ?? null,
       lot_size: lotSize,
-      basis: `USD value of a one-unit price move = (MOEX STEPPRICE ${stepPriceRub} RUB per MINSTEP ${minStep}) / MOEX USD/RUB ${fxRate}`,
-      note: `Derived only from exchange-published fields: STEPPRICE ${stepPriceRub} RUB, MINSTEP ${minStep}, USD/RUB ${fxRate}${quoteUnit ? `, quotation UNIT=${quoteUnit}` : ''}.`,
+      usd_notional_per_lot: usdNotionalPerLot,
+      basis: `USD value of a one-unit price move = (MOEX STEPPRICE ${stepPriceRub} RUB per MINSTEP ${minStep}) / MOEX USD/RUB ${fxRate}${
+        isRateContract
+          ? `. For this rate-quoted contract, one price unit is the published tick value per lot (RUB ${Number((stepPriceRub / minStep).toFixed(4))} per 1.0 of rate on the exchange-published lot notional); usd_notional_per_lot = exchange-published LOTVOLUME (RUB notional) / USD-RUB`
+          : ''
+      }`,
+      note: `Derived only from exchange-published fields: STEPPRICE ${stepPriceRub} RUB, MINSTEP ${minStep}, USD/RUB ${fxRate}${quoteUnit ? `, quotation UNIT=${quoteUnit}` : ''}${lotNotionalRub ? `, LOTVOLUME ${lotNotionalRub} RUB notional per lot` : ''}.`,
     };
   }
   return {
     usd_per_price_unit: null,
     quote_unit: quoteUnit ?? null,
     lot_size: lotSize,
+    usd_notional_per_lot: null,
     basis: null,
     note: 'MOEX did not publish STEPPRICE/MINSTEP or the USD/RUB rate was unavailable in this snapshot, and the reference description did not state a USD quotation, so no USD P&L is computed.',
   };
-}
-
-function feeInUsd({ inst, fx }) {
-  const feeRub = inst.contract_specification?.buy_sell_fee_rub ?? null;
-  const rate = fx?.rate ?? null;
-  if (feeRub == null || !rate) return null;
-  return Number((feeRub / rate).toFixed(6));
 }
 
 function describe(res) {

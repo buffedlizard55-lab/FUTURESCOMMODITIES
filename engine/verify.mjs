@@ -16,8 +16,27 @@
 
 import { existsSync, readdirSync } from 'node:fs';
 import { nowIso } from './lib/http.mjs';
-import { kalshiTakerFee } from './lib/portfolio.mjs';
+import { kalshiPerpTakerFee, kalshiTakerFee } from './lib/portfolio.mjs';
 import { paths, readJson, readJsonl, writeJson } from './lib/store.mjs';
+
+const REQUIRED_FUNDING_FIELDS = [
+  'id',
+  'run_id',
+  'strategy_id',
+  'username',
+  'ticker',
+  'instrument_id',
+  'funding_time',
+  'mark_price',
+  'funding_rate',
+  'contracts',
+  'side',
+  'payment_usd',
+  'official_source',
+  'official_source_sha256',
+  'retrieved_at',
+  'verification_timestamp',
+];
 
 const REQUIRED_TRADE_FIELDS = [
   'id',
@@ -116,6 +135,38 @@ function main() {
       });
     }
 
+    if (trade.venue_id === 'kalshi_margin' && trade.fees?.fee_usd != null) {
+      // Official perp fee schedule, tier 0: 12.0 bps of notional (price x contracts).
+      const expected = kalshiPerpTakerFee({ notionalUsd: (Number(trade.price) || 0) * (Number(trade.contracts) || 0) });
+      checks.push({
+        check: 'kalshi_perp_fee_matches_official_schedule',
+        ok: Math.abs((trade.fees.fee_usd ?? 0) - expected) < 0.0011,
+        recorded_fee_usd: trade.fees.fee_usd,
+        recomputed_fee_usd: expected,
+        formula: 'tier-0 exchange taker fee = 12.0 bps of notional (official fee schedule, effective 2026-07-07)',
+      });
+    }
+
+    if (trade.strategy_id === 'cross-venue-basis') {
+      // The unit-defect audit: every cross-venue trade must carry the recorded normalisation to
+      // USD per unit of the underlying (Kalshi contract_size; MOEX official quotation UNIT), and
+      // the recorded basis must re-derive from the recorded leg mids.
+      const n = trade.signal?.normalization ?? null;
+      const perpSize = Number(n?.perp_contract_size ?? 0);
+      const perpMid = Number(n?.perp_mid ?? 0);
+      const moexMid = Number(n?.moex_mid ?? 0);
+      const recordedBasis = Number(trade.signal?.basis ?? 0);
+      const recomputed = perpSize > 0 && perpMid > 0 && moexMid > 0 ? ((perpMid / perpSize) - moexMid) / moexMid : null;
+      checks.push({
+        check: 'cross_venue_basis_normalisation_recorded',
+        ok: !!n && perpSize > 0 && (n.moex_quote_unit === 'USD') && recomputed != null && Math.abs(recomputed - recordedBasis) < 1e-6,
+        recorded_basis: recordedBasis,
+        recomputed_basis: recomputed,
+        perp_contract_size: perpSize || null,
+        moex_quote_unit: n?.moex_quote_unit ?? null,
+      });
+    }
+
     const instrument = instrumentsById[trade.instrument_id];
     checks.push({
       check: 'instrument_present_in_published_universe',
@@ -130,9 +181,56 @@ function main() {
     for (const fail of failed) anomalies.push({ trade_id: trade.id, ticker: trade.ticker, check: fail.check, detail: fail });
   }
 
+  /* ------------------------------------------------ perps funding ledger */
+
+  const funding = readJsonl(`${paths.ledger}/funding.jsonl`);
+  let fundingFullyVerified = 0;
+  for (const entry of funding) {
+    const checks = [];
+    const missing = REQUIRED_FUNDING_FIELDS.filter((f) => entry[f] === undefined || entry[f] === null);
+    checks.push({ check: 'mandatory_fields_present', ok: missing.length === 0, missing });
+
+    const hash = entry.official_source_sha256 ?? null;
+    checks.push({ check: 'payload_hash_recorded', ok: !!hash, sha256: hash });
+
+    const hashes = perRunProvenance[entry.run_id];
+    const hashInRun = hashes ? hashes.has(hash) : false;
+    checks.push({
+      check: 'payload_hash_present_in_that_runs_provenance_log',
+      ok: hashes ? hashInRun : false,
+      note: hashes ? (hashInRun ? 'The funding-rate payload hash appears in the run that applied the payment.' : 'The hash was not found in that run provenance log.') : 'No provenance log was found for this run.',
+    });
+
+    const rate = Number(entry.funding_rate);
+    const mark = Number(entry.mark_price);
+    const direction = entry.side === 'long' ? 1 : -1;
+    const expected = Number(((Number(entry.contracts) || 0) * mark * rate * direction).toFixed(6));
+    checks.push({
+      check: 'payment_reproduces_from_exchange_published_inputs',
+      ok: Math.abs((Number(entry.payment_usd) || 0) - expected) < 0.0011,
+      recorded_payment_usd: entry.payment_usd,
+      recomputed_payment_usd: expected,
+      formula: 'payment = contracts x exchange mark_price x exchange funding_rate x direction',
+    });
+    checks.push({
+      check: 'official_zero_threshold_respected',
+      ok: Math.abs(rate) >= 0.0001,
+      note: 'Kalshi treats |funding rate| < 0.01% as zero; such events must not produce a payment.',
+    });
+
+    const failed = checks.filter((c) => c.ok === false);
+    if (failed.length === 0) fundingFullyVerified += 1;
+    else {
+      results.push({ trade_id: entry.id, run_id: entry.run_id, strategy_id: entry.strategy_id, ticker: entry.ticker, kind: 'funding', checks, failed_checks: failed.map((f) => f.check) });
+      for (const fail of failed) anomalies.push({ trade_id: entry.id, ticker: entry.ticker, check: fail.check, detail: fail });
+    }
+  }
+
   const coverage = {
     trades: trades.length,
     intents: intents.length,
+    funding_entries: funding.length,
+    funding_fully_verified: fundingFullyVerified,
     trades_by_venue: groupCount(trades, (t) => t.venue_id),
     trades_by_strategy: groupCount(trades, (t) => t.strategy_id),
     instruments: (universe.instruments ?? []).length,
@@ -150,6 +248,8 @@ function main() {
   const report = {
     generated_at: nowIso(),
     trades_checked: trades.length,
+    funding_entries_checked: funding.length,
+    funding_fully_verified: fundingFullyVerified,
     fully_verified: results.filter((r) => r.failed_checks.length === 0).length,
     with_anomalies: results.filter((r) => r.failed_checks.length > 0).length,
     anomaly_count: anomalies.length,
@@ -161,14 +261,15 @@ function main() {
     results: results.slice(-300),
     methodology: [
       'Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.',
-      'A trade is only "fully verified" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula, and its instrument is still published with its own provenance.',
+      'A trade is only "fully verified" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.',
+      'Every perps funding payment is re-read from data/ledger/funding.jsonl and re-derived from the exchange-published mark price, funding rate and the position side, with the funding-rate payload hash matched to the run that applied it.',
       'Simulated maker fills are counted separately and are never presented as observed executions.',
       'Anomalies are reported, never silently corrected.',
     ],
   };
 
   writeJson(`${paths.verification}/report.json`, report);
-  console.log(`verification: ${report.fully_verified}/${report.trades_checked} trades fully verified, ${report.anomaly_count} anomalies`);
+  console.log(`verification: ${report.fully_verified}/${report.trades_checked} trades fully verified, ${fundingFullyVerified}/${funding.length} funding entries verified, ${report.anomaly_count} anomalies`);
   for (const anomaly of anomalies.slice(0, 15)) console.log(`  - ${anomaly.ticker}: ${anomaly.check}`);
 }
 

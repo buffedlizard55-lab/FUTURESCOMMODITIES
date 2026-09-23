@@ -195,15 +195,25 @@ export function buildKalshiPerpInstruments({ marginMarkets, provenance }) {
 
 /* ------------------------------------------------------------ MOEX */
 
+const MOEX_MARKET_TYPE_BY_SECTOR = {
+  commodity: 'Exchange-listed commodity future',
+  index: 'Exchange-listed equity index future',
+  rate: 'Exchange-listed interest rate future',
+  fx: 'Exchange-listed FX future',
+  crypto: 'Exchange-listed crypto future',
+};
+
 export function buildMoexInstrument({ row, classification, quote, valuation, provenance, listing, description = null }) {
   const instrumentId = `moex:${row.SECID}`;
   const descriptionFields = description?.fields ?? null;
+  const sector = classification.sector ?? 'commodity';
   return {
     instrument_id: instrumentId,
     venue: 'moex_forts',
     venue_name: 'Moscow Exchange (MOEX) FORTS',
     kind: 'future',
-    market_type_label: 'Exchange-listed commodity future',
+    sector,
+    market_type_label: MOEX_MARKET_TYPE_BY_SECTOR[sector] ?? 'Exchange-listed future',
     ticker: row.SECID,
     title: row.SHORTNAME ?? null,
     commodity: classification.commodity,

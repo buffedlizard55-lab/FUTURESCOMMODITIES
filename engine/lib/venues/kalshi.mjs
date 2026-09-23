@@ -36,7 +36,21 @@ export class KalshiClient {
 
   async request(path, { note = null, expect = 'json', allowFallback = true } = {}) {
     if (this.requests >= this.maxRequests) {
-      throw new Error(`request budget exhausted (${this.maxRequests}) before ${path}`);
+      // A budget overrun degrades the venue instead of crashing the whole tick: every caller
+      // already handles res.ok === false by recording the step as degraded.
+      return {
+        ok: false,
+        status: null,
+        json: null,
+        text: null,
+        provenance: {
+          url: `${this.host}${path}`,
+          http_status: null,
+          ok: false,
+          error: `request budget exhausted (${this.maxRequests}) before ${path}`,
+          retrieved_at: new Date().toISOString(),
+        },
+      };
     }
     const wait = this.spacingMs - (Date.now() - this.lastRequestAt);
     if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
@@ -141,6 +155,70 @@ export class KalshiClient {
       }
     }
     return { ok: false, path: null, tried, candles: [], provenance: null };
+  }
+
+  /**
+   * Finalised funding events for a perpetual market. Official, keyless endpoint
+   * `GET /margin/funding_rates/historical` (docs.kalshi.com "Get Historical Funding Rates",
+   * perps REST API, `security: []` in the published OpenAPI spec). Each entry is
+   * exchange-published: `funding_time` (RFC3333), `funding_rate` (decimal fraction for the
+   * 8-hour period), `mark_price` (fixed-point dollars). Funding is applied at 12:00 AM /
+   * 8:00 AM / 4:00 PM ET per the official contract specifications.
+   */
+  async fundingRatesHistorical(ticker, { startTs = null, endTs = null } = {}) {
+    const qs = new URLSearchParams();
+    if (ticker) qs.set('ticker', ticker);
+    if (startTs != null) qs.set('start_ts', String(startTs));
+    if (endTs != null) qs.set('end_ts', String(endTs));
+    const res = await this.request(`/margin/funding_rates/historical?${qs.toString()}`, { note: `Kalshi perps historical funding rates for ${ticker}` });
+    if (!res.ok || !res.json) return { ok: false, rates: [], provenance: res.provenance };
+    return { ok: true, rates: res.json.funding_rates ?? [], provenance: res.provenance };
+  }
+
+  /**
+   * Estimated funding rate for the in-progress 8-hour period. Official, keyless endpoint
+   * `GET /margin/funding_rates/estimate` (docs.kalshi.com "Get Funding Rate Estimate",
+   * `security: []`). Informational: the simulation settles funding from the *finalised*
+   * historical events, not from estimates.
+   */
+  async fundingRateEstimate(ticker) {
+    const res = await this.request(`/margin/funding_rates/estimate?ticker=${encodeURIComponent(ticker)}`, { note: `Kalshi perps funding rate estimate for ${ticker}` });
+    if (!res.ok || !res.json) return { ok: false, estimate: null, provenance: res.provenance };
+    return { ok: true, estimate: res.json, provenance: res.provenance };
+  }
+
+  /**
+   * Daily candlesticks for many markets in one request (official endpoint
+   * `GET /markets/candlesticks`, "Batch Get Market Candlesticks", docs.kalshi.com,
+   * Trade API Manual Endpoints v3.30.0, no authentication).
+   *
+   * Verified against the official OpenAPI definition on 2026-09-22:
+   *   - up to 100 market tickers per request (comma-separated `market_tickers`);
+   *   - up to 10,000 candlesticks returned per response across all markets, so a
+   *     90-day daily window (<= 90 candles per market) stays under the cap at 100 markets;
+   *   - the response groups candlesticks by `market_ticker`; a market that is absent from
+   *     the response is reported as missing rather than assumed empty.
+   */
+  async candlesticksBatch({ marketTickers, startTs, endTs, periodInterval = 1440, batchSize = 100 }) {
+    const byMarket = {};
+    let provenance = null;
+    const tickers = [...new Set(marketTickers)];
+    for (let i = 0; i < tickers.length; i += batchSize) {
+      const chunk = tickers.slice(i, i + batchSize);
+      const qs = new URLSearchParams({
+        market_tickers: chunk.join(','),
+        start_ts: String(startTs),
+        end_ts: String(endTs),
+        period_interval: String(periodInterval),
+      });
+      const res = await this.request(`/markets/candlesticks?${qs.toString()}`, { note: `Kalshi batch candlesticks for ${chunk.length} markets` });
+      if (!res.ok || !res.json) return { ok: false, byMarket, provenance: res.provenance, missing: tickers.slice(i) };
+      provenance = res.provenance;
+      for (const entry of res.json.markets ?? []) {
+        byMarket[entry.market_ticker] = entry.candlesticks ?? [];
+      }
+    }
+    return { ok: true, byMarket, provenance, missing: [] };
   }
 
   /** Perpetual futures (official /margin namespace). */

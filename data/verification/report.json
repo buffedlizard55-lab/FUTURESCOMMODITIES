@@ -109,6 +109,8 @@
   ],
   "anomaly_count": 10,
   "coverage": {
+    "funding_entries": 0,
+    "funding_fully_verified": 0,
     "instruments": 74,
     "instruments_by_venue": {
       "kalshi": 45,
@@ -145,10 +147,13 @@
     "unclassified_series": 1
   },
   "fully_verified": 34,
-  "generated_at": "2026-09-22T23:03:54.333Z",
+  "funding_entries_checked": 0,
+  "funding_fully_verified": 0,
+  "generated_at": "2026-09-23T00:30:32.673Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
-    "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula, and its instrument is still published with its own provenance.",
+    "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.",
+    "Every perps funding payment is re-read from data/ledger/funding.jsonl and re-derived from the exchange-published mark price, funding rate and the position side, with the funding-rate payload hash matched to the run that applied it.",
     "Simulated maker fills are counted separately and are never presented as observed executions.",
     "Anomalies are reported, never silently corrected."
   ],
