@@ -7,16 +7,16 @@
     },
     "by_commodity": {
       "Cocoa": {
-        "fees_usd": 16.451888,
-        "realized_pnl_usd": 68.116876,
-        "slippage_usd": 340.45,
-        "trades": 27
+        "fees_usd": 18.937118,
+        "realized_pnl_usd": 63.643458,
+        "slippage_usd": 357.45,
+        "trades": 31
       },
       "Orange Juice (ORANGE)": {
-        "fees_usd": 4.600237,
-        "realized_pnl_usd": -37.094373,
-        "slippage_usd": 0.353,
-        "trades": 17
+        "fees_usd": 5.874323,
+        "realized_pnl_usd": -53.705866,
+        "slippage_usd": 0.453,
+        "trades": 21
       },
       "Raw Sugar (SUGR)": {
         "fees_usd": 1.646191,
@@ -37,23 +37,23 @@
         "trades": 4
       }
     },
-    "closed_trades": 32,
+    "closed_trades": 36,
     "open_position_marks": [
       {
         "contracts": 85,
-        "entry_price": 497.4,
+        "entry_price": 498.4,
         "instrument_id": "moex:CCG7",
-        "mark_price": 497.6,
+        "mark_price": 498.5,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "CCG7",
-        "unrealized_pnl_usd": -1.988188
+        "unrealized_pnl_usd": -0.994094
       },
       {
         "contracts": 85,
-        "entry_price": 478.7,
+        "entry_price": 479.7,
         "instrument_id": "moex:CCX6",
-        "mark_price": 478.6,
+        "mark_price": 479.6,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCX6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "ticker": "CCX6",
@@ -61,27 +61,27 @@
       },
       {
         "contracts": 1,
-        "entry_price": 1.601,
+        "entry_price": 1.595,
         "instrument_id": "moex:OJF7",
-        "mark_price": 1.606,
+        "mark_price": 1.602,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/OJF7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "OJF7",
-        "unrealized_pnl_usd": -0.491584
+        "unrealized_pnl_usd": -0.688217
       },
       {
         "contracts": 31,
-        "entry_price": 1.536,
+        "entry_price": 1.534,
         "instrument_id": "moex:OJX6",
-        "mark_price": 1.534,
+        "mark_price": 1.531,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/OJX6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "ticker": "OJX6",
-        "unrealized_pnl_usd": -6.095636
+        "unrealized_pnl_usd": -9.143454
       }
     ],
     "trades_by_venue": {
-      "moex_forts": 64
+      "moex_forts": 72
     },
     "worst_closed_trade": {
       "pnl_usd": -245.827404,
@@ -93,14 +93,14 @@
   "blocked_reasons": {
     "no_verified_quote": 1
   },
-  "closed_trades": 28,
+  "closed_trades": 32,
   "disabled_reason": null,
   "display_name": "Calendar Carry",
   "enabled": true,
-  "entries": 32,
-  "equity_usd": 100028.455578,
-  "exits": 32,
-  "fees_paid_usd": 22.955347,
+  "entries": 36,
+  "equity_usd": 100001.360993,
+  "exits": 36,
+  "fees_paid_usd": 26.714663,
   "market_type": "Exchange-listed commodity future",
   "open_positions": 4,
   "origin": {
@@ -109,30 +109,30 @@
     "status": "structural - measured, not forecast"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0.0285,
+  "return_pct": 0.0014,
   "rules": {
     "entry": "Annualised calendar spread >= 12% after measured round-trip fees.",
     "exit": "Exit when the annualised spread compresses below 4%, or when either contract is within 5 days of expiry.",
     "sizing": "Target notional per leg, capped by both contracts published liquidity."
   },
-  "slippage_paid_usd": 8201.943,
+  "slippage_paid_usd": 8219.043,
   "strategy_id": "moex-calendar-carry",
   "thesis": "Buy the near expiry and sell the far expiry (or the reverse) whenever the annualised spread between the official mid prices exceeds the exchange published round-trip fee converted at the official USD/RUB rate. Both legs are real orders with real fees.",
   "traded_market_types": [
     "Exchange-listed commodity future"
   ],
-  "trades": 64,
-  "unrealized_pnl_usd": -9.569501,
+  "trades": 72,
+  "unrealized_pnl_usd": -11.819859,
   "username": "@calendar-carry",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "64 ledger records so far: 5 distinct commodity exposures across moex_forts.",
-    "Closed-trade P&L is 56.71 USD against 22.96 USD of fees and 8201.94 USD of measured slippage against the mid.",
+    "72 ledger records so far: 5 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 35.62 USD against 26.71 USD of fees and 8219.04 USD of measured slippage against the mid.",
     "Best closed trade: CCX6 at 249.510501 USD (calendar_carry_review).",
     "Worst closed trade: CCG7 at -245.827404 USD (calendar_carry_review).",
-    "4 open positions carry verified marks totalling -9.57 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "4 open positions carry verified marks totalling -11.82 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: no_verified_quote (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
