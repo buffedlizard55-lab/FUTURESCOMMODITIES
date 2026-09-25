@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T23:59:48.600Z",
+  "generated_at": "2026-09-25T04:45:29.400Z",
   "note": "Resting maker orders. A fill is recorded only when a later snapshot shows the market trading through the resting price, and the fill is flagged as modelled.",
   "orders": [
     {
@@ -1368,6 +1368,7 @@
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 100,
       "expires_at": "2026-09-25T05:59:46.849Z",
       "id": "a3ef55dfdac2d5a45ec0",
@@ -1395,13 +1396,14 @@
         "resting_price": 0.05,
         "spread": 0.03
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 3-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
       "ticker": "KXAAAGASMINCA-26DEC31-3.90",
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 141,
       "expires_at": "2026-09-25T05:59:46.849Z",
       "id": "e1f434928eae9516a161",
@@ -1429,10 +1431,112 @@
         "resting_price": 0.03,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
       "ticker": "KXAAAGASMINCA-26DEC31-3.80",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 59,
+      "expires_at": "2026-09-25T10:45:24.421Z",
+      "id": "3b7e835eccb128eb2bff",
+      "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T5500",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-25T04:45:24.421Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.96,
+        "best_no_bid": 0.9,
+        "best_yes_ask": 0.1,
+        "best_yes_bid": 0.04,
+        "mid": 0.07,
+        "retrieved_at": "2026-09-25T04:45:02.019Z",
+        "sha256": "e6234227f13519eeb2c561dd8d13ccfd8fabf5e90dd159c787edba514fe11c2e",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T5500/orderbook?depth=20",
+        "spread": 0.06
+      },
+      "remaining": 59,
+      "resting_price": 0.05,
+      "signal": {
+        "best_yes_ask": 0.1,
+        "best_yes_bid": 0.04,
+        "name": "spread_capture",
+        "resting_price": 0.05,
+        "spread": 0.06
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 6-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDDIRY-26DEC31H1700-T5500",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 84,
+      "expires_at": "2026-09-25T10:45:24.421Z",
+      "id": "452861f2cab07be8277f",
+      "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T5300",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-25T04:45:24.421Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.93,
+        "best_no_bid": 0.9,
+        "best_yes_ask": 0.1,
+        "best_yes_bid": 0.07,
+        "mid": 0.085,
+        "retrieved_at": "2026-09-25T04:45:02.274Z",
+        "sha256": "7fddfb0314aee78dd8255d9818e8cfc659b0259512547f8d96c627b7f03e091e",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T5300/orderbook?depth=20",
+        "spread": 0.03
+      },
+      "remaining": 84,
+      "resting_price": 0.08,
+      "signal": {
+        "best_yes_ask": 0.1,
+        "best_yes_bid": 0.07,
+        "name": "spread_capture",
+        "resting_price": 0.08,
+        "spread": 0.03
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 3-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDDIRY-26DEC31H1700-T5300",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 202,
+      "expires_at": "2026-09-25T10:45:24.421Z",
+      "id": "f3be1d291c9ab795b7d0",
+      "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T5200",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-25T04:45:24.421Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.9,
+        "best_no_bid": 0.87,
+        "best_yes_ask": 0.13,
+        "best_yes_bid": 0.1,
+        "mid": 0.115,
+        "retrieved_at": "2026-09-25T04:45:02.405Z",
+        "sha256": "01519af617c3238642f8a8f8240cc2d11b6907d2e4864f6219a41bb434b7564f",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T5200/orderbook?depth=20",
+        "spread": 0.03
+      },
+      "remaining": 202,
+      "resting_price": 0.11,
+      "signal": {
+        "best_yes_ask": 0.13,
+        "best_yes_bid": 0.1,
+        "name": "spread_capture",
+        "resting_price": 0.11,
+        "spread": 0.03
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 3-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDDIRY-26DEC31H1700-T5200",
       "username": "@spread-hunter"
     }
   ]

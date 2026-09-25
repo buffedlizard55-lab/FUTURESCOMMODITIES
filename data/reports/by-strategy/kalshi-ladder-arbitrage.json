@@ -20,6 +20,12 @@
         "slippage_usd": 461.520776,
         "trades": 18
       },
+      "Gold": {
+        "fees_usd": 0.91,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.8,
+        "trades": 2
+      },
       "Natural Gas": {
         "fees_usd": 0.31,
         "realized_pnl_usd": 0,
@@ -222,6 +228,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 20,
+        "entry_price": 0.2475,
+        "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4600",
+        "mark_price": 0.2,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T4600/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDDIRY-26DEC31H1700-T4600",
+        "unrealized_pnl_usd": -0.95
+      },
+      {
+        "contracts": 50,
+        "entry_price": 0.76,
+        "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4700",
+        "mark_price": 0.75,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T4700/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDDIRY-26DEC31H1700-T4700",
+        "unrealized_pnl_usd": -0.5
+      },
+      {
         "contracts": 60,
         "entry_price": 0.061667,
         "instrument_id": "kalshi:KXNATGASW-26SEP2517-T3.899",
@@ -303,25 +329,25 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 36
+      "kalshi": 38
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 14,
+  "blocked_orders": 20,
   "blocked_reasons": {
     "already_holding": 2,
-    "settlement_result_not_published": 12
+    "settlement_result_not_published": 18
   },
   "closed_trades": 10,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
-  "entries": 36,
+  "entries": 38,
   "equity_usd": 99968.85,
   "exits": 0,
-  "fees_paid_usd": 21.54,
+  "fees_paid_usd": 22.45,
   "market_type": "Kalshi event contract",
-  "open_positions": 26,
+  "open_positions": 28,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
@@ -334,22 +360,23 @@
     "exit": "Held to settlement (the two legs converge by construction).",
     "sizing": "Target notional per leg, capped by depth."
   },
-  "slippage_paid_usd": 492.58067,
+  "slippage_paid_usd": 493.38067,
   "strategy_id": "kalshi-ladder-arbitrage",
   "thesis": "Within one series and one expiry, the YES price must fall as the strike rises (for greater-than markets). When the published book violates that ordering by more than the configured tolerance, buy the underpriced YES leg and the NO of the overpriced leg.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 36,
-  "unrealized_pnl_usd": 0,
+  "trades": 38,
+  "unrealized_pnl_usd": -1.45,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "36 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 21.54 USD of fees and 492.58 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: already_holding (2), settlement_result_not_published (12).",
+    "38 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 22.45 USD of fees and 493.38 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -1.45 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: already_holding (2), settlement_result_not_published (18).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

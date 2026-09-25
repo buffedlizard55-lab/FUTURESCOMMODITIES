@@ -13,6 +13,12 @@
         "realized_pnl_usd": 0,
         "slippage_usd": 0.57,
         "trades": 1
+      },
+      "Gold": {
+        "fees_usd": 0.32,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.5,
+        "trades": 1
       }
     },
     "closed_trades": 0,
@@ -21,11 +27,11 @@
         "contracts": 57,
         "entry_price": 0.07,
         "instrument_id": "kalshi:KXAAAGASMINCA-26DEC31-4.10",
-        "mark_price": 0.05,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINCA-26DEC31-4.10/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMINCA-26DEC31-4.10",
-        "unrealized_pnl_usd": -1.14
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 172,
@@ -36,10 +42,20 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXCOPPERMON-26SEP3017-T7.71",
         "unrealized_pnl_usd": null
+      },
+      {
+        "contracts": 50,
+        "entry_price": 0.1,
+        "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T5400",
+        "mark_price": 0.08,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T5400/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDDIRY-26DEC31H1700-T5400",
+        "unrealized_pnl_usd": -1
       }
     ],
     "trades_by_venue": {
-      "kalshi": 2
+      "kalshi": 3
     },
     "worst_closed_trade": null
   },
@@ -49,12 +65,12 @@
   "disabled_reason": null,
   "display_name": "Cheap Momentum",
   "enabled": true,
-  "entries": 2,
+  "entries": 3,
   "equity_usd": 99993.070004,
   "exits": 0,
-  "fees_paid_usd": 0.81,
+  "fees_paid_usd": 1.13,
   "market_type": "Kalshi event contract",
-  "open_positions": 2,
+  "open_positions": 3,
   "origin": {
     "claim": "Cheap YES contracts that are already trending up can keep trending when the underlying commodity is moving, giving convex payoffs; this is the explicit counter-hypothesis to the longshot fade.",
     "kind": "market_structure",
@@ -67,22 +83,22 @@
     "exit": "Exit when 5-day momentum turns negative or the market closes.",
     "sizing": "Target notional, capped by depth."
   },
-  "slippage_paid_usd": 4.369996,
+  "slippage_paid_usd": 4.869996,
   "strategy_id": "kalshi-cheap-momentum",
   "thesis": "Buy YES at 10 cents or less only when the series own official candle history is trending up. This strategy is deliberately the opposite bet to @fade-the-crowd, so the leaderboard measures which view of cheap contracts is right.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 2,
-  "unrealized_pnl_usd": -1.14,
+  "trades": 3,
+  "unrealized_pnl_usd": -1,
   "username": "@tail-rider",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "2 ledger records so far: 2 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 0.81 USD of fees and 4.37 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -1.14 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "3 ledger records so far: 3 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 1.13 USD of fees and 4.87 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -1.00 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
