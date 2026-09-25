@@ -15,10 +15,10 @@
         "trades": 1
       },
       "Gasoline (US retail average)": {
-        "fees_usd": 4.23,
+        "fees_usd": 4.27,
         "realized_pnl_usd": 0,
-        "slippage_usd": 3.50246,
-        "trades": 5
+        "slippage_usd": 3.53996,
+        "trades": 6
       },
       "Gold": {
         "fees_usd": 10.4,
@@ -64,6 +64,16 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMAX-26DEC31-5.20",
         "unrealized_pnl_usd": null
+      },
+      {
+        "contracts": 3,
+        "entry_price": 0.187,
+        "instrument_id": "kalshi:KXAAAGASMAXNY-26DEC31-5.40",
+        "mark_price": 0.162,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMAXNY-26DEC31-5.40/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASMAXNY-26DEC31-5.40",
+        "unrealized_pnl_usd": -0.075
       },
       {
         "contracts": 70,
@@ -129,11 +139,11 @@
         "contracts": 135,
         "entry_price": 0.37,
         "instrument_id": "kalshi:KXSILVERD-26SEP2817-T63.75",
-        "mark_price": 0.35,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERD-26SEP2817-T63.75/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXSILVERD-26SEP2817-T63.75",
-        "unrealized_pnl_usd": -2.7
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 1,
@@ -147,7 +157,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 14
+      "kalshi": 15
     },
     "worst_closed_trade": null
   },
@@ -157,12 +167,12 @@
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 14,
+  "entries": 15,
   "equity_usd": 99980.310055,
   "exits": 0,
-  "fees_paid_usd": 18.1,
+  "fees_paid_usd": 18.14,
   "market_type": "Kalshi event contract",
-  "open_positions": 11,
+  "open_positions": 12,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -181,22 +191,22 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 15.02263,
+  "slippage_paid_usd": 15.06013,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 14,
-  "unrealized_pnl_usd": -2.7,
+  "trades": 15,
+  "unrealized_pnl_usd": -0.075,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "14 ledger records so far: 5 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 18.10 USD of fees and 15.02 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -2.70 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "15 ledger records so far: 5 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 18.14 USD of fees and 15.06 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -0.07 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
