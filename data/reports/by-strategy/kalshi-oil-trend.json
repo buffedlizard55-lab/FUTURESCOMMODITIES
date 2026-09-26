@@ -8,6 +8,12 @@
         "slippage_usd": 9.761896,
         "trades": 5
       },
+      "Natural Gas": {
+        "fees_usd": 0.04,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.15,
+        "trades": 1
+      },
       "WTI Crude Oil": {
         "fees_usd": 3.62,
         "realized_pnl_usd": 0,
@@ -68,6 +74,16 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 2,
+        "entry_price": 0.65,
+        "instrument_id": "kalshi:KXNGASMIN-26DEC31-N2.40",
+        "mark_price": 0.5,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNGASMIN-26DEC31-N2.40/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXNGASMIN-26DEC31-N2.40",
+        "unrealized_pnl_usd": -0.3
+      },
+      {
         "contracts": 132,
         "entry_price": 0.8,
         "instrument_id": "kalshi:KXWTI-26SEP2514-T94.99",
@@ -89,24 +105,24 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 7
+      "kalshi": 8
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 3,
+  "blocked_orders": 4,
   "blocked_reasons": {
-    "settlement_result_not_published": 3
+    "settlement_result_not_published": 4
   },
   "closed_trades": 0,
   "disabled_reason": null,
   "display_name": "Oil Trend Rider",
   "enabled": true,
-  "entries": 7,
+  "entries": 8,
   "equity_usd": 99996.89,
   "exits": 0,
-  "fees_paid_usd": 6.51,
+  "fees_paid_usd": 6.55,
   "market_type": "Kalshi event contract",
-  "open_positions": 7,
+  "open_positions": 8,
   "origin": {
     "claim": "Energy event contracts follow the underlying crude complex with a lag; the exchange own candle history is a verified, free proxy for that trend.",
     "kind": "market_structure",
@@ -119,22 +135,23 @@
     "exit": "Exit when momentum flips sign or the market closes.",
     "sizing": "Target notional, capped by depth."
   },
-  "slippage_paid_usd": 15.331878,
+  "slippage_paid_usd": 15.481878,
   "strategy_id": "kalshi-oil-trend",
   "thesis": "Trade the Kalshi WTI/Brent ladders in the direction of the verified trend in the same series own official candle history, taking the side whose price is closest to a coin flip so that a correct directional call pays multiples.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 7,
-  "unrealized_pnl_usd": 0,
+  "trades": 8,
+  "unrealized_pnl_usd": -0.3,
   "username": "@barrel-rider",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "7 ledger records so far: 2 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 6.51 USD of fees and 15.33 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: settlement_result_not_published (3).",
+    "8 ledger records so far: 3 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 6.55 USD of fees and 15.48 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -0.30 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (4).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
