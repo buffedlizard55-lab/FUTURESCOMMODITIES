@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-26T12:08:43.257Z",
+  "generated_at": "2026-09-26T16:39:01.465Z",
   "note": "Resting maker orders. A fill is recorded only when a later snapshot shows the market trading through the resting price, and the fill is flagged as modelled.",
   "orders": [
     {
@@ -2068,6 +2068,7 @@
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 50,
       "expires_at": "2026-09-26T18:08:37.474Z",
       "id": "9c142e8a3f8072f73281",
@@ -2095,13 +2096,14 @@
         "resting_price": 0.06,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Brent Crude Oil; maker fee multiplier is zero for standard series.",
       "ticker": "KXBRENTMON-26SEP3017-T113.99",
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 50,
       "expires_at": "2026-09-26T18:08:37.475Z",
       "id": "9408b25fed33e38b84ba",
@@ -2129,13 +2131,14 @@
         "resting_price": 0.06,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Brent Crude Oil; maker fee multiplier is zero for standard series.",
       "ticker": "KXBRENTMON-26SEP3017-T111.99",
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 786,
       "expires_at": "2026-09-26T18:08:37.475Z",
       "id": "aa2e1cd4ded45650ea28",
@@ -2163,10 +2166,78 @@
         "resting_price": 0.44,
         "spread": 0.06
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 6-cent spread on Brent Crude Oil; maker fee multiplier is zero for standard series.",
       "ticker": "KXBRENTMON-26SEP3017-T99.99",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 4166,
+      "expires_at": "2026-09-26T22:38:59.073Z",
+      "id": "dfea78db92e4012f65ae",
+      "instrument_id": "kalshi:KXAAAGASDFL-26SEP27-4.4050",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-26T16:38:59.073Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.99,
+        "best_no_bid": 0.85,
+        "best_yes_ask": 0.15,
+        "best_yes_bid": 0.01,
+        "mid": 0.08,
+        "retrieved_at": "2026-09-26T16:38:40.553Z",
+        "sha256": "ca975a79615c84dcd78f7a5b622d5dda1763d13bee515fd284f4af4eba63439b",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDFL-26SEP27-4.4050/orderbook?depth=20",
+        "spread": 0.14
+      },
+      "remaining": 4166,
+      "resting_price": 0.02,
+      "signal": {
+        "best_yes_ask": 0.15,
+        "best_yes_bid": 0.01,
+        "name": "spread_capture",
+        "resting_price": 0.02,
+        "spread": 0.14
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 14-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
+      "ticker": "KXAAAGASDFL-26SEP27-4.4050",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 1,
+      "expires_at": "2026-09-26T22:38:59.073Z",
+      "id": "2070364f3588b65d8681",
+      "instrument_id": "kalshi:KXCOPPERMON-26SEP3017-T7.11",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-26T16:38:59.073Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.99,
+        "best_no_bid": 0.88,
+        "best_yes_ask": 0.12,
+        "best_yes_bid": 0.01,
+        "mid": 0.065,
+        "retrieved_at": "2026-09-26T16:38:45.500Z",
+        "sha256": "ee4df009ae87b084a674d9959b89cd3296c1b21fb042fdace724619e05de4cd6",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26SEP3017-T7.11/orderbook?depth=20",
+        "spread": 0.11
+      },
+      "remaining": 1,
+      "resting_price": 0.02,
+      "signal": {
+        "best_yes_ask": 0.12,
+        "best_yes_bid": 0.01,
+        "name": "spread_capture",
+        "resting_price": 0.02,
+        "spread": 0.11
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 11-cent spread on Copper; maker fee multiplier is zero for standard series.",
+      "ticker": "KXCOPPERMON-26SEP3017-T7.11",
       "username": "@spread-hunter"
     }
   ]
