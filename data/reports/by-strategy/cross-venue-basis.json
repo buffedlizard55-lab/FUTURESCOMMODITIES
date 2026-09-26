@@ -43,11 +43,11 @@
         "contracts": 236,
         "entry_price": 8.4138,
         "instrument_id": "kalshiperp:KXBTCPERP",
-        "mark_price": 8.4145,
+        "mark_price": 8.4013,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "ticker": "KXBTCPERP",
-        "unrealized_pnl_usd": 0.1652
+        "unrealized_pnl_usd": -2.95
       },
       {
         "contracts": 168,
@@ -89,7 +89,7 @@
   "display_name": "Cross-Venue Basis",
   "enabled": true,
   "entries": 6,
-  "equity_usd": 100202.567865,
+  "equity_usd": 100199.452665,
   "exits": 3,
   "fees_paid_usd": 32.543503,
   "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
@@ -114,7 +114,7 @@
     "status": "structural - two real legs on two real venues, unit-normalised from official fields"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0.2026,
+  "return_pct": 0.1995,
   "rules": {
     "entry": "Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).",
     "exit": "Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.",
@@ -127,7 +127,7 @@
     "Cross-venue: Kalshi perpetual future vs exchange-listed future"
   ],
   "trades": 9,
-  "unrealized_pnl_usd": 343.212778,
+  "unrealized_pnl_usd": 340.097578,
   "username": "@basis-hunter",
   "venues": [
     "kalshi_margin",
@@ -138,7 +138,7 @@
     "Closed-trade P&L is -108.09 USD against 32.54 USD of fees and 507.30 USD of measured slippage against the mid.",
     "Best closed trade: KXGOLDPERP at -0.424616 USD (basis_leg_unavailable).",
     "Worst closed trade: ETZ6 at -101.103614 USD (unit_reconciliation_failed).",
-    "3 open positions carry verified marks totalling 343.21 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "3 open positions carry verified marks totalling 340.10 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: no_verified_quote (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
