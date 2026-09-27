@@ -43,31 +43,31 @@
         "contracts": 236,
         "entry_price": 8.4138,
         "instrument_id": "kalshiperp:KXBTCPERP",
-        "mark_price": 8.4877,
+        "mark_price": 8.4488,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "ticker": "KXBTCPERP",
-        "unrealized_pnl_usd": 17.4404
+        "unrealized_pnl_usd": 8.26
       },
       {
         "contracts": 168,
         "entry_price": 84914,
         "instrument_id": "moex:BTV6",
-        "mark_price": 85617,
+        "mark_price": 85199,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BTV6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "BTV6",
-        "unrealized_pnl_usd": -117.602058
+        "unrealized_pnl_usd": -47.67651
       },
       {
         "contracts": 4,
         "entry_price": 4432.8,
         "instrument_id": "moex:GDZ6",
-        "mark_price": 4348,
+        "mark_price": 4350,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "GDZ6",
-        "unrealized_pnl_usd": 339.2
+        "unrealized_pnl_usd": 331.2
       }
     ],
     "trades_by_venue": {
@@ -89,7 +89,7 @@
   "display_name": "Cross-Venue Basis",
   "enabled": true,
   "entries": 6,
-  "equity_usd": 100098.393429,
+  "equity_usd": 100151.138577,
   "exits": 3,
   "fees_paid_usd": 32.543503,
   "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
@@ -114,7 +114,7 @@
     "status": "structural - two real legs on two real venues, unit-normalised from official fields"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0.0984,
+  "return_pct": 0.1511,
   "rules": {
     "entry": "Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).",
     "exit": "Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.",
@@ -127,7 +127,7 @@
     "Cross-venue: Kalshi perpetual future vs exchange-listed future"
   ],
   "trades": 9,
-  "unrealized_pnl_usd": 239.038342,
+  "unrealized_pnl_usd": 291.78349,
   "username": "@basis-hunter",
   "venues": [
     "kalshi_margin",
@@ -138,7 +138,7 @@
     "Closed-trade P&L is -108.09 USD against 32.54 USD of fees and 507.30 USD of measured slippage against the mid.",
     "Best closed trade: KXGOLDPERP at -0.424616 USD (basis_leg_unavailable).",
     "Worst closed trade: ETZ6 at -101.103614 USD (unit_reconciliation_failed).",
-    "3 open positions carry verified marks totalling 239.04 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "3 open positions carry verified marks totalling 291.78 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: no_verified_quote (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
