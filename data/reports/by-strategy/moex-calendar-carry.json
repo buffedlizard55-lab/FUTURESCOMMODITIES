@@ -19,10 +19,10 @@
         "trades": 69
       },
       "Raw Sugar (SUGR)": {
-        "fees_usd": 5.434274,
-        "realized_pnl_usd": -65.615461,
-        "slippage_usd": 4.65,
-        "trades": 30
+        "fees_usd": 5.662136,
+        "realized_pnl_usd": -71.481104,
+        "slippage_usd": 5.12,
+        "trades": 34
       },
       "Sugar": {
         "fees_usd": 0.183184,
@@ -31,33 +31,33 @@
         "trades": 8
       },
       "Wheat": {
-        "fees_usd": 13.261134,
-        "realized_pnl_usd": -149.902938,
-        "slippage_usd": 14235,
-        "trades": 46
+        "fees_usd": 15.005725,
+        "realized_pnl_usd": -176.979889,
+        "slippage_usd": 15380,
+        "trades": 50
       }
     },
-    "closed_trades": 127,
+    "closed_trades": 131,
     "open_position_marks": [
       {
         "contracts": 19,
         "entry_price": 499.64115322,
         "instrument_id": "moex:CCG7",
-        "mark_price": 500.2,
+        "mark_price": 499.6,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "CCG7",
-        "unrealized_pnl_usd": -1.253611
+        "unrealized_pnl_usd": 0.092315
       },
       {
         "contracts": 11,
         "entry_price": 1.53362673,
         "instrument_id": "moex:OJX6",
-        "mark_price": 1.531,
+        "mark_price": 1.532,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/OJX6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "ticker": "OJX6",
-        "unrealized_pnl_usd": -2.89642
+        "unrealized_pnl_usd": -1.793749
       },
       {
         "contracts": 1,
@@ -73,35 +73,35 @@
         "contracts": 1,
         "entry_price": 32.95,
         "instrument_id": "moex:SAV6",
-        "mark_price": 32.7,
+        "mark_price": 32.76,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SAV6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "ticker": "SAV6",
-        "unrealized_pnl_usd": -2.998819
+        "unrealized_pnl_usd": -2.279103
       },
       {
-        "contracts": 11,
+        "contracts": 14,
         "entry_price": 11010,
         "instrument_id": "moex:W4U6",
         "mark_price": 11000,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/W4U6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "ticker": "W4U6",
-        "unrealized_pnl_usd": -1.298702
+        "unrealized_pnl_usd": -1.652893
       },
       {
         "contracts": 34,
-        "entry_price": 12240,
+        "entry_price": 12270,
         "instrument_id": "moex:W4V6",
         "mark_price": 12300,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/W4V6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "ticker": "W4V6",
-        "unrealized_pnl_usd": -24.085015
+        "unrealized_pnl_usd": -12.042508
       }
     ],
     "trades_by_venue": {
-      "moex_forts": 237
+      "moex_forts": 245
     },
     "worst_closed_trade": {
       "pnl_usd": -245.827404,
@@ -109,19 +109,19 @@
       "ticker": "CCG7"
     }
   },
-  "blocked_orders": 21,
+  "blocked_orders": 23,
   "blocked_reasons": {
-    "insufficient_margin": 7,
+    "insufficient_margin": 9,
     "no_verified_quote": 14
   },
-  "closed_trades": 104,
+  "closed_trades": 108,
   "disabled_reason": null,
   "display_name": "Calendar Carry",
   "enabled": true,
-  "entries": 110,
-  "equity_usd": 99422.979416,
-  "exits": 127,
-  "fees_paid_usd": 85.430995,
+  "entries": 114,
+  "equity_usd": 99402.921,
+  "exits": 131,
+  "fees_paid_usd": 87.403448,
   "market_type": "Exchange-listed commodity future",
   "open_positions": 6,
   "origin": {
@@ -130,31 +130,31 @@
     "status": "structural - measured, not forecast"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.577,
+  "return_pct": -0.5971,
   "rules": {
     "entry": "Annualised calendar spread >= 12% after measured round-trip fees.",
     "exit": "Exit when the annualised spread compresses below 4%, or when either contract is within 5 days of expiry.",
     "sizing": "Target notional per leg, capped by both contracts published liquidity."
   },
-  "slippage_paid_usd": 22870.298,
+  "slippage_paid_usd": 24015.768,
   "strategy_id": "moex-calendar-carry",
   "thesis": "Buy the near expiry and sell the far expiry (or the reverse) whenever the annualised spread between the official mid prices exceeds the exchange published round-trip fee converted at the official USD/RUB rate. Both legs are real orders with real fees.",
   "traded_market_types": [
     "Exchange-listed commodity future"
   ],
-  "trades": 237,
-  "unrealized_pnl_usd": -35.891246,
+  "trades": 245,
+  "unrealized_pnl_usd": -21.034615,
   "username": "@calendar-carry",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "237 ledger records so far: 5 distinct commodity exposures across moex_forts.",
-    "Closed-trade P&L is -500.17 USD against 85.43 USD of fees and 22870.30 USD of measured slippage against the mid.",
+    "245 ledger records so far: 5 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is -533.11 USD against 87.40 USD of fees and 24015.77 USD of measured slippage against the mid.",
     "Best closed trade: CCX6 at 249.510501 USD (calendar_carry_review).",
     "Worst closed trade: CCG7 at -245.827404 USD (calendar_carry_review).",
-    "6 open positions carry verified marks totalling -35.89 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Blocked order attempts and their recorded reasons: no_verified_quote (14), insufficient_margin (7).",
+    "6 open positions carry verified marks totalling -21.03 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: no_verified_quote (14), insufficient_margin (9).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
