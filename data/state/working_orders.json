@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T04:41:48.610Z",
+  "generated_at": "2026-09-28T11:34:44.120Z",
   "note": "Resting maker orders. A fill is recorded only when a later snapshot shows the market trading through the resting price, and the fill is flagged as modelled.",
   "orders": [
     {
@@ -3084,6 +3084,7 @@
     },
     {
       "contracts": 37,
+      "expired_reason": "resting TTL of 6h elapsed without the market trading through the resting price",
       "expires_at": "2026-09-28T10:41:43.353Z",
       "id": "19817920d851c4ecd01a",
       "instrument_id": "kalshi:KXGOLDMON-26SEP3017-T4410.99",
@@ -3110,7 +3111,7 @@
         "resting_price": 0.03,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "expired",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Gold; maker fee multiplier is zero for standard series.",
       "ticker": "KXGOLDMON-26SEP3017-T4410.99",
@@ -3118,6 +3119,7 @@
     },
     {
       "contracts": 203,
+      "expired_reason": "resting TTL of 6h elapsed without the market trading through the resting price",
       "expires_at": "2026-09-28T10:41:43.354Z",
       "id": "360331822f20b12b3834",
       "instrument_id": "kalshi:KXGOLDMON-26SEP3017-T4370.99",
@@ -3144,7 +3146,7 @@
         "resting_price": 0.04,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "expired",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Gold; maker fee multiplier is zero for standard series.",
       "ticker": "KXGOLDMON-26SEP3017-T4370.99",
@@ -3152,6 +3154,7 @@
     },
     {
       "contracts": 258,
+      "expired_reason": "resting TTL of 6h elapsed without the market trading through the resting price",
       "expires_at": "2026-09-28T10:41:43.354Z",
       "id": "b6c66c5e34d0ef76d49c",
       "instrument_id": "kalshi:KXGOLDMON-26SEP3017-T4330.99",
@@ -3178,10 +3181,112 @@
         "resting_price": 0.06,
         "spread": 0.03
       },
-      "status": "resting",
+      "status": "expired",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 3-cent spread on Gold; maker fee multiplier is zero for standard series.",
       "ticker": "KXGOLDMON-26SEP3017-T4330.99",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 658,
+      "expires_at": "2026-09-28T17:34:38.805Z",
+      "id": "17412cd4634b586765b7",
+      "instrument_id": "kalshi:KXGOLDMON-26SEP3017-T4210.99",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-28T11:34:38.805Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.76,
+        "best_no_bid": 0.71,
+        "best_yes_ask": 0.29,
+        "best_yes_bid": 0.24,
+        "mid": 0.265,
+        "retrieved_at": "2026-09-28T11:34:14.818Z",
+        "sha256": "b84f488bc923991d4d7e98d1376445e20258db534c19ad384f60e56f14967e72",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDMON-26SEP3017-T4210.99/orderbook?depth=20",
+        "spread": 0.05
+      },
+      "remaining": 658,
+      "resting_price": 0.25,
+      "signal": {
+        "best_yes_ask": 0.29,
+        "best_yes_bid": 0.24,
+        "name": "spread_capture",
+        "resting_price": 0.25,
+        "spread": 0.05
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 5-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDMON-26SEP3017-T4210.99",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 586,
+      "expires_at": "2026-09-28T17:34:38.805Z",
+      "id": "ff5eab064d73f87e4002",
+      "instrument_id": "kalshi:KXGOLDMON-26SEP3017-T4170.99",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-28T11:34:38.805Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.61,
+        "best_no_bid": 0.58,
+        "best_yes_ask": 0.42,
+        "best_yes_bid": 0.39,
+        "mid": 0.405,
+        "retrieved_at": "2026-09-28T11:34:14.949Z",
+        "sha256": "8a19d3a8ee31f90f34c724c1ecc1b83f062e7726d38d2f70590c2e40333895e3",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDMON-26SEP3017-T4170.99/orderbook?depth=20",
+        "spread": 0.03
+      },
+      "remaining": 586,
+      "resting_price": 0.4,
+      "signal": {
+        "best_yes_ask": 0.42,
+        "best_yes_bid": 0.39,
+        "name": "spread_capture",
+        "resting_price": 0.4,
+        "spread": 0.03
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 3-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDMON-26SEP3017-T4170.99",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 625,
+      "expires_at": "2026-09-28T17:34:38.805Z",
+      "id": "8ead9acce73eb0aea42a",
+      "instrument_id": "kalshi:KXGOLDMON-26SEP3017-T4130.99",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-09-28T11:34:38.805Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.42,
+        "best_no_bid": 0.36,
+        "best_yes_ask": 0.64,
+        "best_yes_bid": 0.58,
+        "mid": 0.61,
+        "retrieved_at": "2026-09-28T11:34:15.077Z",
+        "sha256": "5108ffc11c45a143b5687a69562ca5feabbe6bc8a9bb35032bd285563ba4557d",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDMON-26SEP3017-T4130.99/orderbook?depth=20",
+        "spread": 0.06
+      },
+      "remaining": 625,
+      "resting_price": 0.59,
+      "signal": {
+        "best_yes_ask": 0.64,
+        "best_yes_bid": 0.58,
+        "name": "spread_capture",
+        "resting_price": 0.59,
+        "spread": 0.06
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 6-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDMON-26SEP3017-T4130.99",
       "username": "@spread-hunter"
     }
   ]
