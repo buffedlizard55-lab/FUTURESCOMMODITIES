@@ -2,6 +2,12 @@
   "attribution": {
     "best_closed_trade": null,
     "by_commodity": {
+      "Brent Crude Oil": {
+        "fees_usd": 3.36,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 7.2,
+        "trades": 2
+      },
       "Copper": {
         "fees_usd": 2.71,
         "realized_pnl_usd": 0,
@@ -42,64 +48,24 @@
     "closed_trades": 0,
     "open_position_marks": [
       {
-        "contracts": 1372,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXAAAGASDNY-26SEP30-4.4500",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDNY-26SEP30-4.4500",
-        "unrealized_pnl_usd": null
+        "contracts": 370,
+        "entry_price": 0.05,
+        "instrument_id": "kalshi:KXBRENTMON-26SEP3017-T91.99",
+        "mark_price": 0.04,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXBRENTMON-26SEP3017-T91.99/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXBRENTMON-26SEP3017-T91.99",
+        "unrealized_pnl_usd": -3.7
       },
       {
-        "contracts": 1518,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXAAAGASDNY-26SEP30-4.4550",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDNY-26SEP30-4.4550",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 1450,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXAAAGASDNY-26SEP30-4.4650",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDNY-26SEP30-4.4650",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 1436,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXAAAGASDNY-26SEP30-4.4700",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDNY-26SEP30-4.4700",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 997,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXAAAGASDNY-26SEP30-4.4750",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDNY-26SEP30-4.4750",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 1067,
-        "entry_price": 0.04,
-        "instrument_id": "kalshi:KXAAAGASDWA-26SEP30-5.4900",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDWA-26SEP30-5.4900",
-        "unrealized_pnl_usd": null
+        "contracts": 535,
+        "entry_price": 0.06,
+        "instrument_id": "kalshi:KXBRENTMON-26SEP3017-T93.99",
+        "mark_price": 0.04,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXBRENTMON-26SEP3017-T93.99/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXBRENTMON-26SEP3017-T93.99",
+        "unrealized_pnl_usd": -10.7
       },
       {
         "contracts": 6,
@@ -113,7 +79,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 60
+      "kalshi": 62
     },
     "worst_closed_trade": null
   },
@@ -122,43 +88,44 @@
     "insufficient_depth_within_price_tolerance": 1,
     "settlement_result_not_published": 105
   },
-  "closed_trades": 53,
+  "closed_trades": 59,
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 60,
+  "entries": 62,
   "equity_usd": 99572.130318,
   "exits": 0,
-  "fees_paid_usd": 53.99,
+  "fees_paid_usd": 57.35,
   "market_type": "Kalshi event contract",
-  "open_positions": 7,
+  "open_positions": 3,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test"
   },
-  "realized_pnl_usd": -394.989682,
+  "realized_pnl_usd": -585.319682,
   "return_pct": -0.4279,
   "rules": {
     "entry": "YES mid >= 0.90, spread <= 3 cents, closes within 48 hours.",
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 200.434682,
+  "slippage_paid_usd": 207.634682,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 60,
-  "unrealized_pnl_usd": 0,
+  "trades": 62,
+  "unrealized_pnl_usd": -14.4,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "60 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 53.99 USD of fees and 200.43 USD of measured slippage against the mid.",
+    "62 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 57.35 USD of fees and 207.63 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -14.40 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (1), settlement_result_not_published (105).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
