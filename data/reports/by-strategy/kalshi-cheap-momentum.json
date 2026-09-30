@@ -27,21 +27,21 @@
         "contracts": 100,
         "entry_price": 0.11,
         "instrument_id": "kalshi:KXAAAGASMINCA-26DEC31-4.00",
-        "mark_price": 0.09,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINCA-26DEC31-4.00/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMINCA-26DEC31-4.00",
-        "unrealized_pnl_usd": -2
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 57,
         "entry_price": 0.07,
         "instrument_id": "kalshi:KXAAAGASMINCA-26DEC31-4.10",
-        "mark_price": 0.03,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINCA-26DEC31-4.10/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMINCA-26DEC31-4.10",
-        "unrealized_pnl_usd": -2.28
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 172,
@@ -69,8 +69,10 @@
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 0,
-  "blocked_reasons": {},
+  "blocked_orders": 1,
+  "blocked_reasons": {
+    "settlement_result_not_published": 1
+  },
   "closed_trades": 0,
   "disabled_reason": null,
   "display_name": "Cheap Momentum",
@@ -100,7 +102,7 @@
     "Kalshi event contract"
   ],
   "trades": 4,
-  "unrealized_pnl_usd": -4.28,
+  "unrealized_pnl_usd": 0,
   "username": "@tail-rider",
   "venues": [
     "kalshi"
@@ -108,7 +110,7 @@
   "what_it_means": [
     "4 ledger records so far: 3 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 1.82 USD of fees and 5.87 USD of measured slippage against the mid.",
-    "2 open positions carry verified marks totalling -4.28 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
