@@ -39,10 +39,10 @@
         "trades": 10
       },
       "WTI Crude Oil": {
-        "fees_usd": 12.6,
+        "fees_usd": 12.75,
         "realized_pnl_usd": 0,
-        "slippage_usd": 90.155168,
-        "trades": 15
+        "slippage_usd": 90.587058,
+        "trades": 17
       }
     },
     "closed_trades": 0,
@@ -211,31 +211,31 @@
         "contracts": 1,
         "entry_price": 0.99,
         "instrument_id": "kalshi:KXAAAGASMINTX-26DEC31-1.90",
-        "mark_price": 0.97,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINTX-26DEC31-1.90/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMINTX-26DEC31-1.90",
-        "unrealized_pnl_usd": -0.02
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 94,
         "entry_price": 0.99,
         "instrument_id": "kalshi:KXAAAGASMINTX-26DEC31-2.00",
-        "mark_price": 0.94,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINTX-26DEC31-2.00/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMINTX-26DEC31-2.00",
-        "unrealized_pnl_usd": -4.7
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 2,
         "entry_price": 0.98,
         "instrument_id": "kalshi:KXAAAGASMINTX-26DEC31-2.30",
-        "mark_price": 0.97,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMINTX-26DEC31-2.30/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMINTX-26DEC31-2.30",
-        "unrealized_pnl_usd": -0.02
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 87,
@@ -516,28 +516,48 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXWTIMAX-26SEP30-T115.50",
         "unrealized_pnl_usd": null
+      },
+      {
+        "contracts": 26,
+        "entry_price": 0.957765,
+        "instrument_id": "kalshi:KXWTIMIN-26DEC31-T56",
+        "mark_price": 0.94,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMIN-26DEC31-T56/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIMIN-26DEC31-T56",
+        "unrealized_pnl_usd": -0.46189
+      },
+      {
+        "contracts": 20,
+        "entry_price": 0.95,
+        "instrument_id": "kalshi:KXWTIMIN-26DEC31-T58",
+        "mark_price": 0.94,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMIN-26DEC31-T58/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIMIN-26DEC31-T58",
+        "unrealized_pnl_usd": -0.2
       }
     ],
     "trades_by_venue": {
-      "kalshi": 115
+      "kalshi": 117
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 99,
+  "blocked_orders": 106,
   "blocked_reasons": {
     "insufficient_depth_within_price_tolerance": 1,
-    "settlement_result_not_published": 98
+    "settlement_result_not_published": 105
   },
   "closed_trades": 68,
   "disabled_reason": null,
   "display_name": "Longshot Fade",
   "enabled": true,
-  "entries": 115,
+  "entries": 117,
   "equity_usd": 99936.446469,
   "exits": 0,
-  "fees_paid_usd": 107.84,
+  "fees_paid_usd": 107.99,
   "market_type": "Kalshi event contract",
-  "open_positions": 47,
+  "open_positions": 49,
   "origin": {
     "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
     "kind": "documented_anomaly",
@@ -550,23 +570,23 @@
     "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 819.169141,
+  "slippage_paid_usd": 819.601031,
   "strategy_id": "kalshi-longshot-fade",
   "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 115,
-  "unrealized_pnl_usd": -4.74,
+  "trades": 117,
+  "unrealized_pnl_usd": -0.66189,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "115 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 107.84 USD of fees and 819.17 USD of measured slippage against the mid.",
-    "3 open positions carry verified marks totalling -4.74 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Blocked order attempts and their recorded reasons: settlement_result_not_published (98), insufficient_depth_within_price_tolerance (1).",
+    "117 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 107.99 USD of fees and 819.60 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -0.66 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (105), insufficient_depth_within_price_tolerance (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
