@@ -276,36 +276,6 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXNGASMAX-26DEC31-P5.50",
         "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 2,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXPALLADIUMH-26OCT0108-T1185.99",
-        "mark_price": 0.67,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXPALLADIUMH-26OCT0108-T1185.99/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXPALLADIUMH-26OCT0108-T1185.99",
-        "unrealized_pnl_usd": -0.64
-      },
-      {
-        "contracts": 2,
-        "entry_price": 0.19,
-        "instrument_id": "kalshi:KXPALLADIUMH-26OCT0108-T1186.49",
-        "mark_price": 0.01,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXPALLADIUMH-26OCT0108-T1186.49/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXPALLADIUMH-26OCT0108-T1186.49",
-        "unrealized_pnl_usd": -0.36
-      },
-      {
-        "contracts": 2,
-        "entry_price": 0.14,
-        "instrument_id": "kalshi:KXPALLADIUMH-26OCT0108-T1186.99",
-        "mark_price": 0.01,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXPALLADIUMH-26OCT0108-T1186.99/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXPALLADIUMH-26OCT0108-T1186.99",
-        "unrealized_pnl_usd": -0.26
       }
     ],
     "trades_by_venue": {
@@ -313,13 +283,13 @@
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 116,
+  "blocked_orders": 128,
   "blocked_reasons": {
     "already_holding": 4,
     "insufficient_depth_within_price_tolerance": 4,
-    "settlement_result_not_published": 108
+    "settlement_result_not_published": 120
   },
-  "closed_trades": 58,
+  "closed_trades": 61,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
@@ -328,13 +298,13 @@
   "exits": 0,
   "fees_paid_usd": 199.54,
   "market_type": "Kalshi event contract",
-  "open_positions": 26,
+  "open_positions": 23,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
     "status": "structural - no forecast required"
   },
-  "realized_pnl_usd": -6672.23391,
+  "realized_pnl_usd": -6672.93391,
   "return_pct": -0.0311,
   "rules": {
     "entry": "Monotonicity violation of at least 2 cents between two strikes of the same series and expiry.",
@@ -348,7 +318,7 @@
     "Kalshi event contract"
   ],
   "trades": 84,
-  "unrealized_pnl_usd": -1.26,
+  "unrealized_pnl_usd": 0,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
@@ -356,8 +326,7 @@
   "what_it_means": [
     "84 ledger records so far: 7 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 199.54 USD of fees and 10457.52 USD of measured slippage against the mid.",
-    "3 open positions carry verified marks totalling -1.26 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Blocked order attempts and their recorded reasons: already_holding (4), settlement_result_not_published (108), insufficient_depth_within_price_tolerance (4).",
+    "Blocked order attempts and their recorded reasons: already_holding (4), settlement_result_not_published (120), insufficient_depth_within_price_tolerance (4).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
