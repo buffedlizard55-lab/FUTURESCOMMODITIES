@@ -1,10 +1,40 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "RUONIA Rate": {
+        "fees_usd": 0.186545,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.0105,
+        "trades": 2
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 1,
+        "entry_price": 4.7802,
+        "instrument_id": "moex:RFH7",
+        "mark_price": 4.792,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/RFH7.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "RFH7",
+        "unrealized_pnl_usd": -1.415589
+      },
+      {
+        "contracts": 1,
+        "entry_price": 4.6314,
+        "instrument_id": "moex:RFZ6",
+        "mark_price": 4.6222,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/RFZ6.json?iss.meta=off",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "RFZ6",
+        "unrealized_pnl_usd": -1.10368
+      }
+    ],
+    "trades_by_venue": {
+      "moex_forts": 2
+    },
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
@@ -13,35 +43,40 @@
   "disabled_reason": null,
   "display_name": "Rate Curve Carry",
   "enabled": true,
-  "entries": 0,
-  "equity_usd": 100000,
+  "entries": 2,
+  "equity_usd": 99997.294186,
   "exits": 0,
-  "fees_paid_usd": 0,
+  "fees_paid_usd": 0.186545,
   "market_type": "Exchange-listed interest rate future",
-  "open_positions": 0,
+  "open_positions": 2,
   "origin": {
     "claim": "The spread between near and far rate futures is the market's own estimate of the future short rate; when its annualised value exceeds the round-trip cost, the carry is capturable. MOEX FORTS lists RUONIA and 1MFR rate futures through the same keyless ISS API.",
     "kind": "market_structure",
     "status": "structural - measured, not forecast"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "return_pct": -0.0027,
   "rules": {
     "entry": "Annualised calendar spread >= 8% after measured round-trip fees.",
     "exit": "Exit when the annualised spread compresses below 3%, or when either contract is within 5 days of expiry.",
     "sizing": "Target notional per leg, sized against the exchange-published lot notional (1,000,000 RUB per RUONIA/1MFR contract per the official specification) and capped by both contracts published liquidity."
   },
-  "slippage_paid_usd": 0,
+  "slippage_paid_usd": 0.0105,
   "strategy_id": "moex-rate-curve",
   "thesis": "Buy the near expiry and sell the far expiry (or the reverse) of the same MOEX rate future whenever the annualised spread between the official mid prices exceeds the exchange-published round-trip fee. The interest-rate sector is one of the market types the brief requires the universe to cover; the rule is the calendar-carry rule applied to the rate curve.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": 0,
+  "traded_market_types": [
+    "Exchange-listed interest rate future"
+  ],
+  "trades": 2,
+  "unrealized_pnl_usd": -2.519269,
   "username": "@ruonia-curve",
   "venues": [
     "moex_forts"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Exchange-listed interest rate future markets every tick."
+    "2 ledger records so far: 1 distinct commodity exposures across moex_forts.",
+    "Closed-trade P&L is 0.00 USD against 0.19 USD of fees and 0.01 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -2.52 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
