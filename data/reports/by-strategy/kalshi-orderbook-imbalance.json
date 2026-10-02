@@ -35,6 +35,12 @@
         "realized_pnl_usd": 0,
         "slippage_usd": 1.355,
         "trades": 2
+      },
+      "WTI Crude Oil": {
+        "fees_usd": 0.88,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 0.25,
+        "trades": 1
       }
     },
     "closed_trades": 1,
@@ -173,25 +179,35 @@
         "contracts": 193,
         "entry_price": 0.624654,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4300",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.47,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T4300/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXGOLDDIRY-26DEC31H1700-T4300",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -29.848222
       },
       {
         "contracts": 19,
         "entry_price": 0.257737,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4700",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.11,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDDIRY-26DEC31H1700-T4700/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXGOLDDIRY-26DEC31H1700-T4700",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -2.807003
+      },
+      {
+        "contracts": 50,
+        "entry_price": 0.49,
+        "instrument_id": "kalshi:KXWTIMIN-26OCT30-T85.50",
+        "mark_price": 0.48,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMIN-26OCT30-T85.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIMIN-26OCT30-T85.50",
+        "unrealized_pnl_usd": -0.5
       }
     ],
     "trades_by_venue": {
-      "kalshi": 29
+      "kalshi": 30
     },
     "worst_closed_trade": {
       "pnl_usd": -5.74,
@@ -208,12 +224,12 @@
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 28,
+  "entries": 29,
   "equity_usd": 99980.310055,
   "exits": 1,
-  "fees_paid_usd": 36.46,
+  "fees_paid_usd": 37.34,
   "market_type": "Kalshi event contract",
-  "open_positions": 15,
+  "open_positions": 16,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -232,23 +248,24 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 40.829909,
+  "slippage_paid_usd": 41.079909,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 29,
-  "unrealized_pnl_usd": 0,
+  "trades": 30,
+  "unrealized_pnl_usd": -33.155225,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "29 ledger records so far: 5 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -5.74 USD against 36.46 USD of fees and 40.83 USD of measured slippage against the mid.",
+    "30 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -5.74 USD against 37.34 USD of fees and 41.08 USD of measured slippage against the mid.",
     "Best closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).",
     "Worst closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).",
+    "3 open positions carry verified marks totalling -33.16 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (20), insufficient_depth_within_price_tolerance (2).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
