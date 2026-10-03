@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-03T00:18:38.546Z",
+  "generated_at": "2026-10-03T05:38:10.662Z",
   "note": "Resting maker orders. A fill is recorded only when a later snapshot shows the market trading through the resting price, and the fill is flagged as modelled.",
   "orders": [
     {
@@ -4868,6 +4868,7 @@
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 1590,
       "expires_at": "2026-10-03T06:18:33.809Z",
       "id": "5da8f4269948b99dd036",
@@ -4895,13 +4896,14 @@
         "resting_price": 0.64,
         "spread": 0.13
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 13-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
       "ticker": "KXAAAGASEOYNJ-26DEC31-4.0000",
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 1226,
       "expires_at": "2026-10-03T06:18:33.810Z",
       "id": "2673577f4400da28ff3a",
@@ -4929,13 +4931,14 @@
         "resting_price": 0.73,
         "spread": 0.06
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 6-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
       "ticker": "KXAAAGASEOYNJ-26DEC31-3.9000",
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 1013,
       "expires_at": "2026-10-03T06:18:33.810Z",
       "id": "49cb7ca1369c08324daf",
@@ -4963,10 +4966,44 @@
         "resting_price": 0.77,
         "spread": 0.08
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 8-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
       "ticker": "KXAAAGASEOYNJ-26DEC31-3.8000",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 77,
+      "expires_at": "2026-10-03T11:38:08.209Z",
+      "id": "f6973f389d8b626d5c5d",
+      "instrument_id": "kalshi:KXAAAGASWNJ-26OCT05-4.3800",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-10-03T05:38:08.209Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.98,
+        "best_no_bid": 0.93,
+        "best_yes_ask": 0.07,
+        "best_yes_bid": 0.02,
+        "mid": 0.045,
+        "retrieved_at": "2026-10-03T05:37:44.330Z",
+        "sha256": "6983f7bae4f1fb596e4c08f92b8de041c90096d992a89f299fb10a74c893e875",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASWNJ-26OCT05-4.3800/orderbook?depth=20",
+        "spread": 0.05
+      },
+      "remaining": 77,
+      "resting_price": 0.03,
+      "signal": {
+        "best_yes_ask": 0.07,
+        "best_yes_bid": 0.02,
+        "name": "spread_capture",
+        "resting_price": 0.03,
+        "spread": 0.05
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 5-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
+      "ticker": "KXAAAGASWNJ-26OCT05-4.3800",
       "username": "@spread-hunter"
     }
   ]

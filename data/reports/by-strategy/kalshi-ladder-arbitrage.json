@@ -71,11 +71,11 @@
         "contracts": 75,
         "entry_price": 0.949867,
         "instrument_id": "kalshi:KXAAAGASWNJ-26OCT05-4.2600",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.92,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASWNJ-26OCT05-4.2600/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXAAAGASWNJ-26OCT05-4.2600",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -2.240025
       },
       {
         "contracts": 20,
@@ -198,7 +198,7 @@
     "Kalshi event contract"
   ],
   "trades": 86,
-  "unrealized_pnl_usd": 0,
+  "unrealized_pnl_usd": -2.240025,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
@@ -206,6 +206,7 @@
   "what_it_means": [
     "86 ledger records so far: 7 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 201.77 USD of fees and 10471.41 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -2.24 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: already_holding (4), settlement_result_not_published (120), insufficient_depth_within_price_tolerance (4).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
