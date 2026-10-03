@@ -9,10 +9,10 @@
         "trades": 2
       },
       "Gasoline (US retail average)": {
-        "fees_usd": 4.56,
+        "fees_usd": 5.48,
         "realized_pnl_usd": 0,
-        "slippage_usd": 12.743011,
-        "trades": 8
+        "slippage_usd": 13.448011,
+        "trades": 10
       },
       "Natural Gas": {
         "fees_usd": 0.05,
@@ -80,6 +80,16 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 60,
+        "entry_price": 0.27,
+        "instrument_id": "kalshi:KXAAAGASMAXM-26OCT30-4.50",
+        "mark_price": 0.25,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMAXM-26OCT30-4.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASMAXM-26OCT30-4.50",
+        "unrealized_pnl_usd": -1.2
+      },
+      {
         "contracts": 50,
         "entry_price": 0.74,
         "instrument_id": "kalshi:KXAAAGASMAXNY-26DEC31-5.20",
@@ -88,6 +98,16 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMAXNY-26DEC31-5.20",
         "unrealized_pnl_usd": null
+      },
+      {
+        "contracts": 7,
+        "entry_price": 0.24,
+        "instrument_id": "kalshi:KXAAAGASMAXTX-26DEC31-4.60",
+        "mark_price": 0.21,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMAXTX-26DEC31-4.60/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASMAXTX-26DEC31-4.60",
+        "unrealized_pnl_usd": -0.21
       },
       {
         "contracts": 67,
@@ -141,25 +161,26 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 16
+      "kalshi": 18
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 29,
+  "blocked_orders": 31,
   "blocked_reasons": {
     "already_holding": 3,
-    "settlement_result_not_published": 26
+    "insufficient_depth_within_price_tolerance": 1,
+    "settlement_result_not_published": 27
   },
   "closed_trades": 5,
   "disabled_reason": null,
   "display_name": "Oil Trend Rider",
   "enabled": true,
-  "entries": 16,
+  "entries": 18,
   "equity_usd": 99996.89,
   "exits": 0,
-  "fees_paid_usd": 21.13,
+  "fees_paid_usd": 22.05,
   "market_type": "Kalshi event contract",
-  "open_positions": 11,
+  "open_positions": 13,
   "origin": {
     "claim": "Energy event contracts follow the underlying crude complex with a lag; the exchange own candle history is a verified, free proxy for that trend.",
     "kind": "market_structure",
@@ -172,22 +193,23 @@
     "exit": "Exit when momentum flips sign or the market closes.",
     "sizing": "Target notional, capped by depth."
   },
-  "slippage_paid_usd": 38.413852,
+  "slippage_paid_usd": 39.118852,
   "strategy_id": "kalshi-oil-trend",
   "thesis": "Trade the Kalshi WTI/Brent ladders in the direction of the verified trend in the same series own official candle history, taking the side whose price is closest to a coin flip so that a correct directional call pays multiples.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 16,
-  "unrealized_pnl_usd": 0,
+  "trades": 18,
+  "unrealized_pnl_usd": -1.41,
   "username": "@barrel-rider",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "16 ledger records so far: 4 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 21.13 USD of fees and 38.41 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: settlement_result_not_published (26), already_holding (3).",
+    "18 ledger records so far: 4 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 22.05 USD of fees and 39.12 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -1.41 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (27), already_holding (3), insufficient_depth_within_price_tolerance (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
