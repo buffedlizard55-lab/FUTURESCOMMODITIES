@@ -1,35 +1,35 @@
 # Competition results
 
-Generated 2026-10-02T20:32:59.993Z from the committed ledger. Season season-2026-09-22_to_2027-09-22 (2026-09-22T00:00:00Z to 2027-09-22T00:00:00Z), 54 ticks completed.
+Generated 2026-10-03T00:18:38.880Z from the committed ledger. Season season-2026-09-22_to_2027-09-22 (2026-09-22T00:00:00Z to 2027-09-22T00:00:00Z), 55 ticks completed.
 
 > Every number below is computed from data fetched from an official source. Simulated fills are labelled: `taker_walks_official_order_book` means the order walked real resting size, `quote_based_fill_at_official_bid_offer` means it filled at the exchange quote with size capped by published liquidity, and `modelled` marks resting maker orders whose queue position cannot be observed publicly.
 
-Independent verification: **288/1199** trades fully verified, 1207 anomalies (see `data/verification/report.json`).
+Independent verification: **283/1213** trades fully verified, 1243 anomalies (see `data/verification/report.json`).
 
 ## Leaderboard
 
 | # | Username | Market type | Equity (USD) | Return % | Realized | Unrealized | Fees | Slippage | Open | Closed trades |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | @agri-trend | Exchange-listed commodity future | 104897.60 | 4.90 | 0.00 | 1043.15 | 5.76 | 3041.40 | 12 | 0 |
-| 2 | @metal-trend | Exchange-listed commodity future | 102402.95 | 2.40 | 0.00 | 2409.52 | 6.57 | 676.33 | 12 | 0 |
-| 3 | @basis-hunter | Cross-venue: Kalshi perpetual future vs exchange-listed future | 100766.91 | 0.77 | 0.00 | 903.26 | 34.94 | 507.31 | 2 | 4 |
-| 4 | @index-mover | Exchange-listed equity index future | 100146.69 | 0.15 | 0.00 | 149.18 | 2.49 | 218.50 | 5 | 0 |
+| 1 | @agri-trend | Exchange-listed commodity future | 104897.60 | 4.90 | 0.00 | 1039.29 | 5.76 | 3041.40 | 12 | 0 |
+| 2 | @metal-trend | Exchange-listed commodity future | 102427.16 | 2.43 | 0.00 | 2433.73 | 6.57 | 676.33 | 12 | 0 |
+| 3 | @basis-hunter | Cross-venue: Kalshi perpetual future vs exchange-listed future | 100791.95 | 0.79 | 0.00 | 928.30 | 34.94 | 507.31 | 2 | 4 |
+| 4 | @index-mover | Exchange-listed equity index future | 100133.39 | 0.13 | 0.00 | 135.88 | 2.49 | 218.50 | 5 | 0 |
 | 5 | @vol-crusher | Kalshi event contract | 100000.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0 | 0 |
 | 6 | @mark-fade | Kalshi perpetual future | 100000.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0 | 0 |
 | 7 | @spread-hunter | Kalshi event contract | 100000.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0 | 0 |
 | 8 | @donchian-desk | Exchange-listed commodity future | 100000.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0 | 0 |
-| 9 | @perp-surfer | Kalshi perpetual future | 99998.92 | -0.00 | 0.00 | 80.48 | 1439.71 | 223.02 | 10 | 178 |
+| 9 | @perp-surfer | Kalshi perpetual future | 99998.92 | -0.00 | 0.00 | -70.19 | 1481.19 | 231.91 | 7 | 185 |
 | 10 | @ruonia-curve | Exchange-listed interest rate future | 99997.29 | -0.00 | 0.00 | 0.00 | 0.19 | 0.01 | 2 | 0 |
 | 11 | @barrel-rider | Kalshi event contract | 99996.89 | -0.00 | 162.21 | 0.00 | 21.13 | 38.41 | 11 | 5 |
 | 12 | @tail-rider | Kalshi event contract | 99993.07 | -0.01 | -8.65 | 0.00 | 1.86 | 6.00 | 4 | 1 |
-| 13 | @book-watcher | Kalshi event contract | 99980.31 | -0.02 | -119.60 | -4.48 | 38.48 | 44.19 | 17 | 13 |
-| 14 | @ladder-arb | Kalshi event contract | 99968.85 | -0.03 | -6697.19 | 0.00 | 201.77 | 10471.41 | 13 | 73 |
-| 15 | @fade-the-crowd | Kalshi event contract | 99936.45 | -0.06 | 1254.47 | -13.75 | 130.43 | 997.63 | 41 | 103 |
+| 13 | @book-watcher | Kalshi event contract | 99980.31 | -0.02 | -71.74 | 0.00 | 38.48 | 44.19 | 9 | 21 |
+| 14 | @ladder-arb | Kalshi event contract | 99968.85 | -0.03 | -6702.42 | 0.00 | 201.77 | 10471.41 | 11 | 75 |
+| 15 | @fade-the-crowd | Kalshi event contract | 99936.45 | -0.06 | 1297.10 | -24.63 | 142.34 | 1010.27 | 35 | 111 |
 | 16 | @snap-fader | Kalshi event contract | 99933.94 | -0.07 | -66.06 | 0.00 | 3.46 | 3.50 | 0 | 3 |
-| 17 | @rig-count | Exchange-listed commodity future | 99928.58 | -0.07 | 0.00 | 1199.84 | 6.75 | 937.76 | 21 | 0 |
-| 18 | @usd-rub-desk | Exchange-listed FX future | 99863.20 | -0.14 | 0.00 | -136.36 | 0.45 | 0.21 | 2 | 0 |
+| 17 | @rig-count | Exchange-listed commodity future | 99928.58 | -0.07 | 0.00 | 1169.05 | 6.75 | 937.76 | 21 | 0 |
+| 18 | @usd-rub-desk | Exchange-listed FX future | 99860.93 | -0.14 | 0.00 | -138.62 | 0.45 | 0.21 | 2 | 0 |
 | 19 | @carry-collector | Kalshi event contract | 98930.22 | -1.07 | -1001.29 | 0.00 | 91.54 | 310.59 | 4 | 70 |
-| 20 | @calendar-carry | Exchange-listed commodity future | 95564.00 | -4.44 | 0.00 | -95.70 | 128.17 | 50777.47 | 7 | 155 |
+| 20 | @calendar-carry | Exchange-listed commodity future | 95564.00 | -4.44 | 0.00 | -68.94 | 128.17 | 50777.47 | 7 | 155 |
 
 ## Per-strategy analysis
 
@@ -38,23 +38,23 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Kalshi event contract
 - **Thesis:** Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.
 - **Rules:** entry - YES mid <= 0.10, spread <= 3 cents, at least 2 hours to close, top-3 liquidity strikes only.; exit - No exit: positions are held to settlement, because the thesis is about the settlement distribution.
-- **Result:** -0.06% (equity 99936.45 USD), 144 entries, 0 exits, 172 blocked order attempts.
-- 144 ledger records so far: 7 distinct commodity exposures across kalshi.
-- Closed-trade P&L is 0.00 USD against 130.43 USD of fees and 997.63 USD of measured slippage against the mid.
-- 4 open positions carry verified marks totalling -13.75 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
-- Blocked order attempts and their recorded reasons: settlement_result_not_published (171), insufficient_depth_within_price_tolerance (1).
+- **Result:** -0.06% (equity 99936.45 USD), 146 entries, 0 exits, 174 blocked order attempts.
+- 146 ledger records so far: 7 distinct commodity exposures across kalshi.
+- Closed-trade P&L is 0.00 USD against 142.34 USD of fees and 1010.27 USD of measured slippage against the mid.
+- 2 open positions carry verified marks totalling -24.63 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- Blocked order attempts and their recorded reasons: settlement_result_not_published (173), insufficient_depth_within_price_tolerance (1).
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
-- **Attribution by commodity:** Brent Crude Oil (8 trades, 0 USD realized, 2.76 USD fees); Gasoline (US retail average) (81 trades, 0 USD realized, 95.38 USD fees); Natural Gas (1 trades, 0 USD realized, 0.09 USD fees); Gold (13 trades, 0 USD realized, 8.49 USD fees); WTI Crude Oil (19 trades, 0 USD realized, 17.57 USD fees); Copper (11 trades, 0 USD realized, 2.74 USD fees); Silver (11 trades, 0 USD realized, 3.4 USD fees)
+- **Attribution by commodity:** Brent Crude Oil (8 trades, 0 USD realized, 2.76 USD fees); Gasoline (US retail average) (82 trades, 0 USD realized, 107.21 USD fees); Natural Gas (1 trades, 0 USD realized, 0.09 USD fees); Gold (14 trades, 0 USD realized, 8.57 USD fees); WTI Crude Oil (19 trades, 0 USD realized, 17.57 USD fees); Copper (11 trades, 0 USD realized, 2.74 USD fees); Silver (11 trades, 0 USD realized, 3.4 USD fees)
 
 ### @carry-collector - Favourite Carry
 
 - **Market type:** Kalshi event contract
 - **Thesis:** Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.
 - **Rules:** entry - YES mid >= 0.90, spread <= 3 cents, closes within 48 hours.; exit - No exit: held to settlement.
-- **Result:** -1.07% (equity 98930.22 USD), 74 entries, 0 exits, 127 blocked order attempts.
+- **Result:** -1.07% (equity 98930.22 USD), 74 entries, 0 exits, 131 blocked order attempts.
 - 74 ledger records so far: 7 distinct commodity exposures across kalshi.
 - Closed-trade P&L is 0.00 USD against 91.54 USD of fees and 310.59 USD of measured slippage against the mid.
-- Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (125).
+- Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (129).
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Gold (3 trades, 0 USD realized, 0.67 USD fees); Gasoline (US retail average) (50 trades, 0 USD realized, 58.22 USD fees); WTI Crude Oil (8 trades, 0 USD realized, 14.95 USD fees); Copper (4 trades, 0 USD realized, 2.71 USD fees); Silver (6 trades, 0 USD realized, 11.61 USD fees); Natural Gas (1 trades, 0 USD realized, 0.02 USD fees); Brent Crude Oil (2 trades, 0 USD realized, 3.36 USD fees)
 
@@ -63,9 +63,9 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Kalshi event contract
 - **Thesis:** Rest passive bids one cent inside the spread on the most liquid commodity contracts and rely on the exchange order flow to cross them. The maker fee multiplier is zero for standard series per the official fee schedule, so a fill at the resting price is pure spread capture.
 - **Rules:** entry - Spread >= 3 cents, resting bid at best bid + 1 cent, never crossing the offer.; exit - Working orders expire after the configured TTL; positions are marked to the opposite side of the book.
-- **Result:** 0.00% (equity 100000.00 USD), 0 entries, 0 exits, 139 blocked order attempts.
+- **Result:** 0.00% (equity 100000.00 USD), 0 entries, 0 exits, 142 blocked order attempts.
 - No trade has been placed yet. The strategy is live and evaluating Kalshi event contract markets every tick.
-- Orders it tried to place were not executed, for these recorded reasons: resting_order_registered (139). Each of those is a liquidity or data limitation of the real market, not a strategy result.
+- Orders it tried to place were not executed, for these recorded reasons: resting_order_registered (142). Each of those is a liquidity or data limitation of the real market, not a strategy result.
 
 ### @vol-crusher - Extreme Reversion
 
@@ -104,10 +104,10 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Kalshi event contract
 - **Thesis:** Trade the Kalshi WTI/Brent ladders in the direction of the verified trend in the same series own official candle history, taking the side whose price is closest to a coin flip so that a correct directional call pays multiples.
 - **Rules:** entry - |5-day candle momentum| >= 2%, enter in the direction of the trend, YES mid between 0.2 and 0.6.; exit - Exit when momentum flips sign or the market closes.
-- **Result:** -0.00% (equity 99996.89 USD), 16 entries, 0 exits, 27 blocked order attempts.
+- **Result:** -0.00% (equity 99996.89 USD), 16 entries, 0 exits, 28 blocked order attempts.
 - 16 ledger records so far: 4 distinct commodity exposures across kalshi.
 - Closed-trade P&L is 0.00 USD against 21.13 USD of fees and 38.41 USD of measured slippage against the mid.
-- Blocked order attempts and their recorded reasons: settlement_result_not_published (24), already_holding (3).
+- Blocked order attempts and their recorded reasons: settlement_result_not_published (25), already_holding (3).
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Gasoline (US retail average) (8 trades, 0 USD realized, 4.56 USD fees); WTI Crude Oil (4 trades, 0 USD realized, 13.66 USD fees); Natural Gas (2 trades, 0 USD realized, 0.05 USD fees); Brent Crude Oil (2 trades, 0 USD realized, 2.86 USD fees)
 
@@ -116,25 +116,25 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Kalshi perpetual future
 - **Thesis:** Take the direction of the last verified move in each Kalshi metal perpetual and hold it, re-evaluating on every snapshot. The perpetual is the only instrument in this project that trades continuously, so it is where an overnight trend can actually be captured.
 - **Rules:** entry - Price changed since the previous committed snapshot, with a live two-sided quote.; exit - Exit when the direction of the last change flips.
-- **Result:** -0.00% (equity 99998.92 USD), 188 entries, 240 exits, 17 blocked order attempts.
-- 428 ledger records so far: 12 distinct commodity exposures across kalshi_margin.
-- Closed-trade P&L is -4344.07 USD against 1439.71 USD of fees and 223.02 USD of measured slippage against the mid.
+- **Result:** -0.00% (equity 99998.92 USD), 192 entries, 248 exits, 17 blocked order attempts.
+- 440 ledger records so far: 12 distinct commodity exposures across kalshi_margin.
+- Closed-trade P&L is -4488.02 USD against 1481.19 USD of fees and 231.91 USD of measured slippage against the mid.
 - Best closed trade: KXADAPERP at 242.956744 USD (perp_momentum_flip).
 - Worst closed trade: KXBCHPERP at -200.260307 USD (perp_momentum_flip).
-- 9 open positions carry verified marks totalling 80.48 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- 6 open positions carry verified marks totalling -70.19 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Blocked order attempts and their recorded reasons: insufficient_margin (17).
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
-- **Attribution by commodity:** Gold (45 trades, -297.064814 USD realized, 244.578539 USD fees); Silver (1 trades, 0 USD realized, 0 USD fees); 0.01 AAVE (12 trades, -77.138233 USD realized, 16.967929 USD fees); 1 ADA (51 trades, -269.992966 USD realized, 101.52084 USD fees); 0.01 BCH (44 trades, -968.921369 USD realized, 150.593795 USD fees); 0.001 BNB (47 trades, -108.345036 USD realized, 35.142741 USD fees); 0.0001 BTC (59 trades, -612.195584 USD realized, 353.656533 USD fees); 100 DOGE (49 trades, -264.777942 USD realized, 78.694942 USD fees); 0.001 ETH (57 trades, -1094.508084 USD realized, 341.828755 USD fees); 0.1 HYPE (32 trades, -466.287655 USD realized, 95.895225 USD fees); 1K kSHIB (29 trades, -180.92137 USD realized, 19.359856 USD fees); 1 LINK (2 trades, -3.916405 USD realized, 1.474005 USD fees)
+- **Attribution by commodity:** Gold (46 trades, -314.129038 USD realized, 250.58109 USD fees); Silver (1 trades, 0 USD realized, 0 USD fees); 0.01 AAVE (12 trades, -77.138233 USD realized, 16.967929 USD fees); 1 ADA (53 trades, -249.18062 USD realized, 104.049388 USD fees); 0.01 BCH (46 trades, -975.61322 USD realized, 156.257434 USD fees); 0.001 BNB (48 trades, -106.551959 USD realized, 35.720339 USD fees); 0.0001 BTC (61 trades, -569.273477 USD realized, 365.577237 USD fees); 100 DOGE (51 trades, -291.35712 USD realized, 82.480786 USD fees); 0.001 ETH (58 trades, -1108.377874 USD realized, 347.828274 USD fees); 0.1 HYPE (33 trades, -611.556942 USD realized, 100.890333 USD fees); 1K kSHIB (29 trades, -180.92137 USD realized, 19.359856 USD fees); 1 LINK (2 trades, -3.916405 USD realized, 1.474005 USD fees)
 
 ### @metal-trend - Metals Trend
 
 - **Market type:** Exchange-listed commodity future
 - **Thesis:** Rank the MOEX metal futures by their official settlement momentum over the cached history window and take the extremes, long the strongest and short the weakest. Trades only when the exchange publishes both a live quote and USD valuation inputs.
 - **Rules:** entry - 20-observation settlement momentum, long the top mover and short the bottom mover on each side when |momentum| >= 1%.; exit - Exit when the momentum flips sign.
-- **Result:** 2.40% (equity 102402.95 USD), 12 entries, 0 exits, 0 blocked order attempts.
+- **Result:** 2.43% (equity 102427.16 USD), 12 entries, 0 exits, 0 blocked order attempts.
 - 12 ledger records so far: 8 distinct commodity exposures across moex_forts.
 - Closed-trade P&L is 0.00 USD against 6.57 USD of fees and 676.33 USD of measured slippage against the mid.
-- 12 open positions carry verified marks totalling 2409.52 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- 12 open positions carry verified marks totalling 2433.73 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Copper (1 trades, 0 USD realized, 0.7696 USD fees); Zinc (1 trades, 0 USD realized, 0.5687 USD fees); Gold (2 trades, 0 USD realized, 1.166194 USD fees); Nickel (1 trades, 0 USD realized, 0.10682 USD fees); Platinum (mini) (2 trades, 0 USD realized, 0.791185 USD fees); Platinum (2 trades, 0 USD realized, 0.960459 USD fees); Aluminium (1 trades, 0 USD realized, 0.779742 USD fees); Silver (2 trades, 0 USD realized, 1.426816 USD fees)
 
@@ -143,13 +143,13 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Exchange-listed commodity future
 - **Thesis:** Buy the near expiry and sell the far expiry (or the reverse) whenever the annualised spread between the official mid prices exceeds the exchange published round-trip fee converted at the official USD/RUB rate. Both legs are real orders with real fees.
 - **Rules:** entry - Annualised calendar spread >= 12% after measured round-trip fees.; exit - Exit when the annualised spread compresses below 4%, or when either contract is within 5 days of expiry.
-- **Result:** -4.44% (equity 95564.00 USD), 162 entries, 186 exits, 103 blocked order attempts.
+- **Result:** -4.44% (equity 95564.00 USD), 162 entries, 186 exits, 110 blocked order attempts.
 - 348 ledger records so far: 5 distinct commodity exposures across moex_forts.
 - Closed-trade P&L is -668.58 USD against 128.17 USD of fees and 50777.47 USD of measured slippage against the mid.
 - Best closed trade: SAH7 at 281.147303 USD (calendar_carry_review).
 - Worst closed trade: CCG7 at -245.827404 USD (calendar_carry_review).
-- 5 open positions carry verified marks totalling -95.70 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
-- Blocked order attempts and their recorded reasons: no_verified_quote (45), insufficient_margin (58).
+- 5 open positions carry verified marks totalling -68.94 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- Blocked order attempts and their recorded reasons: no_verified_quote (47), insufficient_margin (63).
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Cocoa (84 trades, -81.557744 USD realized, 48.203435 USD fees); Sugar (31 trades, -48.422425 USD realized, 1.834165 USD fees); Orange Juice (ORANGE) (69 trades, -193.487809 USD realized, 18.348968 USD fees); Raw Sugar (SUGR) (77 trades, -208.005612 USD realized, 27.818387 USD fees); Wheat (87 trades, -137.108763 USD realized, 31.970014 USD fees)
 
@@ -161,7 +161,7 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Result:** 4.90% (equity 104897.60 USD), 12 entries, 0 exits, 0 blocked order attempts.
 - 12 ledger records so far: 6 distinct commodity exposures across moex_forts.
 - Closed-trade P&L is 0.00 USD against 5.76 USD of fees and 3041.40 USD of measured slippage against the mid.
-- 10 open positions carry verified marks totalling 1043.15 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- 10 open positions carry verified marks totalling 1039.29 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Cocoa (2 trades, 0 USD realized, 1.287496 USD fees); Coffee (2 trades, 0 USD realized, 1.255037 USD fees); Sugar (1 trades, 0 USD realized, 0.030216 USD fees); Wheat (3 trades, 0 USD realized, 1.334012 USD fees); Orange Juice (ORANGE) (2 trades, 0 USD realized, 0.680356 USD fees); Raw Sugar (SUGR) (2 trades, 0 USD realized, 1.175643 USD fees)
 
@@ -170,12 +170,12 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Cross-venue: Kalshi perpetual future vs exchange-listed future
 - **Thesis:** Compare the Kalshi metal perpetual (price / contract_size = USD per ounce) with the front MOEX future on the same metal (mid = USD per ounce when UNIT=USD). When the normalised basis is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.
 - **Rules:** entry - Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).; exit - Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.
-- **Result:** 0.77% (equity 100766.91 USD), 6 entries, 4 exits, 5 blocked order attempts.
+- **Result:** 0.79% (equity 100791.95 USD), 6 entries, 4 exits, 5 blocked order attempts.
 - 10 ledger records so far: 5 distinct commodity exposures across kalshi_margin, moex_forts.
 - Closed-trade P&L is -101.40 USD against 34.94 USD of fees and 507.31 USD of measured slippage against the mid.
 - Best closed trade: KXBTCPERP at 6.69026 USD (basis_leg_unavailable).
 - Worst closed trade: ETZ6 at -101.103614 USD (unit_reconciliation_failed).
-- 2 open positions carry verified marks totalling 903.26 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- 2 open positions carry verified marks totalling 928.30 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Blocked order attempts and their recorded reasons: no_verified_quote (5).
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Gold (3 trades, -0.424616 USD realized, 2.358696 USD fees); 0.001 ETH (2 trades, -6.559641 USD realized, 6.275541 USD fees); Ether (ETHA Trust ETF) (2 trades, -101.103614 USD realized, 15.873614 USD fees); 0.0001 BTC (2 trades, 6.69026 USD realized, 4.77934 USD fees); Bitcoin (1 trades, 0 USD realized, 5.652864 USD fees)
@@ -190,7 +190,6 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - Closed-trade P&L is -5.74 USD against 38.48 USD of fees and 44.19 USD of measured slippage against the mid.
 - Best closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).
 - Worst closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).
-- 1 open positions carry verified marks totalling -4.48 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Blocked order attempts and their recorded reasons: settlement_result_not_published (20), insufficient_depth_within_price_tolerance (2).
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Gold (8 trades, -5.74 USD realized, 11.41 USD fees); Brent Crude Oil (7 trades, 0 USD realized, 10.77 USD fees); Gasoline (US retail average) (7 trades, 0 USD realized, 5.22 USD fees); Copper (6 trades, 0 USD realized, 7.97 USD fees); Silver (2 trades, 0 USD realized, 2.23 USD fees); WTI Crude Oil (1 trades, 0 USD realized, 0.88 USD fees)
@@ -211,7 +210,7 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Result:** -0.07% (equity 99928.58 USD), 21 entries, 0 exits, 0 blocked order attempts.
 - 21 ledger records so far: 8 distinct commodity exposures across moex_forts.
 - Closed-trade P&L is 0.00 USD against 6.75 USD of fees and 937.76 USD of measured slippage against the mid.
-- 12 open positions carry verified marks totalling 1199.84 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- 12 open positions carry verified marks totalling 1169.05 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** Gasoline AI-92 (2 trades, 0 USD realized, 0.217893 USD fees); Gasoline AI-95 (2 trades, 0 USD realized, 0.221318 USD fees); Brent Crude Oil (3 trades, 0 USD realized, 1.932535 USD fees); Diesel (DTL) (3 trades, 0 USD realized, 0.306386 USD fees); Natural Gas (TTF) (3 trades, 0 USD realized, 1.378729 USD fees); Natural Gas (NG) (3 trades, 0 USD realized, 1.312468 USD fees); Natural Gas (NGM) (3 trades, 0 USD realized, 1.145055 USD fees); WTI Crude Oil (2 trades, 0 USD realized, 0.235453 USD fees)
 
@@ -240,10 +239,10 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Exchange-listed FX future
 - **Thesis:** Follow the official settlement trend in MOEX FX futures - the USD/RUB and CNY/RUB contracts - taking the strongest movers and holding while the trend persists. Same measured-momentum rule as the energy desk, applied to the FX sector the brief requires the universe to cover.
 - **Rules:** entry - 15-observation settlement momentum, |momentum| >= 1.5%.; exit - Exit when the momentum flips sign.
-- **Result:** -0.14% (equity 99863.20 USD), 2 entries, 0 exits, 0 blocked order attempts.
+- **Result:** -0.14% (equity 99860.93 USD), 2 entries, 0 exits, 0 blocked order attempts.
 - 2 ledger records so far: 1 distinct commodity exposures across moex_forts.
 - Closed-trade P&L is 0.00 USD against 0.45 USD of fees and 0.21 USD of measured slippage against the mid.
-- 2 open positions carry verified marks totalling -136.36 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- 2 open positions carry verified marks totalling -138.62 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** CNY/RUB (2 trades, 0 USD realized, 0.445696 USD fees)
 
@@ -252,10 +251,10 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 - **Market type:** Exchange-listed equity index future
 - **Thesis:** Trade the official settlement momentum in MOEX equity-index futures - IMOEX (MIX), RTS, Nasdaq-100 (NASD) and S&P 500 (SPYF) - long the 15-observation winners, short the losers, and exit when the momentum flips. The index sector is one of the market types the brief requires the universe to cover.
 - **Rules:** entry - 15-observation settlement momentum, |momentum| >= 2.0%.; exit - Exit when the momentum flips sign.
-- **Result:** 0.15% (equity 100146.69 USD), 5 entries, 0 exits, 0 blocked order attempts.
+- **Result:** 0.13% (equity 100133.39 USD), 5 entries, 0 exits, 0 blocked order attempts.
 - 5 ledger records so far: 3 distinct commodity exposures across moex_forts.
 - Closed-trade P&L is 0.00 USD against 2.49 USD of fees and 218.50 USD of measured slippage against the mid.
-- 5 open positions carry verified marks totalling 149.18 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
+- 5 open positions carry verified marks totalling 135.88 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.
 - Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows.
 - **Attribution by commodity:** IMOEX Index (2 trades, 0 USD realized, 0.360717 USD fees); Nasdaq-100 Index (2 trades, 0 USD realized, 1.90368 USD fees); RTS Index (1 trades, 0 USD realized, 0.227454 USD fees)
 
@@ -272,14 +271,14 @@ Independent verification: **288/1199** trades fully verified, 1207 anomalies (se
 
 ## Execution composition
 
-- Taker fills that walked the official ladder: 359
-- Quote-based fills at the official bid/offer: 840
+- Taker fills that walked the official ladder: 361
+- Quote-based fills at the official bid/offer: 852
 - Modelled resting maker fills: 0
-- Orders that could not be executed, with the recorded reason: 756
-  - settlement_result_not_published: 476
-  - resting_order_registered: 139
-  - insufficient_margin: 75
-  - no_verified_quote: 50
+- Orders that could not be executed, with the recorded reason: 773
+  - settlement_result_not_published: 483
+  - resting_order_registered: 142
+  - insufficient_margin: 80
+  - no_verified_quote: 52
   - insufficient_depth_within_price_tolerance: 9
   - already_holding: 7
 
