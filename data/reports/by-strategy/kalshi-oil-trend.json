@@ -83,11 +83,11 @@
         "contracts": 60,
         "entry_price": 0.27,
         "instrument_id": "kalshi:KXAAAGASMAXM-26OCT30-4.50",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.24,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMAXM-26OCT30-4.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXAAAGASMAXM-26OCT30-4.50",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -1.8
       },
       {
         "contracts": 50,
@@ -165,11 +165,11 @@
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 32,
+  "blocked_orders": 34,
   "blocked_reasons": {
-    "already_holding": 3,
+    "already_holding": 4,
     "insufficient_depth_within_price_tolerance": 1,
-    "settlement_result_not_published": 28
+    "settlement_result_not_published": 29
   },
   "closed_trades": 5,
   "disabled_reason": null,
@@ -200,7 +200,7 @@
     "Kalshi event contract"
   ],
   "trades": 18,
-  "unrealized_pnl_usd": 0,
+  "unrealized_pnl_usd": -1.8,
   "username": "@barrel-rider",
   "venues": [
     "kalshi"
@@ -208,7 +208,8 @@
   "what_it_means": [
     "18 ledger records so far: 4 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 22.05 USD of fees and 39.12 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: settlement_result_not_published (28), already_holding (3), insufficient_depth_within_price_tolerance (1).",
+    "1 open positions carry verified marks totalling -1.80 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (29), already_holding (4), insufficient_depth_within_price_tolerance (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }

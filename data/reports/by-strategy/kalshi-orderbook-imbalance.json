@@ -13,10 +13,10 @@
         "trades": 7
       },
       "Copper": {
-        "fees_usd": 7.97,
+        "fees_usd": 10.43,
         "realized_pnl_usd": 0,
-        "slippage_usd": 15.009887,
-        "trades": 6
+        "slippage_usd": 18.759887,
+        "trades": 8
       },
       "Gasoline (US retail average)": {
         "fees_usd": 5.48,
@@ -116,6 +116,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 125,
+        "entry_price": 0.8,
+        "instrument_id": "kalshi:KXCOPPERW-26OCT0917-T6.72",
+        "mark_price": 0.77,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26OCT0917-T6.72/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERW-26OCT0917-T6.72",
+        "unrealized_pnl_usd": -3.75
+      },
+      {
+        "contracts": 125,
+        "entry_price": 0.86,
+        "instrument_id": "kalshi:KXCOPPERW-26OCT0917-T6.78",
+        "mark_price": 0.83,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26OCT0917-T6.78/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERW-26OCT0917-T6.78",
+        "unrealized_pnl_usd": -3.75
+      },
+      {
         "contracts": 193,
         "entry_price": 0.624654,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4300",
@@ -147,7 +167,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 32
+      "kalshi": 34
     },
     "worst_closed_trade": {
       "pnl_usd": -5.74,
@@ -164,12 +184,12 @@
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 31,
+  "entries": 33,
   "equity_usd": 99980.310055,
   "exits": 1,
-  "fees_paid_usd": 38.74,
+  "fees_paid_usd": 41.2,
   "market_type": "Kalshi event contract",
-  "open_positions": 10,
+  "open_positions": 12,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -188,23 +208,24 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 44.379946,
+  "slippage_paid_usd": 48.129946,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 32,
-  "unrealized_pnl_usd": 0,
+  "trades": 34,
+  "unrealized_pnl_usd": -7.5,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "32 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -5.74 USD against 38.74 USD of fees and 44.38 USD of measured slippage against the mid.",
+    "34 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -5.74 USD against 41.20 USD of fees and 48.13 USD of measured slippage against the mid.",
     "Best closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).",
     "Worst closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).",
+    "2 open positions carry verified marks totalling -7.50 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (20), insufficient_depth_within_price_tolerance (2).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
