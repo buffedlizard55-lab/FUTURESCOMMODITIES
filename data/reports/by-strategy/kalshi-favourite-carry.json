@@ -15,10 +15,10 @@
         "trades": 4
       },
       "Gasoline (US retail average)": {
-        "fees_usd": 62,
+        "fees_usd": 69.84,
         "realized_pnl_usd": 0,
-        "slippage_usd": 229.08967,
-        "trades": 51
+        "slippage_usd": 269.929975,
+        "trades": 54
       },
       "Gold": {
         "fees_usd": 0.67,
@@ -47,6 +47,36 @@
     },
     "closed_trades": 0,
     "open_position_marks": [
+      {
+        "contracts": 1655,
+        "entry_price": 0.029831,
+        "instrument_id": "kalshi:KXAAAGASDCA-26OCT05-6.3500",
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDCA-26OCT05-6.3500/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDCA-26OCT05-6.3500",
+        "unrealized_pnl_usd": -32.820305
+      },
+      {
+        "contracts": 1652,
+        "entry_price": 0.02,
+        "instrument_id": "kalshi:KXAAAGASDCA-26OCT05-6.3600",
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDCA-26OCT05-6.3600/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDCA-26OCT05-6.3600",
+        "unrealized_pnl_usd": -16.52
+      },
+      {
+        "contracts": 1607,
+        "entry_price": 0.02,
+        "instrument_id": "kalshi:KXAAAGASDFL-26OCT05-4.0400",
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDFL-26OCT05-4.0400/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDFL-26OCT05-4.0400",
+        "unrealized_pnl_usd": -16.07
+      },
       {
         "contracts": 829,
         "entry_price": 0.07,
@@ -99,25 +129,25 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 75
+      "kalshi": 78
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 163,
+  "blocked_orders": 167,
   "blocked_reasons": {
     "insufficient_depth_within_price_tolerance": 2,
-    "settlement_result_not_published": 161
+    "settlement_result_not_published": 165
   },
   "closed_trades": 70,
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 75,
+  "entries": 78,
   "equity_usd": 98930.220215,
   "exits": 0,
-  "fees_paid_usd": 95.32,
+  "fees_paid_usd": 103.16,
   "market_type": "Kalshi event contract",
-  "open_positions": 5,
+  "open_positions": 8,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
@@ -130,22 +160,23 @@
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 314.739785,
+  "slippage_paid_usd": 355.58009,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 75,
-  "unrealized_pnl_usd": 0,
+  "trades": 78,
+  "unrealized_pnl_usd": -65.410305,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "75 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 95.32 USD of fees and 314.74 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (161).",
+    "78 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 103.16 USD of fees and 355.58 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -65.41 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (165).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
