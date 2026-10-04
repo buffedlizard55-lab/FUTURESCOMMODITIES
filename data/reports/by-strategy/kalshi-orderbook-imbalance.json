@@ -1,9 +1,9 @@
 {
   "attribution": {
     "best_closed_trade": {
-      "pnl_usd": -5.74,
+      "pnl_usd": 2.45,
       "reason": "book_imbalance_flip",
-      "ticker": "KXGOLDMON-26SEP3017-T4130.99"
+      "ticker": "KXAAAGASW-26OCT05-4.3800"
     },
     "by_commodity": {
       "Brent Crude Oil": {
@@ -19,10 +19,10 @@
         "trades": 8
       },
       "Gasoline (US retail average)": {
-        "fees_usd": 8.84,
-        "realized_pnl_usd": 0,
-        "slippage_usd": 12.172651,
-        "trades": 10
+        "fees_usd": 9.09,
+        "realized_pnl_usd": -14.57,
+        "slippage_usd": 11.697651,
+        "trades": 12
       },
       "Gold": {
         "fees_usd": 11.41,
@@ -43,27 +43,27 @@
         "trades": 1
       }
     },
-    "closed_trades": 1,
+    "closed_trades": 3,
     "open_position_marks": [
       {
         "contracts": 244,
         "entry_price": 0.249377,
         "instrument_id": "kalshi:KXAAAGASED-26NOV03-4.00",
-        "mark_price": 0.21,
+        "mark_price": 0.19,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASED-26NOV03-4.00/orderbook?depth=20",
         "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXAAAGASED-26NOV03-4.00",
-        "unrealized_pnl_usd": -9.607988
+        "unrealized_pnl_usd": -14.487988
       },
       {
         "contracts": 9,
         "entry_price": 0.409967,
         "instrument_id": "kalshi:KXAAAGASED-26NOV03-4.25",
-        "mark_price": 0.39,
+        "mark_price": 0.31,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASED-26NOV03-4.25/orderbook?depth=20",
         "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXAAAGASED-26NOV03-4.25",
-        "unrealized_pnl_usd": -0.179703
+        "unrealized_pnl_usd": -0.899703
       },
       {
         "contracts": 38,
@@ -103,26 +103,6 @@
         "mark_source_url": null,
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMAXNY-26DEC31-5.40",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 19,
-        "entry_price": 0.74,
-        "instrument_id": "kalshi:KXAAAGASW-26OCT05-4.3800",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASW-26OCT05-4.3800",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 76,
-        "entry_price": 0.23,
-        "instrument_id": "kalshi:KXAAAGASW-26OCT05-4.4000",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASW-26OCT05-4.4000",
         "unrealized_pnl_usd": null
       },
       {
@@ -187,12 +167,12 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 36
+      "kalshi": 38
     },
     "worst_closed_trade": {
-      "pnl_usd": -5.74,
+      "pnl_usd": -17.02,
       "reason": "book_imbalance_flip",
-      "ticker": "KXGOLDMON-26SEP3017-T4130.99"
+      "ticker": "KXAAAGASW-26OCT05-4.4000"
     }
   },
   "blocked_orders": 22,
@@ -200,16 +180,16 @@
     "insufficient_depth_within_price_tolerance": 2,
     "settlement_result_not_published": 20
   },
-  "closed_trades": 21,
+  "closed_trades": 23,
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
   "entries": 35,
   "equity_usd": 99980.310055,
-  "exits": 1,
-  "fees_paid_usd": 44.56,
+  "exits": 3,
+  "fees_paid_usd": 44.81,
   "market_type": "Kalshi event contract",
-  "open_positions": 14,
+  "open_positions": 12,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -228,24 +208,24 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 55.432637,
+  "slippage_paid_usd": 54.957637,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 36,
-  "unrealized_pnl_usd": -9.787691,
+  "trades": 38,
+  "unrealized_pnl_usd": -15.387691,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "36 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -5.74 USD against 44.56 USD of fees and 55.43 USD of measured slippage against the mid.",
-    "Best closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).",
-    "Worst closed trade: KXGOLDMON-26SEP3017-T4130.99 at -5.74 USD (book_imbalance_flip).",
-    "2 open positions carry verified marks totalling -9.79 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "38 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -20.31 USD against 44.81 USD of fees and 54.96 USD of measured slippage against the mid.",
+    "Best closed trade: KXAAAGASW-26OCT05-4.3800 at 2.45 USD (book_imbalance_flip).",
+    "Worst closed trade: KXAAAGASW-26OCT05-4.4000 at -17.02 USD (book_imbalance_flip).",
+    "2 open positions carry verified marks totalling -15.39 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (20), insufficient_depth_within_price_tolerance (2).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
