@@ -19,10 +19,10 @@
         "trades": 2
       },
       "Bitcoin": {
-        "fees_usd": 5.652864,
-        "realized_pnl_usd": 0,
-        "slippage_usd": 420,
-        "trades": 1
+        "fees_usd": 11.365032,
+        "realized_pnl_usd": -207.089652,
+        "slippage_usd": 15960,
+        "trades": 2
       },
       "Ether (ETHA Trust ETF)": {
         "fees_usd": 15.873614,
@@ -37,18 +37,8 @@
         "trades": 3
       }
     },
-    "closed_trades": 4,
+    "closed_trades": 5,
     "open_position_marks": [
-      {
-        "contracts": 168,
-        "entry_price": 84914,
-        "instrument_id": "moex:BTV6",
-        "mark_price": 86084,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BTV6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
-        "ticker": "BTV6",
-        "unrealized_pnl_usd": -195.72462
-      },
       {
         "contracts": 4,
         "entry_price": 4432.8,
@@ -62,28 +52,28 @@
     ],
     "trades_by_venue": {
       "kalshi_margin": 6,
-      "moex_forts": 4
+      "moex_forts": 5
     },
     "worst_closed_trade": {
-      "pnl_usd": -101.103614,
-      "reason": "unit_reconciliation_failed",
-      "ticker": "ETZ6"
+      "pnl_usd": -207.089652,
+      "reason": "basis_convergence",
+      "ticker": "BTV6"
     }
   },
   "blocked_orders": 5,
   "blocked_reasons": {
     "no_verified_quote": 5
   },
-  "closed_trades": 4,
+  "closed_trades": 5,
   "disabled_reason": null,
   "display_name": "Cross-Venue Basis",
   "enabled": true,
   "entries": 6,
-  "equity_usd": 100623.124175,
-  "exits": 4,
-  "fees_paid_usd": 34.940055,
+  "equity_usd": 100606.046975,
+  "exits": 5,
+  "fees_paid_usd": 40.652223,
   "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
-  "open_positions": 2,
+  "open_positions": 1,
   "origin": {
     "claim": "A 24/7 listed perpetual and a session-based futures contract on the same metal cannot diverge indefinitely; when the basis exceeds its own cost of carry, the two must converge. The MOEX premium/discount to the world metal price since 2022 is a documented, persistent phenomenon.",
     "kind": "market_structure",
@@ -104,31 +94,31 @@
     "status": "structural - two real legs on two real venues, unit-normalised from official fields"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0.6231,
+  "return_pct": 0.606,
   "rules": {
     "entry": "Normalised basis >= 0.5% between the perpetual (USD/oz via contract_size) and the MOEX front future (USD/oz via official UNIT/LOT SIZE).",
     "exit": "Exit when the basis compresses below 0.1%, or when either leg loses its verified quote or normalisation inputs.",
     "sizing": "Target notional per leg, capped by each venue published liquidity."
   },
-  "slippage_paid_usd": 507.31435,
+  "slippage_paid_usd": 16047.31435,
   "strategy_id": "cross-venue-basis",
   "thesis": "Compare the Kalshi metal perpetual (price / contract_size = USD per ounce) with the front MOEX future on the same metal (mid = USD per ounce when UNIT=USD). When the normalised basis is large enough to cover both venues fees, buy the cheaper venue and sell the more expensive one. Both legs are simulated with their own venue fill model.",
   "traded_market_types": [
     "Cross-venue: Kalshi perpetual future vs exchange-listed future"
   ],
-  "trades": 10,
-  "unrealized_pnl_usd": 759.47538,
+  "trades": 11,
+  "unrealized_pnl_usd": 955.2,
   "username": "@basis-hunter",
   "venues": [
     "kalshi_margin",
     "moex_forts"
   ],
   "what_it_means": [
-    "10 ledger records so far: 5 distinct commodity exposures across kalshi_margin, moex_forts.",
-    "Closed-trade P&L is -101.40 USD against 34.94 USD of fees and 507.31 USD of measured slippage against the mid.",
+    "11 ledger records so far: 5 distinct commodity exposures across kalshi_margin, moex_forts.",
+    "Closed-trade P&L is -308.49 USD against 40.65 USD of fees and 16047.31 USD of measured slippage against the mid.",
     "Best closed trade: KXBTCPERP at 6.69026 USD (basis_leg_unavailable).",
-    "Worst closed trade: ETZ6 at -101.103614 USD (unit_reconciliation_failed).",
-    "2 open positions carry verified marks totalling 759.48 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Worst closed trade: BTV6 at -207.089652 USD (basis_convergence).",
+    "1 open positions carry verified marks totalling 955.20 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: no_verified_quote (5).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]

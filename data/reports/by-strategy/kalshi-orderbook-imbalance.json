@@ -37,10 +37,10 @@
         "trades": 2
       },
       "WTI Crude Oil": {
-        "fees_usd": 0.88,
+        "fees_usd": 3.7,
         "realized_pnl_usd": 0,
-        "slippage_usd": 0.25,
-        "trades": 1
+        "slippage_usd": 2.043144,
+        "trades": 3
       }
     },
     "closed_trades": 3,
@@ -156,6 +156,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 52,
+        "entry_price": 0.78,
+        "instrument_id": "kalshi:KXWTIMAX-26DEC31-T125",
+        "mark_price": 0.761,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMAX-26DEC31-T125/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIMAX-26DEC31-T125",
+        "unrealized_pnl_usd": -0.988
+      },
+      {
+        "contracts": 222,
+        "entry_price": 0.830852,
+        "instrument_id": "kalshi:KXWTIMAX-26DEC31-T130",
+        "mark_price": 0.821,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMAX-26DEC31-T130/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIMAX-26DEC31-T130",
+        "unrealized_pnl_usd": -2.187144
+      },
+      {
         "contracts": 50,
         "entry_price": 0.49,
         "instrument_id": "kalshi:KXWTIMIN-26OCT30-T85.50",
@@ -167,7 +187,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 38
+      "kalshi": 40
     },
     "worst_closed_trade": {
       "pnl_usd": -17.02,
@@ -175,21 +195,21 @@
       "ticker": "KXAAAGASW-26OCT05-4.4000"
     }
   },
-  "blocked_orders": 22,
+  "blocked_orders": 23,
   "blocked_reasons": {
-    "insufficient_depth_within_price_tolerance": 2,
+    "insufficient_depth_within_price_tolerance": 3,
     "settlement_result_not_published": 20
   },
   "closed_trades": 23,
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 35,
+  "entries": 37,
   "equity_usd": 99980.310055,
   "exits": 3,
-  "fees_paid_usd": 44.81,
+  "fees_paid_usd": 47.63,
   "market_type": "Kalshi event contract",
-  "open_positions": 12,
+  "open_positions": 14,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -208,24 +228,25 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 54.957637,
+  "slippage_paid_usd": 56.750781,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 38,
-  "unrealized_pnl_usd": 0,
+  "trades": 40,
+  "unrealized_pnl_usd": -3.175144,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "38 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -20.31 USD against 44.81 USD of fees and 54.96 USD of measured slippage against the mid.",
+    "40 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -20.31 USD against 47.63 USD of fees and 56.75 USD of measured slippage against the mid.",
     "Best closed trade: KXAAAGASW-26OCT05-4.3800 at 2.45 USD (book_imbalance_flip).",
     "Worst closed trade: KXAAAGASW-26OCT05-4.4000 at -17.02 USD (book_imbalance_flip).",
-    "Blocked order attempts and their recorded reasons: settlement_result_not_published (20), insufficient_depth_within_price_tolerance (2).",
+    "2 open positions carry verified marks totalling -3.18 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (20), insufficient_depth_within_price_tolerance (3).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
