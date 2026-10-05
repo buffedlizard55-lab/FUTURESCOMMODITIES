@@ -51,11 +51,11 @@
         "contracts": 2061,
         "entry_price": 0.97,
         "instrument_id": "kalshi:KXAAAGASDCT-26OCT06-4.4800",
-        "mark_price": 0.41,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDCT-26OCT06-4.4800/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASDCT-26OCT06-4.4800",
-        "unrealized_pnl_usd": -1154.16
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 30,
@@ -115,26 +115,6 @@
         "mark_source_url": null,
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXGOLDDIRY-26DEC31H1700-T4700",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 125,
-        "entry_price": 0.28,
-        "instrument_id": "kalshi:KXNATGASD-26OCT0517-T3.060",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXNATGASD-26OCT0517-T3.060",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 58,
-        "entry_price": 0.871379,
-        "instrument_id": "kalshi:KXNATGASD-26OCT0517-T3.065",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXNATGASD-26OCT0517-T3.065",
         "unrealized_pnl_usd": null
       },
       {
@@ -199,7 +179,7 @@
     "insufficient_depth_within_price_tolerance": 12,
     "settlement_result_not_published": 131
   },
-  "closed_trades": 86,
+  "closed_trades": 88,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
@@ -208,13 +188,13 @@
   "exits": 0,
   "fees_paid_usd": 274.07,
   "market_type": "Kalshi event contract",
-  "open_positions": 14,
+  "open_positions": 12,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
     "status": "structural - no forecast required"
   },
-  "realized_pnl_usd": -9208.342834,
+  "realized_pnl_usd": -9171.112816,
   "return_pct": -0.0311,
   "rules": {
     "entry": "Monotonicity violation of at least 2 cents between two strikes of the same series and expiry.",
@@ -228,7 +208,7 @@
     "Kalshi event contract"
   ],
   "trades": 100,
-  "unrealized_pnl_usd": -1154.16,
+  "unrealized_pnl_usd": 0,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
@@ -236,7 +216,6 @@
   "what_it_means": [
     "100 ledger records so far: 7 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 274.07 USD of fees and 13755.91 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -1154.16 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: already_holding (4), settlement_result_not_published (131), insufficient_depth_within_price_tolerance (12).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
