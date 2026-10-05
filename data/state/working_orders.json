@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T21:50:31.991Z",
+  "generated_at": "2026-10-05T00:36:44.729Z",
   "note": "Resting maker orders. A fill is recorded only when a later snapshot shows the market trading through the resting price, and the fill is flagged as modelled.",
   "orders": [
     {
@@ -5743,6 +5743,7 @@
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 117,
       "expires_at": "2026-10-05T03:50:29.534Z",
       "id": "fded1643a3aed2be6e69",
@@ -5770,13 +5771,14 @@
         "resting_price": 0.89,
         "spread": 0.05
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 5-cent spread on WTI Crude Oil; maker fee multiplier is zero for standard series.",
       "ticker": "KXWTIMAX-26OCT30-T95.50",
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 72,
       "expires_at": "2026-10-05T03:50:29.534Z",
       "id": "25cea9d08dcfb68f0fc0",
@@ -5804,13 +5806,14 @@
         "resting_price": 0.29,
         "spread": 0.15
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 15-cent spread on WTI Crude Oil; maker fee multiplier is zero for standard series.",
       "ticker": "KXWTIMAX-26OCT30-T104.00",
       "username": "@spread-hunter"
     },
     {
+      "cancelled_reason": "instrument or quote absent from this snapshot",
       "contracts": 1190,
       "expires_at": "2026-10-05T03:50:29.534Z",
       "id": "0c75ce68658df2c8d226",
@@ -5838,10 +5841,112 @@
         "resting_price": 0.085,
         "spread": 0.033
       },
-      "status": "resting",
+      "status": "cancelled",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 3-cent spread on WTI Crude Oil; maker fee multiplier is zero for standard series.",
       "ticker": "KXWTIMAX-26DEC31-T150",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 3012,
+      "expires_at": "2026-10-05T06:36:42.278Z",
+      "id": "c03390d00021cc1a5e55",
+      "instrument_id": "kalshi:KXAAAGASDSC-26OCT05-3.9050",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-10-05T00:36:42.278Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.18,
+        "best_no_bid": 0.05,
+        "best_yes_ask": 0.95,
+        "best_yes_bid": 0.82,
+        "mid": 0.885,
+        "retrieved_at": "2026-10-05T00:36:05.141Z",
+        "sha256": "036d8c07d6b5be81de47f722c158c11e429df8ae6dc8b2e12b184684e4247709",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSC-26OCT05-3.9050/orderbook?depth=20",
+        "spread": 0.13
+      },
+      "remaining": 3012,
+      "resting_price": 0.83,
+      "signal": {
+        "best_yes_ask": 0.95,
+        "best_yes_bid": 0.82,
+        "name": "spread_capture",
+        "resting_price": 0.83,
+        "spread": 0.13
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 13-cent spread on Gasoline (US retail average); maker fee multiplier is zero for standard series.",
+      "ticker": "KXAAAGASDSC-26OCT05-3.9050",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 685,
+      "expires_at": "2026-10-05T06:36:42.278Z",
+      "id": "f79ddc4fb4650b610e21",
+      "instrument_id": "kalshi:KXWTIW-26OCT0914-T79.00",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-10-05T00:36:42.278Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.99,
+        "best_no_bid": 0.95,
+        "best_yes_ask": 0.05,
+        "best_yes_bid": 0.01,
+        "mid": 0.03,
+        "retrieved_at": "2026-10-05T00:36:05.658Z",
+        "sha256": "8dd99625fdbe0a8fdb44778cebce1c4f1ca100db62b4c7362ca006ce63a83e99",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIW-26OCT0914-T79.00/orderbook?depth=20",
+        "spread": 0.04
+      },
+      "remaining": 685,
+      "resting_price": 0.02,
+      "signal": {
+        "best_yes_ask": 0.05,
+        "best_yes_bid": 0.01,
+        "name": "spread_capture",
+        "resting_price": 0.02,
+        "spread": 0.04
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 4-cent spread on WTI Crude Oil; maker fee multiplier is zero for standard series.",
+      "ticker": "KXWTIW-26OCT0914-T79.00",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 1135,
+      "expires_at": "2026-10-05T06:36:42.279Z",
+      "id": "1aa16177e39dcb75b5e9",
+      "instrument_id": "kalshi:KXWTIW-26OCT0914-B98.50",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-10-05T00:36:42.279Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.98,
+        "best_no_bid": 0.95,
+        "best_yes_ask": 0.05,
+        "best_yes_bid": 0.02,
+        "mid": 0.035,
+        "retrieved_at": "2026-10-05T00:36:06.050Z",
+        "sha256": "523dc193b327128fb47a14cc06ec02f77d1263906e8f63db4843e99ed4804a07",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIW-26OCT0914-B98.50/orderbook?depth=20",
+        "spread": 0.03
+      },
+      "remaining": 1135,
+      "resting_price": 0.03,
+      "signal": {
+        "best_yes_ask": 0.05,
+        "best_yes_bid": 0.02,
+        "name": "spread_capture",
+        "resting_price": 0.03,
+        "spread": 0.03
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 3-cent spread on WTI Crude Oil; maker fee multiplier is zero for standard series.",
+      "ticker": "KXWTIW-26OCT0914-B98.50",
       "username": "@spread-hunter"
     }
   ]
