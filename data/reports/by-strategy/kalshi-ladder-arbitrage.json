@@ -168,16 +168,6 @@
         "unrealized_pnl_usd": null
       },
       {
-        "contracts": 4,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXWTIH-26OCT0613-T88.29",
-        "mark_price": 0.82,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26OCT0613-T88.29/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXWTIH-26OCT0613-T88.29",
-        "unrealized_pnl_usd": -0.68
-      },
-      {
         "contracts": 1,
         "entry_price": 0.86,
         "instrument_id": "kalshi:KXWTIMAX-26OCT30-T99.00",
@@ -199,7 +189,7 @@
     "insufficient_depth_within_price_tolerance": 13,
     "settlement_result_not_published": 132
   },
-  "closed_trades": 89,
+  "closed_trades": 90,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
@@ -208,13 +198,13 @@
   "exits": 0,
   "fees_paid_usd": 275.37,
   "market_type": "Kalshi event contract",
-  "open_positions": 14,
+  "open_positions": 13,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
     "status": "structural - no forecast required"
   },
-  "realized_pnl_usd": -9113.482816,
+  "realized_pnl_usd": -9113.452816,
   "return_pct": -0.0311,
   "rules": {
     "entry": "Monotonicity violation of at least 2 cents between two strikes of the same series and expiry.",
@@ -228,7 +218,7 @@
     "Kalshi event contract"
   ],
   "trades": 103,
-  "unrealized_pnl_usd": -0.68,
+  "unrealized_pnl_usd": 0,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
@@ -236,7 +226,6 @@
   "what_it_means": [
     "103 ledger records so far: 7 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 275.37 USD of fees and 13760.28 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -0.68 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: already_holding (4), settlement_result_not_published (132), insufficient_depth_within_price_tolerance (13).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
