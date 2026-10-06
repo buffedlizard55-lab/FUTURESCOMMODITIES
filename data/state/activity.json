@@ -4,8 +4,37 @@
       "equity_usd": 99936.446469,
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
-      "notes": [],
-      "orders_produced": 0,
+      "notes": [
+        {
+          "instrument_id": "kalshi:KXCOPPERMON-26OCT3017-T7.53",
+          "no_ask": 0.99,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.02,
+          "yes_mid": 0.02
+        },
+        {
+          "instrument_id": "kalshi:KXCOPPERMON-26OCT3017-T7.47",
+          "no_ask": 0.99,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.02,
+          "yes_mid": 0.02
+        },
+        {
+          "instrument_id": "kalshi:KXCOPPERMON-26OCT3017-T7.41",
+          "no_ask": 0.98,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.01,
+          "yes_mid": 0.025
+        },
+        {
+          "instrument_id": "kalshi:KXCOPPERMON-26OCT3017-T7.35",
+          "no_ask": 0.98,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.02,
+          "yes_mid": 0.03
+        }
+      ],
+      "orders_produced": 4,
       "positions": 53,
       "return_pct": -0.0636,
       "strategy_id": "kalshi-longshot-fade",
@@ -49,8 +78,8 @@
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
-      "orders_produced": 0,
-      "positions": 6,
+      "orders_produced": 1,
+      "positions": 7,
       "return_pct": -0.0069,
       "strategy_id": "kalshi-cheap-momentum",
       "username": "@tail-rider"
@@ -59,8 +88,15 @@
       "equity_usd": 99968.85,
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
-      "notes": [],
-      "orders_produced": 0,
+      "notes": [
+        {
+          "high_strike": 7.23,
+          "low_strike": 7.17,
+          "series": "KXCOPPERMON",
+          "violation": -0.025
+        }
+      ],
+      "orders_produced": 2,
       "positions": 14,
       "return_pct": -0.0311,
       "strategy_id": "kalshi-ladder-arbitrage",
@@ -79,11 +115,11 @@
     },
     {
       "equity_usd": 99998.9196,
-      "exits_produced": 8,
+      "exits_produced": 5,
       "market_type": "Kalshi perpetual future",
       "notes": [],
       "orders_produced": 4,
-      "positions": 8,
+      "positions": 10,
       "return_pct": -0.0011,
       "strategy_id": "kalshi-perp-trend",
       "username": "@perp-surfer"
@@ -171,22 +207,22 @@
       "username": "@agri-trend"
     },
     {
-      "equity_usd": 100634.615589,
+      "equity_usd": 100628.519057,
       "exits_produced": 0,
       "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
       "notes": [
         {
           "moex_usd_per_unit": 20.685,
-          "note": "Unit reconciliation failed: KXETHPERP 2717.35 USD/unit vs ETZ6 20.68 USD/unit differ by 131.4x, so the two venues quote different units of the asset and no basis is defined.",
+          "note": "Unit reconciliation failed: KXETHPERP 2707.45 USD/unit vs ETZ6 20.68 USD/unit differ by 130.9x, so the two venues quote different units of the asset and no basis is defined.",
           "pair": "Ether",
-          "perp_usd_per_unit": 2717.35,
+          "perp_usd_per_unit": 2707.45,
           "skipped": "unit_reconciliation_failed",
-          "unit_ratio": 131.3681
+          "unit_ratio": 130.8895
         }
       ],
       "orders_produced": 0,
       "positions": 3,
-      "return_pct": 0.6346,
+      "return_pct": 0.6285,
       "strategy_id": "cross-venue-basis",
       "username": "@basis-hunter"
     },
@@ -196,7 +232,7 @@
       "market_type": "Kalshi event contract",
       "notes": [],
       "orders_produced": 0,
-      "positions": 14,
+      "positions": 13,
       "return_pct": -0.0197,
       "strategy_id": "kalshi-orderbook-imbalance",
       "username": "@book-watcher"
@@ -279,105 +315,6 @@
       "username": "@ruonia-curve"
     }
   ],
-  "generated_at": "2026-10-05T22:25:45.232Z",
-  "settlements": [
-    {
-      "expiration": "2026-10-12T22:00:00Z",
-      "instrument_id": "kalshi:KXNATGASD-26OCT0517-T3.060",
-      "outcome_held": "yes",
-      "payout_usd": 125,
-      "pnl_usd": 88.23,
-      "result": "yes",
-      "settled_at": "2026-10-05T22:25:42.859Z",
-      "settlement_source_sha256": "7a560b89cba10711910f550955303576af33853d0aeaaf9cb6c1088cd79b9bb8",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26OCT0517-T3.060",
-      "strategy_id": "kalshi-ladder-arbitrage",
-      "ticker": "KXNATGASD-26OCT0517-T3.060",
-      "username": "@ladder-arb"
-    },
-    {
-      "expiration": "2026-10-12T22:00:00Z",
-      "instrument_id": "kalshi:KXNATGASD-26OCT0517-T3.065",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -50.999982,
-      "result": "yes",
-      "settled_at": "2026-10-05T22:25:43.007Z",
-      "settlement_source_sha256": "f6ad7f30052d548d0899d1e3d79082d34c5ea40cd4b0ee33d54ec98ccba5921f",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26OCT0517-T3.065",
-      "strategy_id": "kalshi-ladder-arbitrage",
-      "ticker": "KXNATGASD-26OCT0517-T3.065",
-      "username": "@ladder-arb"
-    },
-    {
-      "expiration": "2026-10-12T22:00:00Z",
-      "instrument_id": "kalshi:KXCOPPERD-26OCT0517-T6.70",
-      "outcome_held": "no",
-      "payout_usd": 125,
-      "pnl_usd": 9.35,
-      "result": "no",
-      "settled_at": "2026-10-05T22:25:43.120Z",
-      "settlement_source_sha256": "3db5e5d19497d018eee1fcef50625ab1a2e8b9e09260e848c9cdf032215435ab",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERD-26OCT0517-T6.70",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXCOPPERD-26OCT0517-T6.70",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-12T22:00:00Z",
-      "instrument_id": "kalshi:KXCOPPERD-26OCT0517-T6.72",
-      "outcome_held": "no",
-      "payout_usd": 125,
-      "pnl_usd": 7,
-      "result": "no",
-      "settled_at": "2026-10-05T22:25:43.250Z",
-      "settlement_source_sha256": "a3a564fd7008be86c28ca1739ae51f275f6d3638d92dcfd16ac2664cb58a5750",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERD-26OCT0517-T6.72",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXCOPPERD-26OCT0517-T6.72",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-12T22:00:00Z",
-      "instrument_id": "kalshi:KXCOPPERD-26OCT0517-T6.90",
-      "outcome_held": "no",
-      "payout_usd": 125,
-      "pnl_usd": 1.16,
-      "result": "no",
-      "settled_at": "2026-10-05T22:25:43.382Z",
-      "settlement_source_sha256": "0b112502641e77a0f3e266e77b7337b90b0be41d8f7621b1ac1b7e8e34c0de32",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERD-26OCT0517-T6.90",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXCOPPERD-26OCT0517-T6.90",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-12T22:00:00Z",
-      "instrument_id": "kalshi:KXCOPPERD-26OCT0517-T6.92",
-      "outcome_held": "no",
-      "payout_usd": 125,
-      "pnl_usd": 1.16,
-      "result": "no",
-      "settled_at": "2026-10-05T22:25:43.515Z",
-      "settlement_source_sha256": "4866b333b4770da7393e18ef8cc16c2eebc93f6494bae579117057ccb67a7fd2",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERD-26OCT0517-T6.92",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXCOPPERD-26OCT0517-T6.92",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-12T22:00:00Z",
-      "instrument_id": "kalshi:KXCOPPERD-26OCT0517-T6.50",
-      "outcome_held": "yes",
-      "payout_usd": 137,
-      "pnl_usd": 17.669963,
-      "result": "yes",
-      "settled_at": "2026-10-05T22:25:43.662Z",
-      "settlement_source_sha256": "0c0ae3ff2e1d592a410617c763cec98829c561994a954b8f8b8229fed8f28ec6",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERD-26OCT0517-T6.50",
-      "strategy_id": "kalshi-orderbook-imbalance",
-      "ticker": "KXCOPPERD-26OCT0517-T6.50",
-      "username": "@book-watcher"
-    }
-  ]
+  "generated_at": "2026-10-06T02:27:09.481Z",
+  "settlements": []
 }

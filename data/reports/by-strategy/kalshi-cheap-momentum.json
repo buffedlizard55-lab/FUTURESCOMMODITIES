@@ -3,10 +3,10 @@
     "best_closed_trade": null,
     "by_commodity": {
       "Copper": {
-        "fees_usd": 0.55,
+        "fees_usd": 0.66,
         "realized_pnl_usd": 0,
-        "slippage_usd": 3.799996,
-        "trades": 1
+        "slippage_usd": 4.299996,
+        "trades": 2
       },
       "Gasoline (US retail average)": {
         "fees_usd": 2.14,
@@ -65,6 +65,16 @@
       },
       {
         "contracts": 50,
+        "entry_price": 0.03,
+        "instrument_id": "kalshi:KXCOPPERMON-26OCT3017-T7.53",
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26OCT3017-T7.53/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERMON-26OCT3017-T7.53",
+        "unrealized_pnl_usd": -1
+      },
+      {
+        "contracts": 50,
         "entry_price": 0.1,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T5400",
         "mark_price": null,
@@ -85,7 +95,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 7
+      "kalshi": 8
     },
     "worst_closed_trade": null
   },
@@ -98,12 +108,12 @@
   "disabled_reason": null,
   "display_name": "Cheap Momentum",
   "enabled": true,
-  "entries": 7,
+  "entries": 8,
   "equity_usd": 99993.070004,
   "exits": 0,
-  "fees_paid_usd": 3.05,
+  "fees_paid_usd": 3.16,
   "market_type": "Kalshi event contract",
-  "open_positions": 6,
+  "open_positions": 7,
   "origin": {
     "claim": "Cheap YES contracts that are already trending up can keep trending when the underlying commodity is moving, giving convex payoffs; this is the explicit counter-hypothesis to the longshot fade.",
     "kind": "market_structure",
@@ -116,21 +126,22 @@
     "exit": "Exit when 5-day momentum turns negative or the market closes.",
     "sizing": "Target notional, capped by depth."
   },
-  "slippage_paid_usd": 10.514996,
+  "slippage_paid_usd": 11.014996,
   "strategy_id": "kalshi-cheap-momentum",
   "thesis": "Buy YES at 10 cents or less only when the series own official candle history is trending up. This strategy is deliberately the opposite bet to @fade-the-crowd, so the leaderboard measures which view of cheap contracts is right.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 7,
-  "unrealized_pnl_usd": 0,
+  "trades": 8,
+  "unrealized_pnl_usd": -1,
   "username": "@tail-rider",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "7 ledger records so far: 3 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 3.05 USD of fees and 10.51 USD of measured slippage against the mid.",
+    "8 ledger records so far: 3 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 3.16 USD of fees and 11.01 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -1.00 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (4), already_holding (3).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
