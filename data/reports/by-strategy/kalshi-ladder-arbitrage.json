@@ -39,24 +39,14 @@
         "trades": 7
       },
       "WTI Crude Oil": {
-        "fees_usd": 0.9,
+        "fees_usd": 0.91,
         "realized_pnl_usd": 0,
-        "slippage_usd": 7.219859,
-        "trades": 3
+        "slippage_usd": 7.559859,
+        "trades": 4
       }
     },
     "closed_trades": 0,
     "open_position_marks": [
-      {
-        "contracts": 2061,
-        "entry_price": 0.97,
-        "instrument_id": "kalshi:KXAAAGASDCT-26OCT06-4.4800",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDCT-26OCT06-4.4800",
-        "unrealized_pnl_usd": null
-      },
       {
         "contracts": 30,
         "entry_price": 0.10235,
@@ -178,6 +168,16 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 4,
+        "entry_price": 0.99,
+        "instrument_id": "kalshi:KXWTIH-26OCT0613-T88.29",
+        "mark_price": 0.82,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26OCT0613-T88.29/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXWTIH-26OCT0613-T88.29",
+        "unrealized_pnl_usd": -0.68
+      },
+      {
         "contracts": 1,
         "entry_price": 0.86,
         "instrument_id": "kalshi:KXWTIMAX-26OCT30-T99.00",
@@ -189,24 +189,24 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 102
+      "kalshi": 103
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 148,
+  "blocked_orders": 149,
   "blocked_reasons": {
     "already_holding": 4,
-    "insufficient_depth_within_price_tolerance": 12,
+    "insufficient_depth_within_price_tolerance": 13,
     "settlement_result_not_published": 132
   },
-  "closed_trades": 88,
+  "closed_trades": 89,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
-  "entries": 102,
+  "entries": 103,
   "equity_usd": 99968.85,
   "exits": 0,
-  "fees_paid_usd": 275.36,
+  "fees_paid_usd": 275.37,
   "market_type": "Kalshi event contract",
   "open_positions": 14,
   "origin": {
@@ -214,29 +214,30 @@
     "kind": "market_structure",
     "status": "structural - no forecast required"
   },
-  "realized_pnl_usd": -9171.112816,
+  "realized_pnl_usd": -9113.482816,
   "return_pct": -0.0311,
   "rules": {
     "entry": "Monotonicity violation of at least 2 cents between two strikes of the same series and expiry.",
     "exit": "Held to settlement (the two legs converge by construction).",
     "sizing": "Target notional per leg, capped by depth."
   },
-  "slippage_paid_usd": 13759.943314,
+  "slippage_paid_usd": 13760.283314,
   "strategy_id": "kalshi-ladder-arbitrage",
   "thesis": "Within one series and one expiry, the YES price must fall as the strike rises (for greater-than markets). When the published book violates that ordering by more than the configured tolerance, buy the underpriced YES leg and the NO of the overpriced leg.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 102,
-  "unrealized_pnl_usd": 0,
+  "trades": 103,
+  "unrealized_pnl_usd": -0.68,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "102 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 275.36 USD of fees and 13759.94 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: already_holding (4), settlement_result_not_published (132), insufficient_depth_within_price_tolerance (12).",
+    "103 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 275.37 USD of fees and 13760.28 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -0.68 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: already_holding (4), settlement_result_not_published (132), insufficient_depth_within_price_tolerance (13).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
