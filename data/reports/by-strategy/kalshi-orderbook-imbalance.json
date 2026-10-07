@@ -25,10 +25,10 @@
         "trades": 15
       },
       "Gold": {
-        "fees_usd": 11.41,
+        "fees_usd": 15.03,
         "realized_pnl_usd": -5.74,
-        "slippage_usd": 8.64517,
-        "trades": 8
+        "slippage_usd": 13.06517,
+        "trades": 10
       },
       "Silver": {
         "fees_usd": 2.23,
@@ -156,6 +156,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 253,
+        "entry_price": 0.83,
+        "instrument_id": "kalshi:KXGOLDD-26OCT0717-T4102",
+        "mark_price": 0.8,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT0717-T4102/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT0717-T4102",
+        "unrealized_pnl_usd": -7.59
+      },
+      {
+        "contracts": 125,
+        "entry_price": 0.85,
+        "instrument_id": "kalshi:KXGOLDD-26OCT0717-T4172",
+        "mark_price": 0.84,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT0717-T4172/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT0717-T4172",
+        "unrealized_pnl_usd": -1.25
+      },
+      {
         "contracts": 193,
         "entry_price": 0.624654,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4300",
@@ -207,7 +227,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 43
+      "kalshi": 45
     },
     "worst_closed_trade": {
       "pnl_usd": -17.02,
@@ -224,12 +244,12 @@
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 40,
+  "entries": 42,
   "equity_usd": 99980.310055,
   "exits": 3,
-  "fees_paid_usd": 50.07,
+  "fees_paid_usd": 53.69,
   "market_type": "Kalshi event contract",
-  "open_positions": 16,
+  "open_positions": 18,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -248,23 +268,24 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 59.000781,
+  "slippage_paid_usd": 63.420781,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 43,
-  "unrealized_pnl_usd": 0,
+  "trades": 45,
+  "unrealized_pnl_usd": -8.84,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "43 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -20.31 USD against 50.07 USD of fees and 59.00 USD of measured slippage against the mid.",
+    "45 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -20.31 USD against 53.69 USD of fees and 63.42 USD of measured slippage against the mid.",
     "Best closed trade: KXAAAGASW-26OCT05-4.3800 at 2.45 USD (book_imbalance_flip).",
     "Worst closed trade: KXAAAGASW-26OCT05-4.4000 at -17.02 USD (book_imbalance_flip).",
+    "2 open positions carry verified marks totalling -8.84 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (20), insufficient_depth_within_price_tolerance (3).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]

@@ -21,10 +21,10 @@
         "trades": 99
       },
       "Gold": {
-        "fees_usd": 12.15,
+        "fees_usd": 13.64,
         "realized_pnl_usd": 0,
-        "slippage_usd": 89.995222,
-        "trades": 16
+        "slippage_usd": 95.475222,
+        "trades": 19
       },
       "Natural Gas": {
         "fees_usd": 2.07,
@@ -428,6 +428,36 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 254,
+        "entry_price": 0.96,
+        "instrument_id": "kalshi:KXGOLDD-26OCT0717-T4192",
+        "mark_price": 0.95,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT0717-T4192/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT0717-T4192",
+        "unrealized_pnl_usd": -2.54
+      },
+      {
+        "contracts": 376,
+        "entry_price": 0.97,
+        "instrument_id": "kalshi:KXGOLDD-26OCT0717-T4202",
+        "mark_price": 0.95,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT0717-T4202/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT0717-T4202",
+        "unrealized_pnl_usd": -7.52
+      },
+      {
+        "contracts": 30,
+        "entry_price": 0.99,
+        "instrument_id": "kalshi:KXGOLDD-26OCT0717-T4222",
+        "mark_price": 0.96,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT0717-T4222/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT0717-T4222",
+        "unrealized_pnl_usd": -0.9
+      },
+      {
         "contracts": 610,
         "entry_price": 0.91,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4800",
@@ -639,7 +669,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 185
+      "kalshi": 188
     },
     "worst_closed_trade": null
   },
@@ -652,12 +682,12 @@
   "disabled_reason": null,
   "display_name": "Longshot Fade",
   "enabled": true,
-  "entries": 185,
+  "entries": 188,
   "equity_usd": 99936.446469,
   "exits": 0,
-  "fees_paid_usd": 172.3,
+  "fees_paid_usd": 173.79,
   "market_type": "Kalshi event contract",
-  "open_positions": 59,
+  "open_positions": 62,
   "origin": {
     "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
     "kind": "documented_anomaly",
@@ -670,21 +700,22 @@
     "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 1292.431092,
+  "slippage_paid_usd": 1297.911092,
   "strategy_id": "kalshi-longshot-fade",
   "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 185,
-  "unrealized_pnl_usd": 0,
+  "trades": 188,
+  "unrealized_pnl_usd": -10.96,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "185 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 172.30 USD of fees and 1292.43 USD of measured slippage against the mid.",
+    "188 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 173.79 USD of fees and 1297.91 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -10.96 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (204), insufficient_depth_within_price_tolerance (1).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
