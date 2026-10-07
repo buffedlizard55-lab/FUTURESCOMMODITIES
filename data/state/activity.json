@@ -4,23 +4,8 @@
       "equity_usd": 99936.446469,
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
-      "notes": [
-        {
-          "instrument_id": "kalshi:KXAAAGASW-26OCT12-4.4200",
-          "no_ask": 0.98,
-          "signal": "yes_mid_at_or_below_10c",
-          "spread": 0.03,
-          "yes_mid": 0.035
-        },
-        {
-          "instrument_id": "kalshi:KXAAAGASW-26OCT12-4.4000",
-          "no_ask": 0.95,
-          "signal": "yes_mid_at_or_below_10c",
-          "spread": 0.02,
-          "yes_mid": 0.06
-        }
-      ],
-      "orders_produced": 2,
+      "notes": [],
+      "orders_produced": 0,
       "positions": 59,
       "return_pct": -0.0636,
       "strategy_id": "kalshi-longshot-fade",
@@ -42,7 +27,7 @@
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
-      "orders_produced": 3,
+      "orders_produced": 0,
       "positions": 0,
       "return_pct": 0,
       "strategy_id": "kalshi-spread-capture",
@@ -74,9 +59,16 @@
       "equity_usd": 99968.85,
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
-      "notes": [],
-      "orders_produced": 0,
-      "positions": 14,
+      "notes": [
+        {
+          "high_strike": 1169.99,
+          "low_strike": 1169.49,
+          "series": "KXPALLADIUMH",
+          "violation": -0.07
+        }
+      ],
+      "orders_produced": 2,
+      "positions": 15,
       "return_pct": -0.0311,
       "strategy_id": "kalshi-ladder-arbitrage",
       "username": "@ladder-arb"
@@ -94,10 +86,10 @@
     },
     {
       "equity_usd": 99998.9196,
-      "exits_produced": 3,
+      "exits_produced": 4,
       "market_type": "Kalshi perpetual future",
       "notes": [],
-      "orders_produced": 4,
+      "orders_produced": 2,
       "positions": 12,
       "return_pct": -0.0011,
       "strategy_id": "kalshi-perp-trend",
@@ -180,22 +172,22 @@
       "username": "@agri-trend"
     },
     {
-      "equity_usd": 100582.756113,
+      "equity_usd": 100581.740777,
       "exits_produced": 0,
       "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
       "notes": [
         {
           "moex_usd_per_unit": 20.595,
-          "note": "Unit reconciliation failed: KXETHPERP 2696.55 USD/unit vs ETZ6 20.59 USD/unit differ by 130.9x, so the two venues quote different units of the asset and no basis is defined.",
+          "note": "Unit reconciliation failed: KXETHPERP 2696.45 USD/unit vs ETZ6 20.59 USD/unit differ by 130.9x, so the two venues quote different units of the asset and no basis is defined.",
           "pair": "Ether",
-          "perp_usd_per_unit": 2696.55,
+          "perp_usd_per_unit": 2696.45,
           "skipped": "unit_reconciliation_failed",
-          "unit_ratio": 130.9323
+          "unit_ratio": 130.9274
         }
       ],
       "orders_produced": 0,
       "positions": 3,
-      "return_pct": 0.5828,
+      "return_pct": 0.5817,
       "strategy_id": "cross-venue-basis",
       "username": "@basis-hunter"
     },
@@ -204,7 +196,7 @@
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
-      "orders_produced": 3,
+      "orders_produced": 0,
       "positions": 16,
       "return_pct": -0.0197,
       "strategy_id": "kalshi-orderbook-imbalance",
@@ -288,21 +280,6 @@
       "username": "@ruonia-curve"
     }
   ],
-  "generated_at": "2026-10-06T21:09:59.707Z",
-  "settlements": [
-    {
-      "expiration": "2026-10-13T18:00:00Z",
-      "instrument_id": "kalshi:KXWTIH-26OCT0613-T88.29",
-      "outcome_held": "yes",
-      "payout_usd": 4,
-      "pnl_usd": 0.03,
-      "result": "yes",
-      "settled_at": "2026-10-06T21:09:58.083Z",
-      "settlement_source_sha256": "d9a6ebcc41f616422e491eb28a24fa63858b8c763ef509eb68d95f6027ec7265",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIH-26OCT0613-T88.29",
-      "strategy_id": "kalshi-ladder-arbitrage",
-      "ticker": "KXWTIH-26OCT0613-T88.29",
-      "username": "@ladder-arb"
-    }
-  ]
+  "generated_at": "2026-10-07T00:57:50.086Z",
+  "settlements": []
 }
