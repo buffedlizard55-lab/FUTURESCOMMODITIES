@@ -1,10 +1,62 @@
 {
   "attribution": {
     "best_closed_trade": null,
-    "by_commodity": {},
+    "by_commodity": {
+      "0.01 BCH": {
+        "fees_usd": 1.542984,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 220438591680828500,
+        "trades": 1
+      },
+      "1 ADA": {
+        "fees_usd": 1.699243,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 2762399925038004700,
+        "trades": 1
+      },
+      "Aluminum": {
+        "fees_usd": 0.112406,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 9.336,
+        "trades": 1
+      }
+    },
     "closed_trades": 0,
-    "open_position_marks": [],
-    "trades_by_venue": {},
+    "open_position_marks": [
+      {
+        "contracts": 5990,
+        "entry_price": 0.2364,
+        "instrument_id": "kalshiperp:KXADAPERP",
+        "mark_price": 922337203685477.6,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "KXADAPERP",
+        "unrealized_pnl_usd": -5524799850076009000
+      },
+      {
+        "contracts": 30,
+        "entry_price": 3.1224,
+        "instrument_id": "kalshiperp:KXALUMINUMPERP",
+        "mark_price": 2.5,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
+        "mark_status": "long_marked_at_bid",
+        "ticker": "KXALUMINUMPERP",
+        "unrealized_pnl_usd": -18.672
+      },
+      {
+        "contracts": 478,
+        "entry_price": 2.69,
+        "instrument_id": "kalshiperp:KXBCHPERP",
+        "mark_price": 922337203685477.6,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
+        "mark_status": "short_marked_at_offer",
+        "ticker": "KXBCHPERP",
+        "unrealized_pnl_usd": -440877183361656960
+      }
+    ],
+    "trades_by_venue": {
+      "kalshi_margin": 3
+    },
     "worst_closed_trade": null
   },
   "blocked_orders": 0,
@@ -13,35 +65,40 @@
   "disabled_reason": null,
   "display_name": "Perp Mark Fade",
   "enabled": true,
-  "entries": 0,
-  "equity_usd": 100000,
+  "entries": 3,
+  "equity_usd": -5965677033437567000,
   "exits": 0,
-  "fees_paid_usd": 0,
+  "fees_paid_usd": 3.354633,
   "market_type": "Kalshi perpetual future",
-  "open_positions": 0,
+  "open_positions": 3,
   "origin": {
     "claim": "A perpetual's book is anchored to the exchange-published mark/index price: deviations are driven by transient order flow and tend to decay back toward the mark. Kalshi publishes the mark (settlement mark price) for every perpetual in the same payload as the book.",
     "kind": "market_structure",
     "status": "structural - the anchor is published by the exchange itself"
   },
   "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "return_pct": -5965677033437667,
   "rules": {
     "entry": "|perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.",
     "exit": "Exit when the deviation decays below 0.08% or the two-sided quote disappears.",
     "sizing": "Target notional, capped by a share of published 24h notional volume."
   },
-  "slippage_paid_usd": 0,
+  "slippage_paid_usd": 2982838516718833000,
   "strategy_id": "kalshi-perp-mark-fade",
   "thesis": "When the Kalshi perpetual mid deviates from the exchange-published mark price by 0.3% or more, trade back toward the mark; exit when the deviation decays below 0.08%. Both the deviation and its anchor come from the exchange payload in the same snapshot.",
-  "traded_market_types": [],
-  "trades": 0,
-  "unrealized_pnl_usd": 0,
+  "traded_market_types": [
+    "Kalshi perpetual future"
+  ],
+  "trades": 3,
+  "unrealized_pnl_usd": -5965677033437666000,
   "username": "@mark-fade",
   "venues": [
     "kalshi_margin"
   ],
   "what_it_means": [
-    "No trade has been placed yet. The strategy is live and evaluating Kalshi perpetual future markets every tick."
+    "3 ledger records so far: 3 distinct commodity exposures across kalshi_margin.",
+    "Closed-trade P&L is 0.00 USD against 3.35 USD of fees and 2982838516718833152.00 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -5965677033437666304.00 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
