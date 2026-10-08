@@ -1,63 +1,71 @@
 {
   "attribution": {
-    "best_closed_trade": null,
+    "best_closed_trade": {
+      "pnl_usd": -1.845112,
+      "reason": "perp_mark_reached",
+      "ticker": "KXALUMINUMPERP"
+    },
     "by_commodity": {
       "0.01 BCH": {
-        "fees_usd": 1.542984,
-        "realized_pnl_usd": 0,
+        "fees_usd": 2.681087,
+        "realized_pnl_usd": -92.989987,
         "slippage_usd": 220438591680828500,
-        "trades": 1
+        "trades": 2
       },
       "1 ADA": {
-        "fees_usd": 1.699243,
-        "realized_pnl_usd": 0,
+        "fees_usd": 2.890878,
+        "realized_pnl_usd": -48.192578,
         "slippage_usd": 2762399925038004700,
-        "trades": 1
+        "trades": 2
       },
       "Aluminum": {
-        "fees_usd": 0.112406,
-        "realized_pnl_usd": 0,
-        "slippage_usd": 9.336,
-        "trades": 1
+        "fees_usd": 0.211612,
+        "realized_pnl_usd": -1.845112,
+        "slippage_usd": 9.36165,
+        "trades": 2
       }
     },
-    "closed_trades": 0,
+    "closed_trades": 3,
     "open_position_marks": [
       {
-        "contracts": 5990,
-        "entry_price": 0.2364,
+        "contracts": 1981,
+        "entry_price": 0.24093062,
         "instrument_id": "kalshiperp:KXADAPERP",
-        "mark_price": 922337203685477.6,
+        "mark_price": 0.2477,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "short_marked_at_offer",
         "ticker": "KXADAPERP",
-        "unrealized_pnl_usd": -5524799850076009000
+        "unrealized_pnl_usd": -13.410142
       },
       {
-        "contracts": 30,
-        "entry_price": 3.1224,
+        "contracts": 3,
+        "entry_price": 3.09374211,
         "instrument_id": "kalshiperp:KXALUMINUMPERP",
-        "mark_price": 2.5,
+        "mark_price": 3.0619,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "ticker": "KXALUMINUMPERP",
-        "unrealized_pnl_usd": -18.672
+        "unrealized_pnl_usd": -0.095526
       },
       {
-        "contracts": 478,
-        "entry_price": 2.69,
+        "contracts": 159,
+        "entry_price": 2.80331104,
         "instrument_id": "kalshiperp:KXBCHPERP",
-        "mark_price": 922337203685477.6,
+        "mark_price": 2.9731,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "short_marked_at_offer",
         "ticker": "KXBCHPERP",
-        "unrealized_pnl_usd": -440877183361656960
+        "unrealized_pnl_usd": -26.996445
       }
     ],
     "trades_by_venue": {
-      "kalshi_margin": 3
+      "kalshi_margin": 6
     },
-    "worst_closed_trade": null
+    "worst_closed_trade": {
+      "pnl_usd": -92.989987,
+      "reason": "perp_mark_reached",
+      "ticker": "KXBCHPERP"
+    }
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
@@ -66,9 +74,9 @@
   "display_name": "Perp Mark Fade",
   "enabled": true,
   "entries": 3,
-  "equity_usd": -5965677033437567000,
-  "exits": 0,
-  "fees_paid_usd": 3.354633,
+  "equity_usd": 99953.801987,
+  "exits": 3,
+  "fees_paid_usd": 5.783577,
   "market_type": "Kalshi perpetual future",
   "open_positions": 3,
   "origin": {
@@ -77,7 +85,7 @@
     "status": "structural - the anchor is published by the exchange itself"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -5965677033437667,
+  "return_pct": -0.0462,
   "rules": {
     "entry": "|perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.",
     "exit": "Exit when the deviation decays below 0.08% or the two-sided quote disappears.",
@@ -89,16 +97,18 @@
   "traded_market_types": [
     "Kalshi perpetual future"
   ],
-  "trades": 3,
-  "unrealized_pnl_usd": -5965677033437666000,
+  "trades": 6,
+  "unrealized_pnl_usd": -40.502113,
   "username": "@mark-fade",
   "venues": [
     "kalshi_margin"
   ],
   "what_it_means": [
-    "3 ledger records so far: 3 distinct commodity exposures across kalshi_margin.",
-    "Closed-trade P&L is 0.00 USD against 3.35 USD of fees and 2982838516718833152.00 USD of measured slippage against the mid.",
-    "3 open positions carry verified marks totalling -5965677033437666304.00 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "6 ledger records so far: 3 distinct commodity exposures across kalshi_margin.",
+    "Closed-trade P&L is -143.03 USD against 5.78 USD of fees and 2982838516718833152.00 USD of measured slippage against the mid.",
+    "Best closed trade: KXALUMINUMPERP at -1.845112 USD (perp_mark_reached).",
+    "Worst closed trade: KXBCHPERP at -92.989987 USD (perp_mark_reached).",
+    "3 open positions carry verified marks totalling -40.50 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
