@@ -3,10 +3,10 @@
     "best_closed_trade": null,
     "by_commodity": {
       "Brent Crude Oil": {
-        "fees_usd": 9.78,
+        "fees_usd": 15.79,
         "realized_pnl_usd": 0,
-        "slippage_usd": 52.564348,
-        "trades": 4
+        "slippage_usd": 89.613712,
+        "trades": 6
       },
       "Copper": {
         "fees_usd": 2.71,
@@ -53,7 +53,7 @@
         "instrument_id": "kalshi:KXBRENTW-26OCT0917-T91.99",
         "mark_price": null,
         "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_status": "one_sided_book_no_exit_price",
         "ticker": "KXBRENTW-26OCT0917-T91.99",
         "unrealized_pnl_usd": null
       },
@@ -63,13 +63,33 @@
         "instrument_id": "kalshi:KXBRENTW-26OCT0917-T93.99",
         "mark_price": null,
         "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_status": "one_sided_book_no_exit_price",
         "ticker": "KXBRENTW-26OCT0917-T93.99",
         "unrealized_pnl_usd": null
+      },
+      {
+        "contracts": 1686,
+        "entry_price": 0.051518,
+        "instrument_id": "kalshi:KXBRENTW-26OCT0917-T95.99",
+        "mark_price": 0.02,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXBRENTW-26OCT0917-T95.99/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXBRENTW-26OCT0917-T95.99",
+        "unrealized_pnl_usd": -53.139348
+      },
+      {
+        "contracts": 52,
+        "entry_price": 0.069808,
+        "instrument_id": "kalshi:KXBRENTW-26OCT0917-T97.99",
+        "mark_price": 0.05,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXBRENTW-26OCT0917-T97.99/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXBRENTW-26OCT0917-T97.99",
+        "unrealized_pnl_usd": -1.030016
       }
     ],
     "trades_by_venue": {
-      "kalshi": 83
+      "kalshi": 85
     },
     "worst_closed_trade": null
   },
@@ -82,12 +102,12 @@
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 83,
+  "entries": 85,
   "equity_usd": 98509.870562,
   "exits": 0,
-  "fees_paid_usd": 112.56,
+  "fees_paid_usd": 118.57,
   "market_type": "Kalshi event contract",
-  "open_positions": 2,
+  "open_positions": 4,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
@@ -100,21 +120,22 @@
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 413.514438,
+  "slippage_paid_usd": 450.563802,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 83,
-  "unrealized_pnl_usd": 0,
+  "trades": 85,
+  "unrealized_pnl_usd": -54.169364,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "83 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 112.56 USD of fees and 413.51 USD of measured slippage against the mid.",
+    "85 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 118.57 USD of fees and 450.56 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -54.17 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (177).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
