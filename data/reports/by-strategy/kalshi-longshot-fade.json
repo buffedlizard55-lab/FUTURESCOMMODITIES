@@ -48,16 +48,6 @@
     "closed_trades": 0,
     "open_position_marks": [
       {
-        "contracts": 4040,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXAAAGASDNV-26OCT10-5.4600",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXAAAGASDNV-26OCT10-5.4600",
-        "unrealized_pnl_usd": null
-      },
-      {
         "contracts": 2295,
         "entry_price": 0.92,
         "instrument_id": "kalshi:KXAAAGASEOYNJ-26DEC31-5.0000",
@@ -421,11 +411,11 @@
         "contracts": 125,
         "entry_price": 0.989752,
         "instrument_id": "kalshi:KXGOLDD-26OCT1217-T4299",
-        "mark_price": 0.95,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1217-T4299/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXGOLDD-26OCT1217-T4299",
-        "unrealized_pnl_usd": -4.969
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 610,
@@ -608,7 +598,7 @@
     "insufficient_depth_within_price_tolerance": 2,
     "settlement_result_not_published": 215
   },
-  "closed_trades": 145,
+  "closed_trades": 146,
   "disabled_reason": null,
   "display_name": "Longshot Fade",
   "enabled": true,
@@ -617,13 +607,13 @@
   "exits": 0,
   "fees_paid_usd": 182.77,
   "market_type": "Kalshi event contract",
-  "open_positions": 55,
+  "open_positions": 54,
   "origin": {
     "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test - the competition is the test"
   },
-  "realized_pnl_usd": 1710.548972,
+  "realized_pnl_usd": 1748.148972,
   "return_pct": -0.0636,
   "rules": {
     "entry": "YES mid <= 0.10, spread <= 3 cents, at least 2 hours to close, top-3 liquidity strikes only.",
@@ -637,7 +627,7 @@
     "Kalshi event contract"
   ],
   "trades": 200,
-  "unrealized_pnl_usd": -4.969,
+  "unrealized_pnl_usd": 0,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
@@ -645,7 +635,6 @@
   "what_it_means": [
     "200 ledger records so far: 7 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 182.77 USD of fees and 1359.61 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -4.97 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (215), insufficient_depth_within_price_tolerance (2).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
