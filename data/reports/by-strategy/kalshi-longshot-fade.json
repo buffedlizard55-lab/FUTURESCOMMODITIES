@@ -21,10 +21,10 @@
         "trades": 100
       },
       "Gold": {
-        "fees_usd": 15.03,
+        "fees_usd": 15.12,
         "realized_pnl_usd": 0,
-        "slippage_usd": 109.065283,
-        "trades": 23
+        "slippage_usd": 112.159283,
+        "trades": 24
       },
       "Natural Gas": {
         "fees_usd": 2.07,
@@ -418,6 +418,16 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 125,
+        "entry_price": 0.989752,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1217-T4299",
+        "mark_price": 0.95,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1217-T4299/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1217-T4299",
+        "unrealized_pnl_usd": -4.969
+      },
+      {
         "contracts": 610,
         "entry_price": 0.91,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4800",
@@ -508,46 +518,6 @@
         "unrealized_pnl_usd": null
       },
       {
-        "contracts": 646,
-        "entry_price": 0.919009,
-        "instrument_id": "kalshi:KXWTI-26OCT0914-T93.49",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT0914-T93.49",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 712,
-        "entry_price": 0.979691,
-        "instrument_id": "kalshi:KXWTI-26OCT0914-T93.99",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT0914-T93.99",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 47,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXWTI-26OCT0914-T94.49",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT0914-T94.49",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 45,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXWTI-26OCT0914-T94.99",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT0914-T94.99",
-        "unrealized_pnl_usd": null
-      },
-      {
         "contracts": 88,
         "entry_price": 0.918107,
         "instrument_id": "kalshi:KXWTIMAX-26DEC31-T140",
@@ -626,66 +596,57 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXWTIMIN-26DEC31-T60",
         "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 250,
-        "entry_price": 0.99,
-        "instrument_id": "kalshi:KXWTIW-26OCT0914-B97.50",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTIW-26OCT0914-B97.50",
-        "unrealized_pnl_usd": null
       }
     ],
     "trades_by_venue": {
-      "kalshi": 199
+      "kalshi": 200
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 216,
+  "blocked_orders": 217,
   "blocked_reasons": {
     "insufficient_depth_within_price_tolerance": 2,
-    "settlement_result_not_published": 214
+    "settlement_result_not_published": 215
   },
-  "closed_trades": 140,
+  "closed_trades": 145,
   "disabled_reason": null,
   "display_name": "Longshot Fade",
   "enabled": true,
-  "entries": 199,
+  "entries": 200,
   "equity_usd": 99936.446469,
   "exits": 0,
-  "fees_paid_usd": 182.68,
+  "fees_paid_usd": 182.77,
   "market_type": "Kalshi event contract",
-  "open_positions": 59,
+  "open_positions": 55,
   "origin": {
     "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test - the competition is the test"
   },
-  "realized_pnl_usd": 1644.978778,
+  "realized_pnl_usd": 1710.548972,
   "return_pct": -0.0636,
   "rules": {
     "entry": "YES mid <= 0.10, spread <= 3 cents, at least 2 hours to close, top-3 liquidity strikes only.",
     "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 1356.515955,
+  "slippage_paid_usd": 1359.609955,
   "strategy_id": "kalshi-longshot-fade",
   "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 199,
-  "unrealized_pnl_usd": 0,
+  "trades": 200,
+  "unrealized_pnl_usd": -4.969,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "199 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 182.68 USD of fees and 1356.52 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: settlement_result_not_published (214), insufficient_depth_within_price_tolerance (2).",
+    "200 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 182.77 USD of fees and 1359.61 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -4.97 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (215), insufficient_depth_within_price_tolerance (2).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
