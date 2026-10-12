@@ -19,43 +19,33 @@
         "trades": 3
       },
       "Aluminum": {
-        "fees_usd": 0.375903,
-        "realized_pnl_usd": -2.417241,
+        "fees_usd": 0.515092,
+        "realized_pnl_usd": -3.085249,
         "slippage_usd": 18446744073709496,
-        "trades": 5
+        "trades": 6
       },
       "Copper": {
-        "fees_usd": 1.002917,
-        "realized_pnl_usd": -1.268017,
-        "slippage_usd": 9.1592,
-        "trades": 2
+        "fees_usd": 1.206485,
+        "realized_pnl_usd": -3.613554,
+        "slippage_usd": 9.16045,
+        "trades": 3
       }
     },
-    "closed_trades": 8,
+    "closed_trades": 10,
     "open_position_marks": [
       {
-        "contracts": 38,
-        "entry_price": 3.04251905,
-        "instrument_id": "kalshiperp:KXALUMINUMPERP",
-        "mark_price": 3.0609,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
-        "mark_status": "short_marked_at_offer",
-        "ticker": "KXALUMINUMPERP",
-        "unrealized_pnl_usd": -0.698476
-      },
-      {
-        "contracts": 102,
-        "entry_price": 6.7400379,
+        "contracts": 77,
+        "entry_price": 6.74900682,
         "instrument_id": "kalshiperp:KXCOPPERPERP",
-        "mark_price": 6.762,
+        "mark_price": 6.7856,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "short_marked_at_offer",
         "ticker": "KXCOPPERPERP",
-        "unrealized_pnl_usd": -2.240134
+        "unrealized_pnl_usd": -2.817675
       }
     ],
     "trades_by_venue": {
-      "kalshi_margin": 13
+      "kalshi_margin": 15
     },
     "worst_closed_trade": {
       "pnl_usd": -92.989987,
@@ -65,23 +55,23 @@
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
-  "closed_trades": 3,
+  "closed_trades": 4,
   "disabled_reason": null,
   "display_name": "Perp Mark Fade",
   "enabled": true,
   "entries": 5,
-  "equity_usd": 99989.909882,
-  "exits": 8,
-  "fees_paid_usd": 8.047567,
+  "equity_usd": 99989.020052,
+  "exits": 10,
+  "fees_paid_usd": 8.390324,
   "market_type": "Kalshi perpetual future",
-  "open_positions": 2,
+  "open_positions": 1,
   "origin": {
     "claim": "A perpetual's book is anchored to the exchange-published mark/index price: deviations are driven by transient order flow and tend to decay back toward the mark. Kalshi publishes the mark (settlement mark price) for every perpetual in the same payload as the book.",
     "kind": "market_structure",
     "status": "structural - the anchor is published by the exchange itself"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.0101,
+  "return_pct": -0.011,
   "rules": {
     "entry": "|perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.",
     "exit": "Exit when the deviation decays below 0.08% or the two-sided quote disappears.",
@@ -93,18 +83,18 @@
   "traded_market_types": [
     "Kalshi perpetual future"
   ],
-  "trades": 13,
-  "unrealized_pnl_usd": -2.93861,
+  "trades": 15,
+  "unrealized_pnl_usd": -2.817675,
   "username": "@mark-fade",
   "venues": [
     "kalshi_margin"
   ],
   "what_it_means": [
-    "13 ledger records so far: 4 distinct commodity exposures across kalshi_margin.",
-    "Closed-trade P&L is -142.51 USD against 8.05 USD of fees and 3001285260792542720.00 USD of measured slippage against the mid.",
+    "15 ledger records so far: 4 distinct commodity exposures across kalshi_margin.",
+    "Closed-trade P&L is -145.53 USD against 8.39 USD of fees and 3001285260792542720.00 USD of measured slippage against the mid.",
     "Best closed trade: KXADAPERP at 10.282415 USD (perp_mark_reached).",
     "Worst closed trade: KXBCHPERP at -92.989987 USD (perp_mark_reached).",
-    "2 open positions carry verified marks totalling -2.94 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "1 open positions carry verified marks totalling -2.82 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
