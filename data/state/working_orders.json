@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-12T18:48:42.143Z",
+  "generated_at": "2026-10-13T01:11:22.261Z",
   "note": "Resting maker orders. A fill is recorded only when a later snapshot shows the market trading through the resting price, and the fill is flagged as modelled.",
   "orders": [
     {
@@ -8194,6 +8194,7 @@
     },
     {
       "contracts": 125,
+      "expired_reason": "resting TTL of 6h elapsed without the market trading through the resting price",
       "expires_at": "2026-10-13T00:48:40.002Z",
       "id": "74d5759a701561da3ac5",
       "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4254",
@@ -8220,7 +8221,7 @@
         "resting_price": 0.02,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "expired",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Gold; maker fee multiplier is zero for standard series.",
       "ticker": "KXGOLDD-26OCT1317-T4254",
@@ -8228,6 +8229,7 @@
     },
     {
       "contracts": 125,
+      "expired_reason": "resting TTL of 6h elapsed without the market trading through the resting price",
       "expires_at": "2026-10-13T00:48:40.002Z",
       "id": "3e4a81d54a24edcfd697",
       "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4244",
@@ -8254,7 +8256,7 @@
         "resting_price": 0.02,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "expired",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Gold; maker fee multiplier is zero for standard series.",
       "ticker": "KXGOLDD-26OCT1317-T4244",
@@ -8262,6 +8264,7 @@
     },
     {
       "contracts": 125,
+      "expired_reason": "resting TTL of 6h elapsed without the market trading through the resting price",
       "expires_at": "2026-10-13T00:48:40.002Z",
       "id": "773ba1ad376df001c0ea",
       "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4234",
@@ -8288,10 +8291,112 @@
         "resting_price": 0.03,
         "spread": 0.04
       },
-      "status": "resting",
+      "status": "expired",
       "strategy_id": "kalshi-spread-capture",
       "thesis": "Rest inside a 4-cent spread on Gold; maker fee multiplier is zero for standard series.",
       "ticker": "KXGOLDD-26OCT1317-T4234",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 381,
+      "expires_at": "2026-10-13T07:11:20.390Z",
+      "id": "1eb59ea5366c3a45242a",
+      "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4204",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-10-13T01:11:20.390Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.91,
+        "best_no_bid": 0.88,
+        "best_yes_ask": 0.12,
+        "best_yes_bid": 0.09,
+        "mid": 0.105,
+        "retrieved_at": "2026-10-13T01:11:00.450Z",
+        "sha256": "6bcb053fa707f90ede0a34ef54f7d706ab175501413929cb809641e3e99f0113",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4204/orderbook?depth=20",
+        "spread": 0.03
+      },
+      "remaining": 381,
+      "resting_price": 0.1,
+      "signal": {
+        "best_yes_ask": 0.12,
+        "best_yes_bid": 0.09,
+        "name": "spread_capture",
+        "resting_price": 0.1,
+        "spread": 0.03
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 3-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDD-26OCT1317-T4204",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 1215,
+      "expires_at": "2026-10-13T07:11:20.390Z",
+      "id": "9a1142b534f83091177e",
+      "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4174",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-10-13T01:11:20.390Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.64,
+        "best_no_bid": 0.61,
+        "best_yes_ask": 0.39,
+        "best_yes_bid": 0.36,
+        "mid": 0.375,
+        "retrieved_at": "2026-10-13T01:11:00.846Z",
+        "sha256": "48d1dd3efa322f9db0a1d70fbdd93a0d397fdb9311e6cb87482940baf66315fb",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4174/orderbook?depth=20",
+        "spread": 0.03
+      },
+      "remaining": 1215,
+      "resting_price": 0.37,
+      "signal": {
+        "best_yes_ask": 0.39,
+        "best_yes_bid": 0.36,
+        "name": "spread_capture",
+        "resting_price": 0.37,
+        "spread": 0.03
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 3-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDD-26OCT1317-T4174",
+      "username": "@spread-hunter"
+    },
+    {
+      "contracts": 886,
+      "expires_at": "2026-10-13T07:11:20.390Z",
+      "id": "258090bfcfde05b07429",
+      "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4164",
+      "market_type_label": "Kalshi event contract",
+      "outcome": "yes",
+      "placed_at": "2026-10-13T01:11:20.390Z",
+      "quote_at_placement": {
+        "best_no_ask": 0.52,
+        "best_no_bid": 0.49,
+        "best_yes_ask": 0.51,
+        "best_yes_bid": 0.48,
+        "mid": 0.495,
+        "retrieved_at": "2026-10-13T01:11:00.972Z",
+        "sha256": "2730eff58e8fe9dbb42ca22d4881f60c1e94f58794a20521d6dedb2786fc0367",
+        "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4164/orderbook?depth=20",
+        "spread": 0.03
+      },
+      "remaining": 886,
+      "resting_price": 0.49,
+      "signal": {
+        "best_yes_ask": 0.51,
+        "best_yes_bid": 0.48,
+        "name": "spread_capture",
+        "resting_price": 0.49,
+        "spread": 0.03
+      },
+      "status": "resting",
+      "strategy_id": "kalshi-spread-capture",
+      "thesis": "Rest inside a 3-cent spread on Gold; maker fee multiplier is zero for standard series.",
+      "ticker": "KXGOLDD-26OCT1317-T4164",
       "username": "@spread-hunter"
     }
   ]

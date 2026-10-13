@@ -3,16 +3,47 @@
     "best_closed_trade": null,
     "by_commodity": {
       "Gold": {
-        "fees_usd": 3.46,
+        "fees_usd": 14.98,
         "realized_pnl_usd": 0,
-        "slippage_usd": 3.499945,
-        "trades": 3
+        "slippage_usd": 15.790055,
+        "trades": 6
       }
     },
     "closed_trades": 0,
-    "open_position_marks": [],
+    "open_position_marks": [
+      {
+        "contracts": 288,
+        "entry_price": 0.39,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4174",
+        "mark_price": 0.36,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4174/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1317-T4174",
+        "unrealized_pnl_usd": -8.64
+      },
+      {
+        "contracts": 273,
+        "entry_price": 0.28,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4184",
+        "mark_price": 0.26,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4184/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1317-T4184",
+        "unrealized_pnl_usd": -5.46
+      },
+      {
+        "contracts": 265,
+        "entry_price": 0.189774,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4194",
+        "mark_price": 0.16,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4194/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1317-T4194",
+        "unrealized_pnl_usd": -7.89011
+      }
+    ],
     "trades_by_venue": {
-      "kalshi": 3
+      "kalshi": 6
     },
     "worst_closed_trade": null
   },
@@ -24,39 +55,40 @@
   "disabled_reason": null,
   "display_name": "Jump Reversal",
   "enabled": true,
-  "entries": 3,
-  "equity_usd": 99933.940055,
+  "entries": 6,
+  "equity_usd": 99900.429945,
   "exits": 0,
-  "fees_paid_usd": 3.46,
+  "fees_paid_usd": 14.98,
   "market_type": "Kalshi event contract",
-  "open_positions": 0,
+  "open_positions": 3,
   "origin": {
     "claim": "Short-horizon reversal: abrupt one-interval price jumps in thin binary books routinely overshoot because the first wave of flow consumes several levels; prediction-market write-ups treat post-jump entries as a recurring, testable pattern.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test - tick-to-tick, on official snapshot mids only"
   },
   "realized_pnl_usd": -66.059945,
-  "return_pct": -0.0661,
+  "return_pct": -0.0996,
   "rules": {
     "entry": "|mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.",
     "exit": "Exit when the mid retraces half of the measured jump, or the market closes.",
     "sizing": "Target notional, capped by verified depth."
   },
-  "slippage_paid_usd": 3.499945,
+  "slippage_paid_usd": 15.790055,
   "strategy_id": "kalshi-jump-reversal",
   "thesis": "When a contract's official mid moves by 6 cents or more between two consecutive verified snapshots, take the opposite side: fade the jump. Deliberately distinct from @vol-crusher (which fades daily-candle extremes from the exchange candle history), this acts on tick-to-tick snapshot moves.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 3,
-  "unrealized_pnl_usd": 0,
+  "trades": 6,
+  "unrealized_pnl_usd": -21.99011,
   "username": "@snap-fader",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "3 ledger records so far: 1 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 3.46 USD of fees and 3.50 USD of measured slippage against the mid.",
+    "6 ledger records so far: 1 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 14.98 USD of fees and 15.79 USD of measured slippage against the mid.",
+    "3 open positions carry verified marks totalling -21.99 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (12).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]

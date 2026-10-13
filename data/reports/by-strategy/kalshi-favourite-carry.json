@@ -21,10 +21,10 @@
         "trades": 54
       },
       "Gold": {
-        "fees_usd": 3.65,
+        "fees_usd": 5.57,
         "realized_pnl_usd": 0,
-        "slippage_usd": 15.279985,
-        "trades": 6
+        "slippage_usd": 19.174985,
+        "trades": 10
       },
       "Natural Gas": {
         "fees_usd": 0.02,
@@ -46,9 +46,50 @@
       }
     },
     "closed_trades": 0,
-    "open_position_marks": [],
+    "open_position_marks": [
+      {
+        "contracts": 136,
+        "entry_price": 0.02,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4074",
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4074/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1317-T4074",
+        "unrealized_pnl_usd": -1.36
+      },
+      {
+        "contracts": 131,
+        "entry_price": 0.02,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4084",
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4084/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1317-T4084",
+        "unrealized_pnl_usd": -1.31
+      },
+      {
+        "contracts": 256,
+        "entry_price": 0.03,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4094",
+        "mark_price": 0.02,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4094/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1317-T4094",
+        "unrealized_pnl_usd": -2.56
+      },
+      {
+        "contracts": 256,
+        "entry_price": 0.06,
+        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4104",
+        "mark_price": 0.05,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDD-26OCT1317-T4104/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXGOLDD-26OCT1317-T4104",
+        "unrealized_pnl_usd": -2.56
+      }
+    ],
     "trades_by_venue": {
-      "kalshi": 89
+      "kalshi": 93
     },
     "worst_closed_trade": null
   },
@@ -61,39 +102,40 @@
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 89,
-  "equity_usd": 98210.170826,
+  "entries": 93,
+  "equity_usd": 98200.460826,
   "exits": 0,
-  "fees_paid_usd": 128.84,
+  "fees_paid_usd": 130.76,
   "market_type": "Kalshi event contract",
-  "open_positions": 0,
+  "open_positions": 4,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test"
   },
   "realized_pnl_usd": -1789.829174,
-  "return_pct": -1.7898,
+  "return_pct": -1.7995,
   "rules": {
     "entry": "YES mid >= 0.90, spread <= 3 cents, closes within 48 hours.",
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 464.744174,
+  "slippage_paid_usd": 468.639174,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 89,
-  "unrealized_pnl_usd": 0,
+  "trades": 93,
+  "unrealized_pnl_usd": -7.79,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "89 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 128.84 USD of fees and 464.74 USD of measured slippage against the mid.",
+    "93 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 130.76 USD of fees and 468.64 USD of measured slippage against the mid.",
+    "4 open positions carry verified marks totalling -7.79 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (185).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
