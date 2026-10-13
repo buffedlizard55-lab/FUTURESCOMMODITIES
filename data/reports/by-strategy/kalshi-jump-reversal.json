@@ -10,38 +10,7 @@
       }
     },
     "closed_trades": 0,
-    "open_position_marks": [
-      {
-        "contracts": 288,
-        "entry_price": 0.39,
-        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4174",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26OCT1317-T4174",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 273,
-        "entry_price": 0.28,
-        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4184",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26OCT1317-T4184",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 265,
-        "entry_price": 0.189774,
-        "instrument_id": "kalshi:KXGOLDD-26OCT1317-T4194",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26OCT1317-T4194",
-        "unrealized_pnl_usd": null
-      }
-    ],
+    "open_position_marks": [],
     "trades_by_venue": {
       "kalshi": 6
     },
@@ -51,23 +20,23 @@
   "blocked_reasons": {
     "settlement_result_not_published": 12
   },
-  "closed_trades": 3,
+  "closed_trades": 6,
   "disabled_reason": null,
   "display_name": "Jump Reversal",
   "enabled": true,
   "entries": 6,
-  "equity_usd": 99900.429945,
+  "equity_usd": 99683.369945,
   "exits": 0,
   "fees_paid_usd": 14.98,
   "market_type": "Kalshi event contract",
-  "open_positions": 3,
+  "open_positions": 0,
   "origin": {
     "claim": "Short-horizon reversal: abrupt one-interval price jumps in thin binary books routinely overshoot because the first wave of flow consumes several levels; prediction-market write-ups treat post-jump entries as a recurring, testable pattern.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test - tick-to-tick, on official snapshot mids only"
   },
-  "realized_pnl_usd": -66.059945,
-  "return_pct": -0.0996,
+  "realized_pnl_usd": -316.630055,
+  "return_pct": -0.3166,
   "rules": {
     "entry": "|mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.",
     "exit": "Exit when the mid retraces half of the measured jump, or the market closes.",
