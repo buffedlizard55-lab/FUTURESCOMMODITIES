@@ -25,10 +25,10 @@
         "trades": 15
       },
       "Gold": {
-        "fees_usd": 26.7,
-        "realized_pnl_usd": -5.74,
-        "slippage_usd": 33.324934,
-        "trades": 17
+        "fees_usd": 30.1,
+        "realized_pnl_usd": -57.752662,
+        "slippage_usd": 26.302497,
+        "trades": 19
       },
       "Silver": {
         "fees_usd": 3.55,
@@ -43,7 +43,7 @@
         "trades": 4
       }
     },
-    "closed_trades": 3,
+    "closed_trades": 5,
     "open_position_marks": [
       {
         "contracts": 244,
@@ -103,26 +103,6 @@
         "mark_source_url": null,
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMAXNY-26DEC31-5.40",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 193,
-        "entry_price": 0.624654,
-        "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4300",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDDIRY-26DEC31H1700-T4300",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 19,
-        "entry_price": 0.257737,
-        "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4700",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDDIRY-26DEC31H1700-T4700",
         "unrealized_pnl_usd": null
       },
       {
@@ -217,12 +197,12 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 55
+      "kalshi": 57
     },
     "worst_closed_trade": {
-      "pnl_usd": -17.02,
+      "pnl_usd": -48.805659,
       "reason": "book_imbalance_flip",
-      "ticker": "KXAAAGASW-26OCT05-4.4000"
+      "ticker": "KXGOLDDIRY-26DEC31H1700-T4300"
     }
   },
   "blocked_orders": 26,
@@ -230,16 +210,16 @@
     "insufficient_depth_within_price_tolerance": 3,
     "settlement_result_not_published": 23
   },
-  "closed_trades": 35,
+  "closed_trades": 37,
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
   "entries": 52,
   "equity_usd": 99980.310055,
-  "exits": 3,
-  "fees_paid_usd": 70.73,
+  "exits": 5,
+  "fees_paid_usd": 74.13,
   "market_type": "Kalshi event contract",
-  "open_positions": 17,
+  "open_positions": 15,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -258,23 +238,23 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 90.010131,
+  "slippage_paid_usd": 82.987694,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 55,
+  "trades": 57,
   "unrealized_pnl_usd": 0,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "55 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -20.31 USD against 70.73 USD of fees and 90.01 USD of measured slippage against the mid.",
+    "57 ledger records so far: 6 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -72.32 USD against 74.13 USD of fees and 82.99 USD of measured slippage against the mid.",
     "Best closed trade: KXAAAGASW-26OCT05-4.3800 at 2.45 USD (book_imbalance_flip).",
-    "Worst closed trade: KXAAAGASW-26OCT05-4.4000 at -17.02 USD (book_imbalance_flip).",
+    "Worst closed trade: KXGOLDDIRY-26DEC31H1700-T4300 at -48.805659 USD (book_imbalance_flip).",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (23), insufficient_depth_within_price_tolerance (3).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
