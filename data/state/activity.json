@@ -6,22 +6,29 @@
       "market_type": "Kalshi event contract",
       "notes": [
         {
-          "instrument_id": "kalshi:KXAAAGASDCT-26OCT15-4.4050",
+          "instrument_id": "kalshi:KXAAAGASDUT-26OCT15-4.8550",
           "no_ask": 0.99,
           "signal": "yes_mid_at_or_below_10c",
           "spread": 0.01,
           "yes_mid": 0.015
         },
         {
-          "instrument_id": "kalshi:KXAAAGASDCT-26OCT15-4.4000",
+          "instrument_id": "kalshi:KXAAAGASDUT-26OCT15-4.8500",
+          "no_ask": 0.99,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.01,
+          "yes_mid": 0.015
+        },
+        {
+          "instrument_id": "kalshi:KXAAAGASDUT-26OCT15-4.8450",
           "no_ask": 0.99,
           "signal": "yes_mid_at_or_below_10c",
           "spread": 0.01,
           "yes_mid": 0.015
         }
       ],
-      "orders_produced": 2,
-      "positions": 64,
+      "orders_produced": 3,
+      "positions": 67,
       "return_pct": -0.0636,
       "strategy_id": "kalshi-longshot-fade",
       "username": "@fade-the-crowd"
@@ -31,8 +38,8 @@
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
-      "orders_produced": 3,
-      "positions": 3,
+      "orders_produced": 2,
+      "positions": 5,
       "return_pct": -2.663,
       "strategy_id": "kalshi-favourite-carry",
       "username": "@carry-collector"
@@ -64,7 +71,7 @@
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
-      "orders_produced": 1,
+      "orders_produced": 0,
       "positions": 8,
       "return_pct": -0.0069,
       "strategy_id": "kalshi-cheap-momentum",
@@ -74,9 +81,22 @@
       "equity_usd": 99968.85,
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
-      "notes": [],
-      "orders_produced": 0,
-      "positions": 18,
+      "notes": [
+        {
+          "high_strike": 4.815,
+          "low_strike": 4.81,
+          "series": "KXAAAGASDUT",
+          "violation": -0.03
+        },
+        {
+          "high_strike": 4101.99,
+          "low_strike": 4099.99,
+          "series": "KXGOLDH",
+          "violation": -0.035
+        }
+      ],
+      "orders_produced": 4,
+      "positions": 22,
       "return_pct": -0.0311,
       "strategy_id": "kalshi-ladder-arbitrage",
       "username": "@ladder-arb"
@@ -94,7 +114,7 @@
     },
     {
       "equity_usd": 99998.9196,
-      "exits_produced": 7,
+      "exits_produced": 3,
       "market_type": "Kalshi perpetual future",
       "notes": [],
       "orders_produced": 0,
@@ -104,13 +124,13 @@
       "username": "@perp-surfer"
     },
     {
-      "equity_usd": 104206.765978,
+      "equity_usd": 104203.521725,
       "exits_produced": 0,
       "market_type": "Exchange-listed commodity future",
       "notes": [],
       "orders_produced": 0,
       "positions": 12,
-      "return_pct": 4.2068,
+      "return_pct": 4.2035,
       "strategy_id": "moex-metals-trend",
       "username": "@metal-trend"
     },
@@ -120,31 +140,31 @@
       "market_type": "Exchange-listed commodity future",
       "notes": [
         {
-          "annualised_carry": -0.0396,
+          "annualised_carry": -0.0399,
           "asset_code": "ALUM",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": 0.0088,
+          "annualised_carry": 0.0087,
           "asset_code": "COPPER",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": 0.0616,
+          "annualised_carry": 0.0618,
           "asset_code": "GOLD",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": -0.0688,
+          "annualised_carry": -0.0707,
           "asset_code": "COFFEE",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": 0.1088,
+          "annualised_carry": 0.1079,
           "asset_code": "PLTM",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
@@ -156,13 +176,13 @@
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": -0.0581,
+          "annualised_carry": -0.0588,
           "asset_code": "SUGR",
           "days": 63,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": 0.119,
+          "annualised_carry": 0.1198,
           "asset_code": "SILV",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
@@ -186,28 +206,28 @@
       "username": "@agri-trend"
     },
     {
-      "equity_usd": 101671.80506,
+      "equity_usd": 101744.825689,
       "exits_produced": 0,
       "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
       "notes": [
         {
-          "moex_usd_per_unit": 18.5,
-          "note": "Unit reconciliation failed: KXETHPERP 2416.85 USD/unit vs ETZ6 18.50 USD/unit differ by 130.6x, so the two venues quote different units of the asset and no basis is defined.",
+          "moex_usd_per_unit": 18.48,
+          "note": "Unit reconciliation failed: KXETHPERP 2419.25 USD/unit vs ETZ6 18.48 USD/unit differ by 130.9x, so the two venues quote different units of the asset and no basis is defined.",
           "pair": "Ether",
-          "perp_usd_per_unit": 2416.85,
+          "perp_usd_per_unit": 2419.25,
           "skipped": "unit_reconciliation_failed",
-          "unit_ratio": 130.6405
+          "unit_ratio": 130.9118
         }
       ],
       "orders_produced": 0,
       "positions": 2,
-      "return_pct": 1.6718,
+      "return_pct": 1.7448,
       "strategy_id": "cross-venue-basis",
       "username": "@basis-hunter"
     },
     {
       "equity_usd": 99980.310055,
-      "exits_produced": 2,
+      "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
       "orders_produced": 0,
@@ -261,24 +281,24 @@
       "username": "@snap-fader"
     },
     {
-      "equity_usd": 99802.00945,
+      "equity_usd": 99799.365447,
       "exits_produced": 0,
       "market_type": "Exchange-listed FX future",
       "notes": [],
       "orders_produced": 0,
       "positions": 2,
-      "return_pct": -0.198,
+      "return_pct": -0.2006,
       "strategy_id": "moex-fx-trend",
       "username": "@usd-rub-desk"
     },
     {
-      "equity_usd": 99357.182944,
+      "equity_usd": 99350.671337,
       "exits_produced": 0,
       "market_type": "Exchange-listed equity index future",
       "notes": [],
       "orders_produced": 0,
       "positions": 5,
-      "return_pct": -0.6428,
+      "return_pct": -0.6493,
       "strategy_id": "moex-index-trend",
       "username": "@index-mover"
     },
@@ -294,6 +314,6 @@
       "username": "@ruonia-curve"
     }
   ],
-  "generated_at": "2026-10-14T20:32:21.326Z",
+  "generated_at": "2026-10-14T23:48:27.395Z",
   "settlements": []
 }
