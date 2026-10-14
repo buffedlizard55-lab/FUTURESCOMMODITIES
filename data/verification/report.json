@@ -2004,7 +2004,7 @@
   "anomalies_by_check": [
     {
       "check": "payload_hash_present_in_that_runs_provenance_log",
-      "count": 1697
+      "count": 1711
     },
     {
       "check": "instrument_present_in_published_universe",
@@ -2015,17 +2015,17 @@
       "count": 14
     }
   ],
-  "anomaly_count": 2365,
+  "anomaly_count": 2379,
   "coverage": {
-    "funding_entries": 257,
-    "funding_fully_verified": 57,
-    "instruments": 104,
+    "funding_entries": 259,
+    "funding_fully_verified": 59,
+    "instruments": 106,
     "instruments_by_venue": {
       "kalshi": 45,
       "kalshi_margin": 12,
-      "moex_forts": 47
+      "moex_forts": 49
     },
-    "intents": 1535,
+    "intents": 1550,
     "season": {
       "ends_at": "2027-09-22T00:00:00Z",
       "season_id": "season-2026-09-22_to_2027-09-22",
@@ -2065,10 +2065,10 @@
     },
     "unclassified_series": 0
   },
-  "fully_verified": 46,
-  "funding_entries_checked": 257,
-  "funding_fully_verified": 57,
-  "generated_at": "2026-10-14T11:40:53.131Z",
+  "fully_verified": 34,
+  "funding_entries_checked": 259,
+  "funding_fully_verified": 59,
+  "generated_at": "2026-10-14T16:53:51.866Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
     "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.",
@@ -5029,11 +5029,13 @@
         },
         {
           "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
+          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
+          "ok": false
         }
       ],
-      "failed_checks": [],
+      "failed_checks": [
+        "instrument_present_in_published_universe"
+      ],
       "run_id": "run-2026-10-11T18-21-25-251Z",
       "strategy_id": "kalshi-ladder-arbitrage",
       "ticker": "KXNATGASMON-26OCT3017-T4.099",
@@ -5079,11 +5081,13 @@
         },
         {
           "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
+          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
+          "ok": false
         }
       ],
-      "failed_checks": [],
+      "failed_checks": [
+        "instrument_present_in_published_universe"
+      ],
       "run_id": "run-2026-10-11T18-21-25-251Z",
       "strategy_id": "kalshi-ladder-arbitrage",
       "ticker": "KXNATGASMON-26OCT3017-T4.199",
@@ -14994,5 +14998,5 @@
   ],
   "retention_note": "Run manifests carry the per-request provenance (URL, status, SHA-256) for the most recent runs only; older manifests are pruned so the repository stays small. A trade from a pruned run cannot be hash-matched and shows payload_hash_present_in_that_runs_provenance_log as failed - that is a retention limit, disclosed here, not a price discrepancy.",
   "trades_checked": 1616,
-  "with_anomalies": 1770
+  "with_anomalies": 1782
 }
