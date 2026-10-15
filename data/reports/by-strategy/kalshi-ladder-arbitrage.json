@@ -57,21 +57,21 @@
         "contracts": 2020,
         "entry_price": 0.99,
         "instrument_id": "kalshi:KXAAAGASDUT-26OCT15-4.8100",
-        "mark_price": 0.91,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDUT-26OCT15-4.8100/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASDUT-26OCT15-4.8100",
-        "unrealized_pnl_usd": -161.6
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 3,
         "entry_price": 0.03,
         "instrument_id": "kalshi:KXAAAGASDUT-26OCT15-4.8150",
-        "mark_price": 0.01,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDUT-26OCT15-4.8150/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASDUT-26OCT15-4.8150",
-        "unrealized_pnl_usd": -0.06
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 30,
@@ -152,26 +152,6 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXGOLDDIRY-26DEC31H1700-T4700",
         "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 7,
-        "entry_price": 0.83,
-        "instrument_id": "kalshi:KXGOLDH-26OCT1421-T4099.99",
-        "mark_price": 0.59,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDH-26OCT1421-T4099.99/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXGOLDH-26OCT1421-T4099.99",
-        "unrealized_pnl_usd": -1.68
-      },
-      {
-        "contracts": 25,
-        "entry_price": 0.27,
-        "instrument_id": "kalshi:KXGOLDH-26OCT1421-T4101.99",
-        "mark_price": 0.24,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXGOLDH-26OCT1421-T4101.99/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXGOLDH-26OCT1421-T4101.99",
-        "unrealized_pnl_usd": -0.75
       },
       {
         "contracts": 40,
@@ -279,13 +259,13 @@
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 162,
+  "blocked_orders": 164,
   "blocked_reasons": {
     "already_holding": 5,
     "insufficient_depth_within_price_tolerance": 20,
-    "settlement_result_not_published": 137
+    "settlement_result_not_published": 139
   },
-  "closed_trades": 101,
+  "closed_trades": 103,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
@@ -294,13 +274,13 @@
   "exits": 0,
   "fees_paid_usd": 280.13,
   "market_type": "Kalshi event contract",
-  "open_positions": 22,
+  "open_positions": 20,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
     "status": "structural - no forecast required"
   },
-  "realized_pnl_usd": -9081.172816,
+  "realized_pnl_usd": -9087.152816,
   "return_pct": -0.0311,
   "rules": {
     "entry": "Monotonicity violation of at least 2 cents between two strikes of the same series and expiry.",
@@ -314,7 +294,7 @@
     "Kalshi event contract"
   ],
   "trades": 123,
-  "unrealized_pnl_usd": -164.09,
+  "unrealized_pnl_usd": 0,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
@@ -322,8 +302,7 @@
   "what_it_means": [
     "123 ledger records so far: 8 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 280.13 USD of fees and 14417.37 USD of measured slippage against the mid.",
-    "4 open positions carry verified marks totalling -164.09 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Blocked order attempts and their recorded reasons: already_holding (5), settlement_result_not_published (137), insufficient_depth_within_price_tolerance (20).",
+    "Blocked order attempts and their recorded reasons: already_holding (5), settlement_result_not_published (139), insufficient_depth_within_price_tolerance (20).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
