@@ -2004,28 +2004,28 @@
   "anomalies_by_check": [
     {
       "check": "payload_hash_present_in_that_runs_provenance_log",
-      "count": 1792
+      "count": 1796
     },
     {
       "check": "instrument_present_in_published_universe",
-      "count": 691
+      "count": 715
     },
     {
       "check": "cross_venue_basis_normalisation_recorded",
       "count": 14
     }
   ],
-  "anomaly_count": 2497,
+  "anomaly_count": 2525,
   "coverage": {
-    "funding_entries": 277,
-    "funding_fully_verified": 54,
-    "instruments": 108,
+    "funding_entries": 282,
+    "funding_fully_verified": 59,
+    "instruments": 97,
     "instruments_by_venue": {
       "kalshi": 45,
       "kalshi_margin": 12,
-      "moex_forts": 51
+      "moex_forts": 40
     },
-    "intents": 1710,
+    "intents": 1738,
     "season": {
       "ends_at": "2027-09-22T00:00:00Z",
       "season_id": "season-2026-09-22_to_2027-09-22",
@@ -2065,10 +2065,10 @@
     },
     "unclassified_series": 0
   },
-  "fully_verified": 8,
-  "funding_entries_checked": 277,
-  "funding_fully_verified": 54,
-  "generated_at": "2026-10-16T00:38:20.890Z",
+  "fully_verified": 9,
+  "funding_entries_checked": 282,
+  "funding_fully_verified": 59,
+  "generated_at": "2026-10-16T05:39:29.907Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
     "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.",
@@ -4019,11 +4019,13 @@
         },
         {
           "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
+          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
+          "ok": false
         }
       ],
-      "failed_checks": [],
+      "failed_checks": [
+        "instrument_present_in_published_universe"
+      ],
       "run_id": "run-2026-10-14T05-57-00-345Z",
       "strategy_id": "moex-calendar-carry",
       "ticker": "NCH7",
@@ -14757,5 +14759,5 @@
   ],
   "retention_note": "Run manifests carry the per-request provenance (URL, status, SHA-256) for the most recent runs only; older manifests are pruned so the repository stays small. A trade from a pruned run cannot be hash-matched and shows payload_hash_present_in_that_runs_provenance_log as failed - that is a retention limit, disclosed here, not a price discrepancy.",
   "trades_checked": 1655,
-  "with_anomalies": 1870
+  "with_anomalies": 1869
 }
