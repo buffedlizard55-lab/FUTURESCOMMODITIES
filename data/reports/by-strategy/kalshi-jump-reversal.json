@@ -2,6 +2,12 @@
   "attribution": {
     "best_closed_trade": null,
     "by_commodity": {
+      "Copper": {
+        "fees_usd": 1.86,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 2.52,
+        "trades": 1
+      },
       "Gold": {
         "fees_usd": 14.98,
         "realized_pnl_usd": 0,
@@ -10,9 +16,20 @@
       }
     },
     "closed_trades": 0,
-    "open_position_marks": [],
+    "open_position_marks": [
+      {
+        "contracts": 126,
+        "entry_price": 0.3,
+        "instrument_id": "kalshi:KXCOPPERMON-26OCT3017-T6.69",
+        "mark_price": 0.26,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26OCT3017-T6.69/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERMON-26OCT3017-T6.69",
+        "unrealized_pnl_usd": -5.04
+      }
+    ],
     "trades_by_venue": {
-      "kalshi": 6
+      "kalshi": 7
     },
     "worst_closed_trade": null
   },
@@ -24,39 +41,40 @@
   "disabled_reason": null,
   "display_name": "Jump Reversal",
   "enabled": true,
-  "entries": 6,
-  "equity_usd": 99683.369945,
+  "entries": 7,
+  "equity_usd": 99676.469945,
   "exits": 0,
-  "fees_paid_usd": 14.98,
+  "fees_paid_usd": 16.84,
   "market_type": "Kalshi event contract",
-  "open_positions": 0,
+  "open_positions": 1,
   "origin": {
     "claim": "Short-horizon reversal: abrupt one-interval price jumps in thin binary books routinely overshoot because the first wave of flow consumes several levels; prediction-market write-ups treat post-jump entries as a recurring, testable pattern.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test - tick-to-tick, on official snapshot mids only"
   },
   "realized_pnl_usd": -316.630055,
-  "return_pct": -0.3166,
+  "return_pct": -0.3235,
   "rules": {
     "entry": "|mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.",
     "exit": "Exit when the mid retraces half of the measured jump, or the market closes.",
     "sizing": "Target notional, capped by verified depth."
   },
-  "slippage_paid_usd": 15.790055,
+  "slippage_paid_usd": 18.310055,
   "strategy_id": "kalshi-jump-reversal",
   "thesis": "When a contract's official mid moves by 6 cents or more between two consecutive verified snapshots, take the opposite side: fade the jump. Deliberately distinct from @vol-crusher (which fades daily-candle extremes from the exchange candle history), this acts on tick-to-tick snapshot moves.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 6,
-  "unrealized_pnl_usd": 0,
+  "trades": 7,
+  "unrealized_pnl_usd": -5.04,
   "username": "@snap-fader",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "6 ledger records so far: 1 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 14.98 USD of fees and 15.79 USD of measured slippage against the mid.",
+    "7 ledger records so far: 2 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 16.84 USD of fees and 18.31 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -5.04 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (12).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
