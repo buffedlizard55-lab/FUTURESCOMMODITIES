@@ -30,6 +30,12 @@
         "slippage_usd": 26.302497,
         "trades": 19
       },
+      "Natural Gas": {
+        "fees_usd": 2.78,
+        "realized_pnl_usd": 0,
+        "slippage_usd": 1.25,
+        "trades": 2
+      },
       "Silver": {
         "fees_usd": 3.55,
         "realized_pnl_usd": 0,
@@ -136,6 +142,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 125,
+        "entry_price": 0.76,
+        "instrument_id": "kalshi:KXNATGASW-26OCT2317-T3.199",
+        "mark_price": 0.75,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASW-26OCT2317-T3.199/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXNATGASW-26OCT2317-T3.199",
+        "unrealized_pnl_usd": -1.25
+      },
+      {
+        "contracts": 125,
+        "entry_price": 0.84,
+        "instrument_id": "kalshi:KXNATGASW-26OCT2317-T3.599",
+        "mark_price": 0.83,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASW-26OCT2317-T3.599/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXNATGASW-26OCT2317-T3.599",
+        "unrealized_pnl_usd": -1.25
+      },
+      {
         "contracts": 158,
         "entry_price": 0.782042,
         "instrument_id": "kalshi:KXWTIMAX-26DEC31-T120",
@@ -177,7 +203,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 59
+      "kalshi": 61
     },
     "worst_closed_trade": {
       "pnl_usd": -48.805659,
@@ -194,12 +220,12 @@
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 54,
+  "entries": 56,
   "equity_usd": 99980.310055,
   "exits": 5,
-  "fees_paid_usd": 75.22,
+  "fees_paid_usd": 78,
   "market_type": "Kalshi event contract",
-  "open_positions": 13,
+  "open_positions": 15,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -218,23 +244,24 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 83.737694,
+  "slippage_paid_usd": 84.987694,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 59,
-  "unrealized_pnl_usd": 0,
+  "trades": 61,
+  "unrealized_pnl_usd": -2.5,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "59 ledger records so far: 6 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -72.32 USD against 75.22 USD of fees and 83.74 USD of measured slippage against the mid.",
+    "61 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -72.32 USD against 78.00 USD of fees and 84.99 USD of measured slippage against the mid.",
     "Best closed trade: KXAAAGASW-26OCT05-4.3800 at 2.45 USD (book_imbalance_flip).",
     "Worst closed trade: KXGOLDDIRY-26DEC31H1700-T4300 at -48.805659 USD (book_imbalance_flip).",
+    "2 open positions carry verified marks totalling -2.50 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (23), insufficient_depth_within_price_tolerance (3).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
