@@ -2004,18 +2004,18 @@
   "anomalies_by_check": [
     {
       "check": "payload_hash_present_in_that_runs_provenance_log",
-      "count": 1885
+      "count": 1894
     },
     {
       "check": "instrument_present_in_published_universe",
-      "count": 806
+      "count": 810
     },
     {
       "check": "cross_venue_basis_normalisation_recorded",
       "count": 14
     }
   ],
-  "anomaly_count": 2705,
+  "anomaly_count": 2718,
   "coverage": {
     "funding_entries": 309,
     "funding_fully_verified": 47,
@@ -2025,7 +2025,7 @@
       "kalshi_margin": 12,
       "moex_forts": 42
     },
-    "intents": 2182,
+    "intents": 2203,
     "season": {
       "ends_at": "2027-09-22T00:00:00Z",
       "season_id": "season-2026-09-22_to_2027-09-22",
@@ -2036,16 +2036,16 @@
     "tiers": {
       "modelled_maker_fills": 0,
       "quote_based_fills": 1090,
-      "taker_fills_from_published_ladders": 667
+      "taker_fills_from_published_ladders": 675
     },
-    "trades": 1757,
+    "trades": 1765,
     "trades_by_strategy": {
       "cross-venue-basis": 14,
       "kalshi-cheap-momentum": 10,
-      "kalshi-favourite-carry": 115,
+      "kalshi-favourite-carry": 119,
       "kalshi-jump-reversal": 7,
       "kalshi-ladder-arbitrage": 164,
-      "kalshi-longshot-fade": 275,
+      "kalshi-longshot-fade": 279,
       "kalshi-oil-trend": 24,
       "kalshi-orderbook-imbalance": 72,
       "kalshi-perp-mark-fade": 25,
@@ -2059,16 +2059,16 @@
       "moex-rate-curve": 2
     },
     "trades_by_venue": {
-      "kalshi": 667,
+      "kalshi": 675,
       "kalshi_margin": 676,
       "moex_forts": 414
     },
     "unclassified_series": 0
   },
-  "fully_verified": 11,
+  "fully_verified": 16,
   "funding_entries_checked": 309,
   "funding_fully_verified": 47,
-  "generated_at": "2026-10-18T16:45:54.725Z",
+  "generated_at": "2026-10-18T19:20:43.220Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
     "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.",
@@ -2077,416 +2077,6 @@
     "Anomalies are reported, never silently corrected."
   ],
   "results": [
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDID-26OCT18-4.8500/orderbook?depth=20"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "252f2c978093e5e04980618351cf831df84b1b9b7dc1ea8a0ae25e4a197f5caf"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 88,
-          "ok": true,
-          "recomputed_vwap": 0.98,
-          "recorded_contracts": 88,
-          "recorded_vwap": 0.98
-        },
-        {
-          "check": "kalshi_fee_matches_official_formula",
-          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
-          "ok": true,
-          "recomputed_fee_usd": 0.13,
-          "recorded_fee_usd": 0.13
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
-          "ok": false
-        }
-      ],
-      "failed_checks": [
-        "instrument_present_in_published_universe"
-      ],
-      "run_id": "run-2026-10-17T21-38-46-796Z",
-      "strategy_id": "kalshi-ladder-arbitrage",
-      "ticker": "KXAAAGASDID-26OCT18-4.8500",
-      "trade_id": "25c9b9c54a87637617e8"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26OCT3017-T6.39/orderbook?depth=20"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "444cde8dddc8e7ef32ae85b47259387ef30b5a4bd40e4ea0df875fd633b3a640"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 126,
-          "ok": true,
-          "recomputed_vwap": 0.82,
-          "recorded_contracts": 126,
-          "recorded_vwap": 0.82
-        },
-        {
-          "check": "kalshi_fee_matches_official_formula",
-          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
-          "ok": true,
-          "recomputed_fee_usd": 1.31,
-          "recorded_fee_usd": 1.31
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
-          "ok": false
-        }
-      ],
-      "failed_checks": [
-        "instrument_present_in_published_universe"
-      ],
-      "run_id": "run-2026-10-17T21-38-46-796Z",
-      "strategy_id": "kalshi-orderbook-imbalance",
-      "ticker": "KXCOPPERMON-26OCT3017-T6.39",
-      "trade_id": "e8930a403e1ce795ab2a"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "fedcb9d0a9ab9995408f9e26909eaac0f758cc8287bc08989b04697ae16bbad5"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 2214,
-          "ok": true,
-          "recomputed_vwap": 0.2153,
-          "recorded_contracts": 2214,
-          "recorded_vwap": 0.2153
-        },
-        {
-          "check": "kalshi_perp_fee_matches_official_schedule",
-          "formula": "tier-0 exchange taker fee = 12.0 bps of notional (official fee schedule, effective 2026-07-07)",
-          "ok": true,
-          "recomputed_fee_usd": 0.572009,
-          "recorded_fee_usd": 0.572009
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
-        }
-      ],
-      "failed_checks": [],
-      "run_id": "run-2026-10-17T21-38-46-796Z",
-      "strategy_id": "kalshi-perp-mark-fade",
-      "ticker": "KXADAPERP",
-      "trade_id": "e1bd58710978bf45e58a"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "fedcb9d0a9ab9995408f9e26909eaac0f758cc8287bc08989b04697ae16bbad5"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 472,
-          "ok": true,
-          "recomputed_vwap": 2.7134,
-          "recorded_contracts": 472,
-          "recorded_vwap": 2.7134
-        },
-        {
-          "check": "kalshi_perp_fee_matches_official_schedule",
-          "formula": "tier-0 exchange taker fee = 12.0 bps of notional (official fee schedule, effective 2026-07-07)",
-          "ok": true,
-          "recomputed_fee_usd": 1.53687,
-          "recorded_fee_usd": 1.53687
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
-        }
-      ],
-      "failed_checks": [],
-      "run_id": "run-2026-10-17T21-38-46-796Z",
-      "strategy_id": "kalshi-perp-mark-fade",
-      "ticker": "KXBCHPERP",
-      "trade_id": "9da38c9901255947a635"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "fedcb9d0a9ab9995408f9e26909eaac0f758cc8287bc08989b04697ae16bbad5"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 70,
-          "ok": true,
-          "recomputed_vwap": 7.7664,
-          "recorded_contracts": 70,
-          "recorded_vwap": 7.7664
-        },
-        {
-          "check": "kalshi_perp_fee_matches_official_schedule",
-          "formula": "tier-0 exchange taker fee = 12.0 bps of notional (official fee schedule, effective 2026-07-07)",
-          "ok": true,
-          "recomputed_fee_usd": 0.652378,
-          "recorded_fee_usd": 0.652378
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
-        }
-      ],
-      "failed_checks": [],
-      "run_id": "run-2026-10-17T21-38-46-796Z",
-      "strategy_id": "kalshi-perp-mark-fade",
-      "ticker": "KXDOGEPERP",
-      "trade_id": "f07dc8fd93950a93963c"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26OCT3017-T6.69/orderbook?depth=20"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "b35d3c3a76f3e07aabaa3391e5025e979e32eb047cab59261487587df59c5a9f"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 126,
-          "ok": true,
-          "recomputed_vwap": 0.3,
-          "recorded_contracts": 126,
-          "recorded_vwap": 0.3
-        },
-        {
-          "check": "kalshi_fee_matches_official_formula",
-          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
-          "ok": true,
-          "recomputed_fee_usd": 1.86,
-          "recorded_fee_usd": 1.86
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
-          "ok": false
-        }
-      ],
-      "failed_checks": [
-        "instrument_present_in_published_universe"
-      ],
-      "run_id": "run-2026-10-17T21-38-46-796Z",
-      "strategy_id": "kalshi-jump-reversal",
-      "ticker": "KXCOPPERMON-26OCT3017-T6.69",
-      "trade_id": "a0637d2a8da27a5c91e8"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASW-26OCT2317-T4.099/orderbook?depth=20"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "77d8d3df1a10e71c1c11511e403ece75a87be906db86be40ce1b29d6d191afb3"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 125,
-          "ok": true,
-          "recomputed_vwap": 0.99,
-          "recorded_contracts": 125,
-          "recorded_vwap": 0.99
-        },
-        {
-          "check": "kalshi_fee_matches_official_formula",
-          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
-          "ok": true,
-          "recomputed_fee_usd": 0.09,
-          "recorded_fee_usd": 0.09
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
-          "ok": false
-        }
-      ],
-      "failed_checks": [
-        "instrument_present_in_published_universe"
-      ],
-      "run_id": "run-2026-10-17T23-52-39-489Z",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXNATGASW-26OCT2317-T4.099",
-      "trade_id": "2009272c305af1522387"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "official_source_url_recorded",
-          "ok": true,
-          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASW-26OCT2317-T3.999/orderbook?depth=20"
-        },
-        {
-          "check": "payload_hash_recorded",
-          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
-          "ok": true,
-          "sha256": "582739f8c91ae52189f37187a16b36d9c86a0cc9158b5cd59758429b12d7bc5d"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "The hash appears in the provenance log of the run that created the trade.",
-          "ok": true
-        },
-        {
-          "check": "fill_levels_reproduce_contracts_and_vwap",
-          "level_contracts": 125,
-          "ok": true,
-          "recomputed_vwap": 0.99,
-          "recorded_contracts": 125,
-          "recorded_vwap": 0.99
-        },
-        {
-          "check": "kalshi_fee_matches_official_formula",
-          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
-          "ok": true,
-          "recomputed_fee_usd": 0.09,
-          "recorded_fee_usd": 0.09
-        },
-        {
-          "check": "instrument_present_in_published_universe",
-          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
-          "ok": false
-        }
-      ],
-      "failed_checks": [
-        "instrument_present_in_published_universe"
-      ],
-      "run_id": "run-2026-10-17T23-52-39-489Z",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXNATGASW-26OCT2317-T3.999",
-      "trade_id": "a932b8787b9f74a260a2"
-    },
     {
       "checks": [
         {
@@ -3925,11 +3515,13 @@
         },
         {
           "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
+          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
+          "ok": false
         }
       ],
-      "failed_checks": [],
+      "failed_checks": [
+        "instrument_present_in_published_universe"
+      ],
       "run_id": "run-2026-10-18T16-45-07-747Z",
       "strategy_id": "kalshi-longshot-fade",
       "ticker": "KXBRENTD-26OCT1917-T111.50",
@@ -3975,11 +3567,13 @@
         },
         {
           "check": "instrument_present_in_published_universe",
-          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
-          "ok": true
+          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
+          "ok": false
         }
       ],
-      "failed_checks": [],
+      "failed_checks": [
+        "instrument_present_in_published_universe"
+      ],
       "run_id": "run-2026-10-18T16-45-07-747Z",
       "strategy_id": "kalshi-ladder-arbitrage",
       "ticker": "KXAAAGASEOYNJ-26DEC31-3.7000",
@@ -4025,15 +3619,417 @@
         },
         {
           "check": "instrument_present_in_published_universe",
+          "note": "Instrument no longer appears in the universe file (it may have settled and dropped out of the open-market listing).",
+          "ok": false
+        }
+      ],
+      "failed_checks": [
+        "instrument_present_in_published_universe"
+      ],
+      "run_id": "run-2026-10-18T16-45-07-747Z",
+      "strategy_id": "kalshi-ladder-arbitrage",
+      "ticker": "KXAAAGASEOYNJ-26DEC31-4.1000",
+      "trade_id": "728b6df7e22b08e4117b"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSD-26OCT19-4.2750/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "15c80bb160449412fb160cd3763a1071173b7f33f1acbb7d91806e1e44c4f850"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 337,
+          "ok": true,
+          "recomputed_vwap": 0.99,
+          "recorded_contracts": 337,
+          "recorded_vwap": 0.99
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 0.24,
+          "recorded_fee_usd": 0.24
+        },
+        {
+          "check": "instrument_present_in_published_universe",
           "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
           "ok": true
         }
       ],
       "failed_checks": [],
-      "run_id": "run-2026-10-18T16-45-07-747Z",
-      "strategy_id": "kalshi-ladder-arbitrage",
-      "ticker": "KXAAAGASEOYNJ-26DEC31-4.1000",
-      "trade_id": "728b6df7e22b08e4117b"
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-longshot-fade",
+      "ticker": "KXAAAGASDSD-26OCT19-4.2750",
+      "trade_id": "c3178acdae155ba925d9"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSD-26OCT19-4.2700/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "cf6d942af594b17c8286995dd25dbe1de9c325b399b33f221814fbb605ab034c"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 1960,
+          "ok": true,
+          "recomputed_vwap": 0.99,
+          "recorded_contracts": 1960,
+          "recorded_vwap": 0.99
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 1.36,
+          "recorded_fee_usd": 1.36
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-longshot-fade",
+      "ticker": "KXAAAGASDSD-26OCT19-4.2700",
+      "trade_id": "0059e4b18ef6691c6af1"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSD-26OCT19-4.2650/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "71ea0f0f38098f52d12f9e6ad9f818d7ab6e38a7d562f40d5ed5a1c262083a26"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 2634,
+          "ok": true,
+          "recomputed_vwap": 0.99,
+          "recorded_contracts": 2634,
+          "recorded_vwap": 0.99
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 1.83,
+          "recorded_fee_usd": 1.83
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-longshot-fade",
+      "ticker": "KXAAAGASDSD-26OCT19-4.2650",
+      "trade_id": "84376845bfa4dc68d1cf"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSD-26OCT19-4.2600/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "b58d32a0d3f2f5fa270a9806645cc74f739f8e8df74b3d864e915b8bd1809b83"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 2534,
+          "ok": true,
+          "recomputed_vwap": 0.99,
+          "recorded_contracts": 2534,
+          "recorded_vwap": 0.99
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 1.76,
+          "recorded_fee_usd": 1.76
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-longshot-fade",
+      "ticker": "KXAAAGASDSD-26OCT19-4.2600",
+      "trade_id": "e6ff7368880101c0e7b7"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDSD-26OCT19-4.2100/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "5cfabfaa480635510d4c1bdefb2c7d9de0acc9810b7c65986929529a5a4987af"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 6295,
+          "ok": true,
+          "recomputed_vwap": 0.03,
+          "recorded_contracts": 6295,
+          "recorded_vwap": 0.03
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 12.83,
+          "recorded_fee_usd": 12.83
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-favourite-carry",
+      "ticker": "KXAAAGASDSD-26OCT19-4.2100",
+      "trade_id": "1094b778c1910265da99"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDID-26OCT19-4.7900/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "1f7b10a7b04134f1ddbdccf855cee5fef056c8b8eb267af02dca91cdaf6a6a41"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 819,
+          "ok": true,
+          "recomputed_vwap": 0.02,
+          "recorded_contracts": 819,
+          "recorded_vwap": 0.02
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 1.13,
+          "recorded_fee_usd": 1.13
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-favourite-carry",
+      "ticker": "KXAAAGASDID-26OCT19-4.7900",
+      "trade_id": "ffb5c74b7744c580d9db"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDID-26OCT19-4.7850/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "bf021077deea3598c8f040754896b1db23304fea688059587b573e24563331aa"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 9181,
+          "ok": true,
+          "recomputed_vwap": 0.02,
+          "recorded_contracts": 9181,
+          "recorded_vwap": 0.02
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 12.6,
+          "recorded_fee_usd": 12.6
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-favourite-carry",
+      "ticker": "KXAAAGASDID-26OCT19-4.7850",
+      "trade_id": "49cd4d6ca96c2501e6b4"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "official_source_url_recorded",
+          "ok": true,
+          "source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDID-26OCT19-4.7800/orderbook?depth=20"
+        },
+        {
+          "check": "payload_hash_recorded",
+          "note": "Every trade stores the SHA-256 of the exact HTTP response its prices came from.",
+          "ok": true,
+          "sha256": "05a1be0b5d4dffe70d2a34363296933a09cc96e6e3ede204b999798608d50a7d"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "The hash appears in the provenance log of the run that created the trade.",
+          "ok": true
+        },
+        {
+          "check": "fill_levels_reproduce_contracts_and_vwap",
+          "level_contracts": 9431,
+          "ok": true,
+          "recomputed_vwap": 0.02,
+          "recorded_contracts": 9431,
+          "recorded_vwap": 0.02
+        },
+        {
+          "check": "kalshi_fee_matches_official_formula",
+          "formula": "roundup(multiplier x 0.07 x contracts x price x (1 - price)) rounded up to $0.01",
+          "ok": true,
+          "recomputed_fee_usd": 12.94,
+          "recorded_fee_usd": 12.94
+        },
+        {
+          "check": "instrument_present_in_published_universe",
+          "note": "Instrument is listed in data/universe/instruments.json with its own listing provenance.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [],
+      "run_id": "run-2026-10-18T19-19-56-491Z",
+      "strategy_id": "kalshi-favourite-carry",
+      "ticker": "KXAAAGASDID-26OCT19-4.7800",
+      "trade_id": "54ee02529f2cda8ac418"
     },
     {
       "checks": [
@@ -14255,6 +14251,6 @@
     }
   ],
   "retention_note": "Run manifests carry the per-request provenance (URL, status, SHA-256) for the most recent runs only; older manifests are pruned so the repository stays small. A trade from a pruned run cannot be hash-matched and shows payload_hash_present_in_that_runs_provenance_log as failed - that is a retention limit, disclosed here, not a price discrepancy.",
-  "trades_checked": 1757,
-  "with_anomalies": 2008
+  "trades_checked": 1765,
+  "with_anomalies": 2011
 }
