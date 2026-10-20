@@ -13,10 +13,10 @@
         "trades": 5
       },
       "1 ADA": {
-        "fees_usd": 5.513068,
-        "realized_pnl_usd": -50.774488,
+        "fees_usd": 5.530694,
+        "realized_pnl_usd": -51.683387,
         "slippage_usd": 2762399925038004700,
-        "trades": 7
+        "trades": 8
       },
       "100 DOGE": {
         "fees_usd": 1.317952,
@@ -37,21 +37,10 @@
         "trades": 10
       }
     },
-    "closed_trades": 24,
-    "open_position_marks": [
-      {
-        "contracts": 68,
-        "entry_price": 0.21629031,
-        "instrument_id": "kalshiperp:KXADAPERP",
-        "mark_price": 0.2168,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
-        "mark_status": "short_marked_at_offer",
-        "ticker": "KXADAPERP",
-        "unrealized_pnl_usd": -0.034659
-      }
-    ],
+    "closed_trades": 25,
+    "open_position_marks": [],
     "trades_by_venue": {
-      "kalshi_margin": 35
+      "kalshi_margin": 36
     },
     "worst_closed_trade": {
       "pnl_usd": -92.989987,
@@ -61,23 +50,23 @@
   },
   "blocked_orders": 0,
   "blocked_reasons": {},
-  "closed_trades": 10,
+  "closed_trades": 11,
   "disabled_reason": null,
   "display_name": "Perp Mark Fade",
   "enabled": true,
   "entries": 11,
-  "equity_usd": 99932.141916,
-  "exits": 24,
-  "fees_paid_usd": 16.665224,
+  "equity_usd": 99931.25005,
+  "exits": 25,
+  "fees_paid_usd": 16.68285,
   "market_type": "Kalshi perpetual future",
-  "open_positions": 1,
+  "open_positions": 0,
   "origin": {
     "claim": "A perpetual's book is anchored to the exchange-published mark/index price: deviations are driven by transient order flow and tend to decay back toward the mark. Kalshi publishes the mark (settlement mark price) for every perpetual in the same payload as the book.",
     "kind": "market_structure",
     "status": "structural - the anchor is published by the exchange itself"
   },
   "realized_pnl_usd": 0,
-  "return_pct": -0.0679,
+  "return_pct": -0.0687,
   "rules": {
     "entry": "|perp mid / exchange mark - 1| >= 0.30%, with a live two-sided book; trade toward the mark.",
     "exit": "Exit when the deviation decays below 0.08% or the two-sided quote disappears.",
@@ -89,18 +78,17 @@
   "traded_market_types": [
     "Kalshi perpetual future"
   ],
-  "trades": 35,
-  "unrealized_pnl_usd": -0.034659,
+  "trades": 36,
+  "unrealized_pnl_usd": 0,
   "username": "@mark-fade",
   "venues": [
     "kalshi_margin"
   ],
   "what_it_means": [
-    "35 ledger records so far: 5 distinct commodity exposures across kalshi_margin.",
-    "Closed-trade P&L is -207.18 USD against 16.67 USD of fees and 3015581487449667584.00 USD of measured slippage against the mid.",
+    "36 ledger records so far: 5 distinct commodity exposures across kalshi_margin.",
+    "Closed-trade P&L is -208.09 USD against 16.68 USD of fees and 3015581487449667584.00 USD of measured slippage against the mid.",
     "Best closed trade: KXADAPERP at 10.282415 USD (perp_mark_reached).",
     "Worst closed trade: KXBCHPERP at -92.989987 USD (perp_mark_reached).",
-    "1 open positions carry verified marks totalling -0.03 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
