@@ -2004,28 +2004,28 @@
   "anomalies_by_check": [
     {
       "check": "payload_hash_present_in_that_runs_provenance_log",
-      "count": 1953
+      "count": 1959
     },
     {
       "check": "instrument_present_in_published_universe",
-      "count": 843
+      "count": 838
     },
     {
       "check": "cross_venue_basis_normalisation_recorded",
       "count": 14
     }
   ],
-  "anomaly_count": 2810,
+  "anomaly_count": 2811,
   "coverage": {
-    "funding_entries": 324,
-    "funding_fully_verified": 37,
-    "instruments": 103,
+    "funding_entries": 327,
+    "funding_fully_verified": 40,
+    "instruments": 108,
     "instruments_by_venue": {
       "kalshi": 45,
       "kalshi_margin": 12,
-      "moex_forts": 46
+      "moex_forts": 51
     },
-    "intents": 2441,
+    "intents": 2459,
     "season": {
       "ends_at": "2027-09-22T00:00:00Z",
       "season_id": "season-2026-09-22_to_2027-09-22",
@@ -2066,9 +2066,9 @@
     "unclassified_series": 0
   },
   "fully_verified": 19,
-  "funding_entries_checked": 324,
-  "funding_fully_verified": 37,
-  "generated_at": "2026-10-20T11:59:14.780Z",
+  "funding_entries_checked": 327,
+  "funding_fully_verified": 40,
+  "generated_at": "2026-10-20T16:49:39.402Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
     "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.",
