@@ -4,9 +4,38 @@
       "equity_usd": 99936.446469,
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
-      "notes": [],
-      "orders_produced": 0,
-      "positions": 86,
+      "notes": [
+        {
+          "instrument_id": "kalshi:KXAAAGASDKS-26OCT22-4.0100",
+          "no_ask": 0.99,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.01,
+          "yes_mid": 0.015
+        },
+        {
+          "instrument_id": "kalshi:KXAAAGASDKS-26OCT22-4.0050",
+          "no_ask": 0.99,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.01,
+          "yes_mid": 0.015
+        },
+        {
+          "instrument_id": "kalshi:KXAAAGASDKS-26OCT22-4.0000",
+          "no_ask": 0.99,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.01,
+          "yes_mid": 0.015
+        },
+        {
+          "instrument_id": "kalshi:KXAAAGASDKS-26OCT22-3.9950",
+          "no_ask": 0.99,
+          "signal": "yes_mid_at_or_below_10c",
+          "spread": 0.01,
+          "yes_mid": 0.015
+        }
+      ],
+      "orders_produced": 4,
+      "positions": 83,
       "return_pct": -0.0636,
       "strategy_id": "kalshi-longshot-fade",
       "username": "@fade-the-crowd"
@@ -16,8 +45,8 @@
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
-      "orders_produced": 4,
-      "positions": 20,
+      "orders_produced": 3,
+      "positions": 11,
       "return_pct": -5.3927,
       "strategy_id": "kalshi-favourite-carry",
       "username": "@carry-collector"
@@ -61,20 +90,32 @@
       "market_type": "Kalshi event contract",
       "notes": [
         {
-          "high_strike": 3.875,
-          "low_strike": 3.87,
-          "series": "KXAAAGASDAR",
-          "violation": -0.025
+          "high_strike": 3.815,
+          "low_strike": 3.81,
+          "series": "KXAAAGASDIN",
+          "violation": -0.14
         },
         {
-          "high_strike": 3.82,
-          "low_strike": 3.815,
-          "series": "KXAAAGASDLA",
+          "high_strike": 3.825,
+          "low_strike": 3.82,
+          "series": "KXAAAGASDIN",
+          "violation": -0.105
+        },
+        {
+          "high_strike": 3.83,
+          "low_strike": 3.825,
+          "series": "KXAAAGASDIN",
+          "violation": -0.06
+        },
+        {
+          "high_strike": 3.85,
+          "low_strike": 3.845,
+          "series": "KXAAAGASDIN",
           "violation": -0.02
         }
       ],
-      "orders_produced": 4,
-      "positions": 29,
+      "orders_produced": 8,
+      "positions": 34,
       "return_pct": -0.0311,
       "strategy_id": "kalshi-ladder-arbitrage",
       "username": "@ladder-arb"
@@ -102,13 +143,13 @@
       "username": "@perp-surfer"
     },
     {
-      "equity_usd": 103614.35215,
+      "equity_usd": 103568.37729,
       "exits_produced": 0,
       "market_type": "Exchange-listed commodity future",
       "notes": [],
       "orders_produced": 0,
       "positions": 12,
-      "return_pct": 3.6144,
+      "return_pct": 3.5684,
       "strategy_id": "moex-metals-trend",
       "username": "@metal-trend"
     },
@@ -118,7 +159,13 @@
       "market_type": "Exchange-listed commodity future",
       "notes": [
         {
-          "annualised_carry": 0.0084,
+          "annualised_carry": -0.0314,
+          "asset_code": "ALUM",
+          "days": 91,
+          "skipped": "annualised carry below entry threshold"
+        },
+        {
+          "annualised_carry": 0.0077,
           "asset_code": "COPPER",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
@@ -130,25 +177,25 @@
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": 0.0973,
+          "annualised_carry": 0.0949,
           "asset_code": "PLTM",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": 0.0905,
+          "annualised_carry": 0.0893,
           "asset_code": "PLT",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": -0.0516,
+          "annualised_carry": -0.0583,
           "asset_code": "SUGR",
           "days": 63,
           "skipped": "annualised carry below entry threshold"
         },
         {
-          "annualised_carry": 0.1115,
+          "annualised_carry": 0.1107,
           "asset_code": "SILV",
           "days": 91,
           "skipped": "annualised carry below entry threshold"
@@ -172,22 +219,22 @@
       "username": "@agri-trend"
     },
     {
-      "equity_usd": 101398.051114,
+      "equity_usd": 101360.851114,
       "exits_produced": 0,
       "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
       "notes": [
         {
-          "moex_usd_per_unit": 18.75,
-          "note": "Unit reconciliation failed: KXETHPERP 2489.50 USD/unit vs ETZ6 18.75 USD/unit differ by 132.8x, so the two venues quote different units of the asset and no basis is defined.",
+          "moex_usd_per_unit": 19.12,
+          "note": "Unit reconciliation failed: KXETHPERP 2513.60 USD/unit vs ETZ6 19.12 USD/unit differ by 131.5x, so the two venues quote different units of the asset and no basis is defined.",
           "pair": "Ether",
-          "perp_usd_per_unit": 2489.5,
+          "perp_usd_per_unit": 2513.6,
           "skipped": "unit_reconciliation_failed",
-          "unit_ratio": 132.7733
+          "unit_ratio": 131.4644
         }
       ],
       "orders_produced": 0,
       "positions": 1,
-      "return_pct": 1.3981,
+      "return_pct": 1.3609,
       "strategy_id": "cross-venue-basis",
       "username": "@basis-hunter"
     },
@@ -196,8 +243,8 @@
       "exits_produced": 0,
       "market_type": "Kalshi event contract",
       "notes": [],
-      "orders_produced": 0,
-      "positions": 24,
+      "orders_produced": 1,
+      "positions": 25,
       "return_pct": -0.0197,
       "strategy_id": "kalshi-orderbook-imbalance",
       "username": "@book-watcher"
@@ -247,24 +294,24 @@
       "username": "@snap-fader"
     },
     {
-      "equity_usd": 99636.948072,
+      "equity_usd": 99619.950905,
       "exits_produced": 0,
       "market_type": "Exchange-listed FX future",
       "notes": [],
       "orders_produced": 0,
       "positions": 2,
-      "return_pct": -0.3631,
+      "return_pct": -0.38,
       "strategy_id": "moex-fx-trend",
       "username": "@usd-rub-desk"
     },
     {
-      "equity_usd": 98991.115457,
+      "equity_usd": 99109.701475,
       "exits_produced": 0,
       "market_type": "Exchange-listed equity index future",
       "notes": [],
       "orders_produced": 0,
       "positions": 5,
-      "return_pct": -1.0089,
+      "return_pct": -0.8903,
       "strategy_id": "moex-index-trend",
       "username": "@index-mover"
     },
@@ -280,301 +327,6 @@
       "username": "@ruonia-curve"
     }
   ],
-  "generated_at": "2026-10-21T13:07:41.099Z",
-  "settlements": [
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDAL-26OCT21-3.8500",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -319.54,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:36.927Z",
-      "settlement_source_sha256": "3eb53385f0852ed7e7c86301f99998b636c82872701ce4d3726f6c673cfc5713",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDAL-26OCT21-3.8500",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDAL-26OCT21-3.8500",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDAL-26OCT21-3.8550",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -222.91,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.061Z",
-      "settlement_source_sha256": "2bef6a016c8fc809edbfd95326cef3ddf8af347a79d736e19813e2c2bcdb2c47",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDAL-26OCT21-3.8550",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDAL-26OCT21-3.8550",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDAL-26OCT21-3.8600",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -222.89,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.197Z",
-      "settlement_source_sha256": "d223c3e0b28e6cc2514a9732f868c0da24dda3ff2659b2fc2c3086d9707ad7ad",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDAL-26OCT21-3.8600",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDAL-26OCT21-3.8600",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDAL-26OCT21-3.8650",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -196.16,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.314Z",
-      "settlement_source_sha256": "ee018a8e79bbbcb67afa8b674d5060cb4678250ca2d2d87f4db8be04ee790261",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDAL-26OCT21-3.8650",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDAL-26OCT21-3.8650",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDCT-26OCT21-4.3250",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -113.94,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.445Z",
-      "settlement_source_sha256": "a02684d02f4ea0e729a4bf938001588569eb51203b1f361955b1aada85b19c94",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDCT-26OCT21-4.3250",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDCT-26OCT21-4.3250",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDCT-26OCT21-4.3300",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -99.86,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.577Z",
-      "settlement_source_sha256": "12c9827be4fb218c28fd8312548618f2b61b9e781303e93d18d1c09c0d775b4b",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDCT-26OCT21-4.3300",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDCT-26OCT21-4.3300",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWI-26OCT21-4.1350",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -344.05,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.708Z",
-      "settlement_source_sha256": "30777ef72a257ab3ae22547b6c077a0320978e65e9609a856490d65373575951",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWI-26OCT21-4.1350",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDWI-26OCT21-4.1350",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWI-26OCT21-4.1400",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -221.21,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.841Z",
-      "settlement_source_sha256": "0f2da97c5ac6e58c97ccc651a5c17a93ffa882c7150dab0c9f245600265aa99c",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWI-26OCT21-4.1400",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDWI-26OCT21-4.1400",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWV-26OCT21-4.2050",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -178.011968,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:37.971Z",
-      "settlement_source_sha256": "80214ef888e700aeb913ec8779ed12e26c1c6cb95c93873fb47855a0329499f4",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWV-26OCT21-4.2050",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDWV-26OCT21-4.2050",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWV-26OCT21-4.2100",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -177.798679,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:38.095Z",
-      "settlement_source_sha256": "60359ac6a5e888d767774648734bd08732a6754b184aa2669639605e66849942",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWV-26OCT21-4.2100",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDWV-26OCT21-4.2100",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWV-26OCT21-4.2150",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -171.408841,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:38.224Z",
-      "settlement_source_sha256": "15075261262b8fc0813d4512ae9140b95e6e8ab38e2b4da1bc88d7fb627431bc",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWV-26OCT21-4.2150",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDWV-26OCT21-4.2150",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWV-26OCT21-4.2200",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -24.68,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:38.356Z",
-      "settlement_source_sha256": "328b82e1589ea7afb319a99aa47be9baa07b81cbd527308028f7f97a5568ac56",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWV-26OCT21-4.2200",
-      "strategy_id": "kalshi-favourite-carry",
-      "ticker": "KXAAAGASDWV-26OCT21-4.2200",
-      "username": "@carry-collector"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWV-26OCT21-4.1950",
-      "outcome_held": "yes",
-      "payout_usd": 300,
-      "pnl_usd": 2.8101,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:38.488Z",
-      "settlement_source_sha256": "217dfb9096e2f7a555155f5c84c4187c47f5e165840c50d6017f6fd8e0201ec3",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWV-26OCT21-4.1950",
-      "strategy_id": "kalshi-ladder-arbitrage",
-      "ticker": "KXAAAGASDWV-26OCT21-4.1950",
-      "username": "@ladder-arb"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWV-26OCT21-4.2000",
-      "outcome_held": "no",
-      "payout_usd": 0,
-      "pnl_usd": -86.67036,
-      "result": "yes",
-      "settled_at": "2026-10-21T13:07:38.618Z",
-      "settlement_source_sha256": "6c6cfb471e23e5e92d581163de7447fe6c9422c1eddaa08169275131754a2b6e",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWV-26OCT21-4.2000",
-      "strategy_id": "kalshi-ladder-arbitrage",
-      "ticker": "KXAAAGASDWV-26OCT21-4.2000",
-      "username": "@ladder-arb"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDAL-26OCT21-3.8950",
-      "outcome_held": "no",
-      "payout_usd": 781,
-      "pnl_usd": 7.26,
-      "result": "no",
-      "settled_at": "2026-10-21T13:07:38.746Z",
-      "settlement_source_sha256": "6624814e439a0dca72ae1344249061294c5d240319573613940347b23ea6c5f0",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDAL-26OCT21-3.8950",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXAAAGASDAL-26OCT21-3.8950",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDAL-26OCT21-3.9000",
-      "outcome_held": "no",
-      "payout_usd": 744,
-      "pnl_usd": 6.92,
-      "result": "no",
-      "settled_at": "2026-10-21T13:07:38.879Z",
-      "settlement_source_sha256": "63bfaf9416a49dabedf109b98fe06a2fe5967458d4f649da0c0438137e4b5f25",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDAL-26OCT21-3.9000",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXAAAGASDAL-26OCT21-3.9000",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDAL-26OCT21-3.9050",
-      "outcome_held": "no",
-      "payout_usd": 675,
-      "pnl_usd": 6.28,
-      "result": "no",
-      "settled_at": "2026-10-21T13:07:39.011Z",
-      "settlement_source_sha256": "3f681c00e7f344e332b7e532957cb6ac157492b708efbc83782752be4cc918a5",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDAL-26OCT21-3.9050",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXAAAGASDAL-26OCT21-3.9050",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDCT-26OCT21-4.3450",
-      "outcome_held": "no",
-      "payout_usd": 312,
-      "pnl_usd": 2.9,
-      "result": "no",
-      "settled_at": "2026-10-21T13:07:39.139Z",
-      "settlement_source_sha256": "8fe690fc513cd85c116d9678721887c9362109b9787528c0b421526b262af7b6",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDCT-26OCT21-4.3450",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXAAAGASDCT-26OCT21-4.3450",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWI-26OCT21-4.2050",
-      "outcome_held": "no",
-      "payout_usd": 1129,
-      "pnl_usd": 10.5,
-      "result": "no",
-      "settled_at": "2026-10-21T13:07:39.277Z",
-      "settlement_source_sha256": "d7642567690bc17412f04d3ce37fc807c26ca1232d6316ed760b8014ba570281",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWI-26OCT21-4.2050",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXAAAGASDWI-26OCT21-4.2050",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWI-26OCT21-4.2100",
-      "outcome_held": "no",
-      "payout_usd": 1129,
-      "pnl_usd": 10.5,
-      "result": "no",
-      "settled_at": "2026-10-21T13:07:39.398Z",
-      "settlement_source_sha256": "da99585cc45fba5c55668ca3363c3a544c9e6133a4b14c091e06a631a1615120",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWI-26OCT21-4.2100",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXAAAGASDWI-26OCT21-4.2100",
-      "username": "@fade-the-crowd"
-    },
-    {
-      "expiration": "2026-10-28T14:00:00Z",
-      "instrument_id": "kalshi:KXAAAGASDWI-26OCT21-4.2150",
-      "outcome_held": "no",
-      "payout_usd": 293,
-      "pnl_usd": 2.72,
-      "result": "no",
-      "settled_at": "2026-10-21T13:07:39.528Z",
-      "settlement_source_sha256": "15e36cf2f9e3715ab0712ef73e26d7f888350acb01555bacce340dddc189e207",
-      "settlement_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDWI-26OCT21-4.2150",
-      "strategy_id": "kalshi-longshot-fade",
-      "ticker": "KXAAAGASDWI-26OCT21-4.2150",
-      "username": "@fade-the-crowd"
-    }
-  ]
+  "generated_at": "2026-10-21T18:12:32.648Z",
+  "settlements": []
 }
