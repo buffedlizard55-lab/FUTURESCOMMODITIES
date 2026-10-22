@@ -10,54 +10,33 @@
       }
     },
     "closed_trades": 0,
-    "open_position_marks": [
-      {
-        "contracts": 252,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXGOLDD-26OCT2217-T4223",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26OCT2217-T4223",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 28,
-        "entry_price": 0.02,
-        "instrument_id": "kalshi:KXGOLDD-26OCT2217-T4233",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXGOLDD-26OCT2217-T4233",
-        "unrealized_pnl_usd": null
-      }
-    ],
+    "open_position_marks": [],
     "trades_by_venue": {
       "kalshi": 2
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 373,
+  "blocked_orders": 376,
   "blocked_reasons": {
-    "resting_order_registered": 373
+    "resting_order_registered": 376
   },
-  "closed_trades": 0,
+  "closed_trades": 2,
   "disabled_reason": null,
   "display_name": "Spread Capture",
   "enabled": true,
   "entries": 2,
-  "equity_usd": 100000,
+  "equity_usd": 99994.4,
   "exits": 0,
   "fees_paid_usd": 0,
   "market_type": "Kalshi event contract",
-  "open_positions": 2,
+  "open_positions": 0,
   "origin": {
     "claim": "Kalshi charges no maker fee on standard series, so resting inside a wide commodity spread captures the bid-ask spread at zero commission if it gets filled.",
     "kind": "market_structure",
     "status": "structural - no forecast required"
   },
-  "realized_pnl_usd": 0,
-  "return_pct": 0,
+  "realized_pnl_usd": -5.6,
+  "return_pct": -0.0056,
   "rules": {
     "entry": "Spread >= 3 cents, resting bid at best bid + 1 cent, never crossing the offer.",
     "exit": "Working orders expire after the configured TTL; positions are marked to the opposite side of the book.",
@@ -78,7 +57,7 @@
   "what_it_means": [
     "2 ledger records so far: 1 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 0.00 USD of fees and 0.00 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: resting_order_registered (373).",
+    "Blocked order attempts and their recorded reasons: resting_order_registered (376).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
