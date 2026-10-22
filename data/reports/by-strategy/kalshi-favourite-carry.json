@@ -33,10 +33,10 @@
         "trades": 1
       },
       "Silver": {
-        "fees_usd": 19.04,
+        "fees_usd": 21.83,
         "realized_pnl_usd": 0,
-        "slippage_usd": 46.210076,
-        "trades": 14
+        "slippage_usd": 51.330076,
+        "trades": 16
       },
       "WTI Crude Oil": {
         "fees_usd": 27.89,
@@ -148,6 +148,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 256,
+        "entry_price": 0.07,
+        "instrument_id": "kalshi:KXSILVERD-26OCT2217-T54.25",
+        "mark_price": 0.05,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERD-26OCT2217-T54.25/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXSILVERD-26OCT2217-T54.25",
+        "unrealized_pnl_usd": -5.12
+      },
+      {
+        "contracts": 256,
+        "entry_price": 0.1,
+        "instrument_id": "kalshi:KXSILVERD-26OCT2217-T54.50",
+        "mark_price": 0.08,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERD-26OCT2217-T54.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXSILVERD-26OCT2217-T54.50",
+        "unrealized_pnl_usd": -5.12
+      },
+      {
         "contracts": 140,
         "entry_price": 0.055643,
         "instrument_id": "kalshi:KXWTI-26OCT2214-T93.49",
@@ -189,25 +209,25 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 154
+      "kalshi": 156
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 241,
+  "blocked_orders": 251,
   "blocked_reasons": {
     "insufficient_depth_within_price_tolerance": 2,
-    "settlement_result_not_published": 239
+    "settlement_result_not_published": 249
   },
   "closed_trades": 140,
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 154,
+  "entries": 156,
   "equity_usd": 94607.339518,
   "exits": 0,
-  "fees_paid_usd": 625.09,
+  "fees_paid_usd": 627.88,
   "market_type": "Kalshi event contract",
-  "open_positions": 14,
+  "open_positions": 16,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
@@ -220,22 +240,23 @@
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 2364.604814,
+  "slippage_paid_usd": 2369.724814,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 154,
-  "unrealized_pnl_usd": 0,
+  "trades": 156,
+  "unrealized_pnl_usd": -10.24,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "154 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 625.09 USD of fees and 2364.60 USD of measured slippage against the mid.",
-    "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (239).",
+    "156 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 627.88 USD of fees and 2369.72 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -10.24 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (249).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
