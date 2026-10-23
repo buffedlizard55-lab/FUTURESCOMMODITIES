@@ -9,10 +9,10 @@
         "trades": 6
       },
       "Copper": {
-        "fees_usd": 2.71,
+        "fees_usd": 4.34,
         "realized_pnl_usd": 0,
-        "slippage_usd": 9.27,
-        "trades": 4
+        "slippage_usd": 15.370013,
+        "trades": 6
       },
       "Gasoline (US retail average)": {
         "fees_usd": 554.18,
@@ -71,102 +71,82 @@
         "contracts": 17,
         "entry_price": 0.02,
         "instrument_id": "kalshi:KXAAAGASDMO-26OCT23-3.9250",
-        "mark_price": 0.01,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDMO-26OCT23-3.9250/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASDMO-26OCT23-3.9250",
-        "unrealized_pnl_usd": -0.17
-      },
-      {
-        "contracts": 140,
-        "entry_price": 0.055643,
-        "instrument_id": "kalshi:KXWTI-26OCT2214-T93.49",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT2214-T93.49",
         "unrealized_pnl_usd": null
       },
       {
-        "contracts": 127,
-        "entry_price": 0.068268,
-        "instrument_id": "kalshi:KXWTI-26OCT2214-T93.99",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT2214-T93.99",
-        "unrealized_pnl_usd": null
+        "contracts": 169,
+        "entry_price": 0.053077,
+        "instrument_id": "kalshi:KXCOPPERW-26OCT2317-T6.39",
+        "mark_price": 0.02,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26OCT2317-T6.39/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERW-26OCT2317-T6.39",
+        "unrealized_pnl_usd": -5.590013
       },
       {
-        "contracts": 125,
-        "entry_price": 0.09,
-        "instrument_id": "kalshi:KXWTI-26OCT2214-T94.49",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT2214-T94.49",
-        "unrealized_pnl_usd": null
-      },
-      {
-        "contracts": 125,
-        "entry_price": 0.11,
-        "instrument_id": "kalshi:KXWTI-26OCT2214-T94.99",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
-        "ticker": "KXWTI-26OCT2214-T94.99",
-        "unrealized_pnl_usd": null
+        "contracts": 175,
+        "entry_price": 0.0924,
+        "instrument_id": "kalshi:KXCOPPERW-26OCT2317-T6.42",
+        "mark_price": 0.06,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26OCT2317-T6.42/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERW-26OCT2317-T6.42",
+        "unrealized_pnl_usd": -5.67
       }
     ],
     "trades_by_venue": {
-      "kalshi": 159
+      "kalshi": 161
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 263,
+  "blocked_orders": 266,
   "blocked_reasons": {
     "insufficient_depth_within_price_tolerance": 2,
-    "settlement_result_not_published": 261
+    "settlement_result_not_published": 264
   },
-  "closed_trades": 152,
+  "closed_trades": 156,
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 159,
+  "entries": 161,
   "equity_usd": 94607.339518,
   "exits": 0,
-  "fees_paid_usd": 627.99,
+  "fees_paid_usd": 629.62,
   "market_type": "Kalshi event contract",
-  "open_positions": 7,
+  "open_positions": 5,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
     "status": "hypothesis under test"
   },
-  "realized_pnl_usd": -9590.009758,
+  "realized_pnl_usd": -9634.139814,
   "return_pct": -5.3927,
   "rules": {
     "entry": "YES mid >= 0.90, spread <= 3 cents, closes within 48 hours.",
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 2370.059814,
+  "slippage_paid_usd": 2376.159827,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 159,
-  "unrealized_pnl_usd": -0.17,
+  "trades": 161,
+  "unrealized_pnl_usd": -11.260013,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "159 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 627.99 USD of fees and 2370.06 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -0.17 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (261).",
+    "161 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 629.62 USD of fees and 2376.16 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -11.26 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (264).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
