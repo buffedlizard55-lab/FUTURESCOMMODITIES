@@ -33,10 +33,10 @@
         "trades": 1
       },
       "Silver": {
-        "fees_usd": 21.83,
+        "fees_usd": 22.25,
         "realized_pnl_usd": 0,
-        "slippage_usd": 51.330076,
-        "trades": 16
+        "slippage_usd": 53.205076,
+        "trades": 17
       },
       "WTI Crude Oil": {
         "fees_usd": 27.89,
@@ -96,10 +96,20 @@
         "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASDNH-26OCT25-4.2050",
         "unrealized_pnl_usd": null
+      },
+      {
+        "contracts": 125,
+        "entry_price": 0.05,
+        "instrument_id": "kalshi:KXSILVERD-26OCT2617-T51",
+        "mark_price": 0.02,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERD-26OCT2617-T51/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXSILVERD-26OCT2617-T51",
+        "unrealized_pnl_usd": -3.75
       }
     ],
     "trades_by_venue": {
-      "kalshi": 166
+      "kalshi": 167
     },
     "worst_closed_trade": null
   },
@@ -112,12 +122,12 @@
   "disabled_reason": null,
   "display_name": "Favourite Carry",
   "enabled": true,
-  "entries": 166,
+  "entries": 167,
   "equity_usd": 90013.410173,
   "exits": 0,
-  "fees_paid_usd": 668.79,
+  "fees_paid_usd": 669.21,
   "market_type": "Kalshi event contract",
-  "open_positions": 5,
+  "open_positions": 6,
   "origin": {
     "claim": "The same bias that overprices longshots underprices near-certain outcomes; buying NO at 90c+ YES prices collects a small premium with a large loss tail.",
     "kind": "documented_anomaly",
@@ -130,21 +140,22 @@
     "exit": "No exit: held to settlement.",
     "sizing": "Target notional, capped by verified resting depth."
   },
-  "slippage_paid_usd": 2518.834827,
+  "slippage_paid_usd": 2520.709827,
   "strategy_id": "kalshi-favourite-carry",
   "thesis": "Buy NO where YES is already at or above 90 cents and the contract closes within two days. This is the mirror image of the longshot fade: it wins often and loses big occasionally, which is exactly the return profile a highest-return-only competition is allowed to take.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 166,
-  "unrealized_pnl_usd": 0,
+  "trades": 167,
+  "unrealized_pnl_usd": -3.75,
   "username": "@carry-collector",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "166 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 668.79 USD of fees and 2518.83 USD of measured slippage against the mid.",
+    "167 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 669.21 USD of fees and 2520.71 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -3.75 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: insufficient_depth_within_price_tolerance (2), settlement_result_not_published (264).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
