@@ -21,11 +21,11 @@
         "contracts": 126,
         "entry_price": 0.3,
         "instrument_id": "kalshi:KXCOPPERMON-26OCT3017-T6.69",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.21,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERMON-26OCT3017-T6.69/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXCOPPERMON-26OCT3017-T6.69",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": -11.34
       }
     ],
     "trades_by_venue": {
@@ -42,7 +42,7 @@
   "display_name": "Jump Reversal",
   "enabled": true,
   "entries": 7,
-  "equity_usd": 99676.469945,
+  "equity_usd": 99670.169945,
   "exits": 0,
   "fees_paid_usd": 16.84,
   "market_type": "Kalshi event contract",
@@ -53,7 +53,7 @@
     "status": "hypothesis under test - tick-to-tick, on official snapshot mids only"
   },
   "realized_pnl_usd": -316.630055,
-  "return_pct": -0.3235,
+  "return_pct": -0.3298,
   "rules": {
     "entry": "|mid change between the previous committed snapshot and this one| >= 6 cents, spread <= 4 cents, at least 2 hours to close, mid between 0.08 and 0.92.",
     "exit": "Exit when the mid retraces half of the measured jump, or the market closes.",
@@ -66,7 +66,7 @@
     "Kalshi event contract"
   ],
   "trades": 7,
-  "unrealized_pnl_usd": 0,
+  "unrealized_pnl_usd": -11.34,
   "username": "@snap-fader",
   "venues": [
     "kalshi"
@@ -74,6 +74,7 @@
   "what_it_means": [
     "7 ledger records so far: 2 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 16.84 USD of fees and 18.31 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -11.34 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (12).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
