@@ -33,10 +33,10 @@
         "trades": 11
       },
       "Silver": {
-        "fees_usd": 11.35,
+        "fees_usd": 12.29,
         "realized_pnl_usd": 0,
-        "slippage_usd": 81.728964,
-        "trades": 39
+        "slippage_usd": 89.498839,
+        "trades": 41
       },
       "WTI Crude Oil": {
         "fees_usd": 39.56,
@@ -878,6 +878,26 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 185,
+        "entry_price": 0.952135,
+        "instrument_id": "kalshi:KXSILVERW-26OCT3017-T57.99",
+        "mark_price": 0.92,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERW-26OCT3017-T57.99/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXSILVERW-26OCT3017-T57.99",
+        "unrealized_pnl_usd": -5.944975
+      },
+      {
+        "contracts": 269,
+        "entry_price": 0.9821,
+        "instrument_id": "kalshi:KXSILVERW-26OCT3017-T58.99",
+        "mark_price": 0.95,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERW-26OCT3017-T58.99/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXSILVERW-26OCT3017-T58.99",
+        "unrealized_pnl_usd": -8.6349
+      },
+      {
         "contracts": 125,
         "entry_price": 0.94,
         "instrument_id": "kalshi:KXWTI-26OCT2614-T108.99",
@@ -1039,7 +1059,7 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 357
+      "kalshi": 359
     },
     "worst_closed_trade": null
   },
@@ -1052,12 +1072,12 @@
   "disabled_reason": null,
   "display_name": "Longshot Fade",
   "enabled": true,
-  "entries": 357,
+  "entries": 359,
   "equity_usd": 99936.446469,
   "exits": 0,
-  "fees_paid_usd": 273.52,
+  "fees_paid_usd": 274.46,
   "market_type": "Kalshi event contract",
-  "open_positions": 99,
+  "open_positions": 101,
   "origin": {
     "claim": "Binary markets historically overprice very unlikely outcomes (the longshot bias) and underprice near-certain ones, so buying the NO side of an extreme YES price has a positive expected value if the bias is present.",
     "kind": "documented_anomaly",
@@ -1070,21 +1090,22 @@
     "exit": "No exit: positions are held to settlement, because the thesis is about the settlement distribution.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 2028.728876,
+  "slippage_paid_usd": 2036.498751,
   "strategy_id": "kalshi-longshot-fade",
   "thesis": "Buy NO on commodity event contracts whose YES price is at or below 10 cents. If the longshot bias exists in Kalshi commodity ladders, the average NO leg should be profitable on a large number of observations; if the bias does not exist, this strategy loses and the leaderboard will show it.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 357,
-  "unrealized_pnl_usd": 0,
+  "trades": 359,
+  "unrealized_pnl_usd": -14.579875,
   "username": "@fade-the-crowd",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "357 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 273.52 USD of fees and 2028.73 USD of measured slippage against the mid.",
+    "359 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 274.46 USD of fees and 2036.50 USD of measured slippage against the mid.",
+    "2 open positions carry verified marks totalling -14.58 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: settlement_result_not_published (391), insufficient_depth_within_price_tolerance (9).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
