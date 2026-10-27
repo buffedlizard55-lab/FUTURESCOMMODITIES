@@ -15,10 +15,10 @@
         "trades": 12
       },
       "Gasoline (US retail average)": {
-        "fees_usd": 634.94,
+        "fees_usd": 643.26,
         "realized_pnl_usd": 0,
-        "slippage_usd": 23267.978735,
-        "trades": 143
+        "slippage_usd": 23278.503735,
+        "trades": 144
       },
       "Gold": {
         "fees_usd": 2.88,
@@ -59,6 +59,16 @@
     },
     "closed_trades": 0,
     "open_position_marks": [
+      {
+        "contracts": 2105,
+        "entry_price": 0.06,
+        "instrument_id": "kalshi:KXAAAGASDKS-26OCT28-3.9350",
+        "mark_price": 0.05,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASDKS-26OCT28-3.9350/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXAAAGASDKS-26OCT28-3.9350",
+        "unrealized_pnl_usd": -21.05
+      },
       {
         "contracts": 6,
         "entry_price": 0.98,
@@ -163,11 +173,11 @@
         "contracts": 11,
         "entry_price": 0.98,
         "instrument_id": "kalshi:KXAAAGASMTX-26OCT31-4.2000",
-        "mark_price": 0.82,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXAAAGASMTX-26OCT31-4.2000/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXAAAGASMTX-26OCT31-4.2000",
-        "unrealized_pnl_usd": -1.76
+        "unrealized_pnl_usd": null
       },
       {
         "contracts": 126,
@@ -381,26 +391,26 @@
       }
     ],
     "trades_by_venue": {
-      "kalshi": 209
+      "kalshi": 210
     },
     "worst_closed_trade": null
   },
-  "blocked_orders": 265,
+  "blocked_orders": 266,
   "blocked_reasons": {
     "already_holding": 10,
-    "insufficient_depth_within_price_tolerance": 29,
+    "insufficient_depth_within_price_tolerance": 30,
     "settlement_result_not_published": 226
   },
   "closed_trades": 177,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
-  "entries": 209,
+  "entries": 210,
   "equity_usd": 99968.85,
   "exits": 0,
-  "fees_paid_usd": 652.31,
+  "fees_paid_usd": 660.63,
   "market_type": "Kalshi event contract",
-  "open_positions": 32,
+  "open_positions": 33,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
@@ -413,23 +423,23 @@
     "exit": "Held to settlement (the two legs converge by construction).",
     "sizing": "Target notional per leg, capped by depth."
   },
-  "slippage_paid_usd": 23689.891276,
+  "slippage_paid_usd": 23700.416276,
   "strategy_id": "kalshi-ladder-arbitrage",
   "thesis": "Within one series and one expiry, the YES price must fall as the strike rises (for greater-than markets). When the published book violates that ordering by more than the configured tolerance, buy the underpriced YES leg and the NO of the overpriced leg.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 209,
-  "unrealized_pnl_usd": -1.76,
+  "trades": 210,
+  "unrealized_pnl_usd": -21.05,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "209 ledger records so far: 9 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is 0.00 USD against 652.31 USD of fees and 23689.89 USD of measured slippage against the mid.",
-    "1 open positions carry verified marks totalling -1.76 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Blocked order attempts and their recorded reasons: already_holding (10), settlement_result_not_published (226), insufficient_depth_within_price_tolerance (29).",
+    "210 ledger records so far: 9 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is 0.00 USD against 660.63 USD of fees and 23700.42 USD of measured slippage against the mid.",
+    "1 open positions carry verified marks totalling -21.05 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: already_holding (10), settlement_result_not_published (226), insufficient_depth_within_price_tolerance (30).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
