@@ -2004,28 +2004,28 @@
   "anomalies_by_check": [
     {
       "check": "payload_hash_present_in_that_runs_provenance_log",
-      "count": 2326
+      "count": 2334
     },
     {
       "check": "instrument_present_in_published_universe",
-      "count": 1072
+      "count": 1075
     },
     {
       "check": "cross_venue_basis_normalisation_recorded",
       "count": 21
     }
   ],
-  "anomaly_count": 3419,
+  "anomaly_count": 3430,
   "coverage": {
-    "funding_entries": 419,
-    "funding_fully_verified": 56,
-    "instruments": 107,
+    "funding_entries": 422,
+    "funding_fully_verified": 59,
+    "instruments": 108,
     "instruments_by_venue": {
       "kalshi": 45,
       "kalshi_margin": 12,
-      "moex_forts": 50
+      "moex_forts": 51
     },
-    "intents": 3568,
+    "intents": 3587,
     "season": {
       "ends_at": "2027-09-22T00:00:00Z",
       "season_id": "season-2026-09-22_to_2027-09-22",
@@ -2035,10 +2035,10 @@
     "strategies": 20,
     "tiers": {
       "modelled_maker_fills": 2,
-      "quote_based_fills": 1120,
+      "quote_based_fills": 1121,
       "taker_fills_from_published_ladders": 939
     },
-    "trades": 2061,
+    "trades": 2062,
     "trades_by_strategy": {
       "cross-venue-basis": 25,
       "kalshi-cheap-momentum": 12,
@@ -2048,7 +2048,7 @@
       "kalshi-longshot-fade": 376,
       "kalshi-oil-trend": 27,
       "kalshi-orderbook-imbalance": 120,
-      "kalshi-perp-mark-fade": 41,
+      "kalshi-perp-mark-fade": 42,
       "kalshi-perp-trend": 643,
       "kalshi-spread-capture": 2,
       "moex-agri-trend": 12,
@@ -2061,15 +2061,15 @@
     },
     "trades_by_venue": {
       "kalshi": 941,
-      "kalshi_margin": 697,
+      "kalshi_margin": 698,
       "moex_forts": 423
     },
     "unclassified_series": 0
   },
-  "fully_verified": 10,
-  "funding_entries_checked": 419,
-  "funding_fully_verified": 56,
-  "generated_at": "2026-10-29T16:47:34.189Z",
+  "fully_verified": 7,
+  "funding_entries_checked": 422,
+  "funding_fully_verified": 59,
+  "generated_at": "2026-10-29T21:42:05.817Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
     "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.",
@@ -13780,6 +13780,6 @@
     }
   ],
   "retention_note": "Run manifests carry the per-request provenance (URL, status, SHA-256) for the most recent runs only; older manifests are pruned so the repository stays small. A trade from a pruned run cannot be hash-matched and shows payload_hash_present_in_that_runs_provenance_log as failed - that is a retention limit, disclosed here, not a price discrepancy.",
-  "trades_checked": 2061,
-  "with_anomalies": 2414
+  "trades_checked": 2062,
+  "with_anomalies": 2418
 }
