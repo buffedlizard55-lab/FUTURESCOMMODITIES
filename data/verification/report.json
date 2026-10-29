@@ -67,36 +67,6 @@
         "note": "No provenance log was found for this run.",
         "ok": false
       },
-      "ticker": "KXBNBPERP",
-      "trade_id": "b04ab64e9948be6fec49"
-    },
-    {
-      "check": "payload_hash_present_in_that_runs_provenance_log",
-      "detail": {
-        "check": "payload_hash_present_in_that_runs_provenance_log",
-        "note": "No provenance log was found for this run.",
-        "ok": false
-      },
-      "ticker": "KXBNBPERP",
-      "trade_id": "b04ab64e9948be6fec49"
-    },
-    {
-      "check": "payload_hash_present_in_that_runs_provenance_log",
-      "detail": {
-        "check": "payload_hash_present_in_that_runs_provenance_log",
-        "note": "No provenance log was found for this run.",
-        "ok": false
-      },
-      "ticker": "KXBNBPERP",
-      "trade_id": "b04ab64e9948be6fec49"
-    },
-    {
-      "check": "payload_hash_present_in_that_runs_provenance_log",
-      "detail": {
-        "check": "payload_hash_present_in_that_runs_provenance_log",
-        "note": "No provenance log was found for this run.",
-        "ok": false
-      },
       "ticker": "KXBTCPERP",
       "trade_id": "5020bf29af7dc926b15f"
     },
@@ -1999,33 +1969,63 @@
       },
       "ticker": "KXETHPERP",
       "trade_id": "f766321122f64888a915"
+    },
+    {
+      "check": "payload_hash_present_in_that_runs_provenance_log",
+      "detail": {
+        "check": "payload_hash_present_in_that_runs_provenance_log",
+        "note": "No provenance log was found for this run.",
+        "ok": false
+      },
+      "ticker": "KXALUMINUMPERP",
+      "trade_id": "b72706af18cc87c01e9e"
+    },
+    {
+      "check": "payload_hash_present_in_that_runs_provenance_log",
+      "detail": {
+        "check": "payload_hash_present_in_that_runs_provenance_log",
+        "note": "No provenance log was found for this run.",
+        "ok": false
+      },
+      "ticker": "KXALUMINUMPERP",
+      "trade_id": "e1df28d2bfe58163e5ae"
+    },
+    {
+      "check": "payload_hash_present_in_that_runs_provenance_log",
+      "detail": {
+        "check": "payload_hash_present_in_that_runs_provenance_log",
+        "note": "No provenance log was found for this run.",
+        "ok": false
+      },
+      "ticker": "KXCOPPERPERP",
+      "trade_id": "20a5edc4892ac9b41a51"
     }
   ],
   "anomalies_by_check": [
     {
       "check": "payload_hash_present_in_that_runs_provenance_log",
-      "count": 2308
+      "count": 2315
     },
     {
       "check": "instrument_present_in_published_universe",
-      "count": 1066
+      "count": 1055
     },
     {
       "check": "cross_venue_basis_normalisation_recorded",
-      "count": 19
+      "count": 21
     }
   ],
-  "anomaly_count": 3393,
+  "anomaly_count": 3391,
   "coverage": {
     "funding_entries": 410,
-    "funding_fully_verified": 53,
+    "funding_fully_verified": 50,
     "instruments": 109,
     "instruments_by_venue": {
       "kalshi": 45,
       "kalshi_margin": 12,
       "moex_forts": 52
     },
-    "intents": 3514,
+    "intents": 3534,
     "season": {
       "ends_at": "2027-09-22T00:00:00Z",
       "season_id": "season-2026-09-22_to_2027-09-22",
@@ -2035,19 +2035,19 @@
     "strategies": 20,
     "tiers": {
       "modelled_maker_fills": 2,
-      "quote_based_fills": 1116,
-      "taker_fills_from_published_ladders": 931
+      "quote_based_fills": 1118,
+      "taker_fills_from_published_ladders": 935
     },
-    "trades": 2049,
+    "trades": 2055,
     "trades_by_strategy": {
-      "cross-venue-basis": 23,
+      "cross-venue-basis": 25,
       "kalshi-cheap-momentum": 12,
       "kalshi-favourite-carry": 183,
       "kalshi-jump-reversal": 8,
       "kalshi-ladder-arbitrage": 213,
       "kalshi-longshot-fade": 373,
-      "kalshi-oil-trend": 26,
-      "kalshi-orderbook-imbalance": 116,
+      "kalshi-oil-trend": 27,
+      "kalshi-orderbook-imbalance": 119,
       "kalshi-perp-mark-fade": 41,
       "kalshi-perp-trend": 643,
       "kalshi-spread-capture": 2,
@@ -2060,16 +2060,16 @@
       "moex-rate-curve": 2
     },
     "trades_by_venue": {
-      "kalshi": 933,
-      "kalshi_margin": 696,
-      "moex_forts": 420
+      "kalshi": 937,
+      "kalshi_margin": 697,
+      "moex_forts": 421
     },
     "unclassified_series": 0
   },
-  "fully_verified": 7,
+  "fully_verified": 13,
   "funding_entries_checked": 410,
-  "funding_fully_verified": 53,
-  "generated_at": "2026-10-28T23:26:46.810Z",
+  "funding_fully_verified": 50,
+  "generated_at": "2026-10-29T02:44:26.809Z",
   "methodology": [
     "Every trade is re-read from data/ledger/trades.jsonl (append-only) and checked against the provenance log of the run that created it.",
     "A trade is only \"fully verified\" when its payload hash appears in that run provenance log, its per-level fill detail reproduces its own VWAP, its Kalshi fee matches the official formula (event contracts) or the official perp schedule (perpetuals), and its instrument is still published with its own provenance.",
@@ -2078,123 +2078,6 @@
     "Anomalies are reported, never silently corrected."
   ],
   "results": [
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "payload_hash_recorded",
-          "ok": true,
-          "sha256": "b74487ae1a1333efa70a3faef98881b2f9e0f776ed0a2c63160adac0c00a2807"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "No provenance log was found for this run.",
-          "ok": false
-        },
-        {
-          "check": "payment_reproduces_from_exchange_published_inputs",
-          "formula": "payment = contracts x exchange mark_price x exchange funding_rate x direction",
-          "ok": true,
-          "recomputed_payment_usd": 0.869996,
-          "recorded_payment_usd": 0.869996
-        },
-        {
-          "check": "official_zero_threshold_respected",
-          "note": "Kalshi treats |funding rate| < 0.01% as zero; such events must not produce a payment.",
-          "ok": true
-        }
-      ],
-      "failed_checks": [
-        "payload_hash_present_in_that_runs_provenance_log"
-      ],
-      "kind": "funding",
-      "run_id": "run-2026-10-07T07-06-34-452Z",
-      "strategy_id": "kalshi-perp-trend",
-      "ticker": "KXETHPERP",
-      "trade_id": "2351e11ff5cf270280f7"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "payload_hash_recorded",
-          "ok": true,
-          "sha256": "8efd7f6416a89e3df5671a14f2e4caf26a25fc1d03ff848c3de26f2a56de1fd0"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "No provenance log was found for this run.",
-          "ok": false
-        },
-        {
-          "check": "payment_reproduces_from_exchange_published_inputs",
-          "formula": "payment = contracts x exchange mark_price x exchange funding_rate x direction",
-          "ok": true,
-          "recomputed_payment_usd": -0.111438,
-          "recorded_payment_usd": -0.111438
-        },
-        {
-          "check": "official_zero_threshold_respected",
-          "note": "Kalshi treats |funding rate| < 0.01% as zero; such events must not produce a payment.",
-          "ok": true
-        }
-      ],
-      "failed_checks": [
-        "payload_hash_present_in_that_runs_provenance_log"
-      ],
-      "kind": "funding",
-      "run_id": "run-2026-10-07T07-06-34-452Z",
-      "strategy_id": "kalshi-perp-trend",
-      "ticker": "KXHYPEPERP",
-      "trade_id": "4c1c5eb38024a87564c8"
-    },
-    {
-      "checks": [
-        {
-          "check": "mandatory_fields_present",
-          "missing": [],
-          "ok": true
-        },
-        {
-          "check": "payload_hash_recorded",
-          "ok": true,
-          "sha256": "cecca8c28f5af0e1609b735fde23f226c8b5b2d8632479a49d3d0b9135880a8e"
-        },
-        {
-          "check": "payload_hash_present_in_that_runs_provenance_log",
-          "note": "No provenance log was found for this run.",
-          "ok": false
-        },
-        {
-          "check": "payment_reproduces_from_exchange_published_inputs",
-          "formula": "payment = contracts x exchange mark_price x exchange funding_rate x direction",
-          "ok": true,
-          "recomputed_payment_usd": 0.219727,
-          "recorded_payment_usd": 0.219727
-        },
-        {
-          "check": "official_zero_threshold_respected",
-          "note": "Kalshi treats |funding rate| < 0.01% as zero; such events must not produce a payment.",
-          "ok": true
-        }
-      ],
-      "failed_checks": [
-        "payload_hash_present_in_that_runs_provenance_log"
-      ],
-      "kind": "funding",
-      "run_id": "run-2026-10-07T14-41-00-566Z",
-      "strategy_id": "cross-venue-basis",
-      "ticker": "KXBTCPERP",
-      "trade_id": "d3ade6aa31a56294cf70"
-    },
     {
       "checks": [
         {
@@ -13777,9 +13660,126 @@
       "strategy_id": "kalshi-perp-trend",
       "ticker": "KXETHPERP",
       "trade_id": "f766321122f64888a915"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "payload_hash_recorded",
+          "ok": true,
+          "sha256": "256225d6581c19b8d8bf2b86e61d705ed1b146926011851106632e57aa73b3fb"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "No provenance log was found for this run.",
+          "ok": false
+        },
+        {
+          "check": "payment_reproduces_from_exchange_published_inputs",
+          "formula": "payment = contracts x exchange mark_price x exchange funding_rate x direction",
+          "ok": true,
+          "recomputed_payment_usd": -0.201733,
+          "recorded_payment_usd": -0.201733
+        },
+        {
+          "check": "official_zero_threshold_respected",
+          "note": "Kalshi treats |funding rate| < 0.01% as zero; such events must not produce a payment.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [
+        "payload_hash_present_in_that_runs_provenance_log"
+      ],
+      "kind": "funding",
+      "run_id": "run-2026-10-24T17-17-43-779Z",
+      "strategy_id": "kalshi-perp-mark-fade",
+      "ticker": "KXALUMINUMPERP",
+      "trade_id": "b72706af18cc87c01e9e"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "payload_hash_recorded",
+          "ok": true,
+          "sha256": "256225d6581c19b8d8bf2b86e61d705ed1b146926011851106632e57aa73b3fb"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "No provenance log was found for this run.",
+          "ok": false
+        },
+        {
+          "check": "payment_reproduces_from_exchange_published_inputs",
+          "formula": "payment = contracts x exchange mark_price x exchange funding_rate x direction",
+          "ok": true,
+          "recomputed_payment_usd": -0.082855,
+          "recorded_payment_usd": -0.082855
+        },
+        {
+          "check": "official_zero_threshold_respected",
+          "note": "Kalshi treats |funding rate| < 0.01% as zero; such events must not produce a payment.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [
+        "payload_hash_present_in_that_runs_provenance_log"
+      ],
+      "kind": "funding",
+      "run_id": "run-2026-10-24T17-17-43-779Z",
+      "strategy_id": "kalshi-perp-trend",
+      "ticker": "KXALUMINUMPERP",
+      "trade_id": "e1df28d2bfe58163e5ae"
+    },
+    {
+      "checks": [
+        {
+          "check": "mandatory_fields_present",
+          "missing": [],
+          "ok": true
+        },
+        {
+          "check": "payload_hash_recorded",
+          "ok": true,
+          "sha256": "97678ad1752553d30bd7712be8887fd84a052614d14d55cba8382085815f4c30"
+        },
+        {
+          "check": "payload_hash_present_in_that_runs_provenance_log",
+          "note": "No provenance log was found for this run.",
+          "ok": false
+        },
+        {
+          "check": "payment_reproduces_from_exchange_published_inputs",
+          "formula": "payment = contracts x exchange mark_price x exchange funding_rate x direction",
+          "ok": true,
+          "recomputed_payment_usd": 0.121554,
+          "recorded_payment_usd": 0.121554
+        },
+        {
+          "check": "official_zero_threshold_respected",
+          "note": "Kalshi treats |funding rate| < 0.01% as zero; such events must not produce a payment.",
+          "ok": true
+        }
+      ],
+      "failed_checks": [
+        "payload_hash_present_in_that_runs_provenance_log"
+      ],
+      "kind": "funding",
+      "run_id": "run-2026-10-24T17-17-43-779Z",
+      "strategy_id": "kalshi-perp-trend",
+      "ticker": "KXCOPPERPERP",
+      "trade_id": "20a5edc4892ac9b41a51"
     }
   ],
   "retention_note": "Run manifests carry the per-request provenance (URL, status, SHA-256) for the most recent runs only; older manifests are pruned so the repository stays small. A trade from a pruned run cannot be hash-matched and shows payload_hash_present_in_that_runs_provenance_log as failed - that is a retention limit, disclosed here, not a price discrepancy.",
-  "trades_checked": 2049,
-  "with_anomalies": 2399
+  "trades_checked": 2055,
+  "with_anomalies": 2402
 }

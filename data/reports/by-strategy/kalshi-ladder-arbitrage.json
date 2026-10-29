@@ -320,36 +320,6 @@
         "unrealized_pnl_usd": null
       },
       {
-        "contracts": 12,
-        "entry_price": 0.26,
-        "instrument_id": "kalshi:KXSILVERH-26OCT2821-T53.999",
-        "mark_price": 0.17,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERH-26OCT2821-T53.999/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXSILVERH-26OCT2821-T53.999",
-        "unrealized_pnl_usd": -1.08
-      },
-      {
-        "contracts": 25,
-        "entry_price": 0.9,
-        "instrument_id": "kalshi:KXSILVERH-26OCT2821-T54.049",
-        "mark_price": 0.58,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERH-26OCT2821-T54.049/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXSILVERH-26OCT2821-T54.049",
-        "unrealized_pnl_usd": -8
-      },
-      {
-        "contracts": 2,
-        "entry_price": 0.95,
-        "instrument_id": "kalshi:KXSILVERH-26OCT2821-T54.099",
-        "mark_price": 0.02,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXSILVERH-26OCT2821-T54.099/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
-        "ticker": "KXSILVERH-26OCT2821-T54.099",
-        "unrealized_pnl_usd": -1.86
-      },
-      {
         "contracts": 1,
         "entry_price": 0.82,
         "instrument_id": "kalshi:KXWTIMAX-26OCT30-T101.50",
@@ -363,21 +333,21 @@
         "contracts": 5,
         "entry_price": 0.752,
         "instrument_id": "kalshi:KXWTIMAX-26OCT30-T107.00",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.89,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMAX-26OCT30-T107.00/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXWTIMAX-26OCT30-T107.00",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": 0.69
       },
       {
         "contracts": 5,
         "entry_price": 0.752,
         "instrument_id": "kalshi:KXWTIMAX-26OCT30-T108.50",
-        "mark_price": null,
-        "mark_source_url": null,
-        "mark_status": "no_quote_in_snapshot",
+        "mark_price": 0.95,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMAX-26OCT30-T108.50/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
         "ticker": "KXWTIMAX-26OCT30-T108.50",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": 0.99
       },
       {
         "contracts": 1,
@@ -421,7 +391,7 @@
     "insufficient_depth_within_price_tolerance": 30,
     "settlement_result_not_published": 227
   },
-  "closed_trades": 178,
+  "closed_trades": 181,
   "disabled_reason": null,
   "display_name": "Ladder Arbitrage",
   "enabled": true,
@@ -430,13 +400,13 @@
   "exits": 0,
   "fees_paid_usd": 660.97,
   "market_type": "Kalshi event contract",
-  "open_positions": 35,
+  "open_positions": 32,
   "origin": {
     "claim": "If two strikes of the same series imply a probability ordering that contradicts the strike ordering, buying the cheap leg and the NO of the rich leg is a structural arbitrage.",
     "kind": "market_structure",
     "status": "structural - no forecast required"
   },
-  "realized_pnl_usd": -19527.253073,
+  "realized_pnl_usd": -19528.113073,
   "return_pct": -0.0311,
   "rules": {
     "entry": "Monotonicity violation of at least 2 cents between two strikes of the same series and expiry.",
@@ -450,7 +420,7 @@
     "Kalshi event contract"
   ],
   "trades": 213,
-  "unrealized_pnl_usd": -10.94,
+  "unrealized_pnl_usd": 1.68,
   "username": "@ladder-arb",
   "venues": [
     "kalshi"
@@ -458,7 +428,7 @@
   "what_it_means": [
     "213 ledger records so far: 9 distinct commodity exposures across kalshi.",
     "Closed-trade P&L is 0.00 USD against 660.97 USD of fees and 23705.89 USD of measured slippage against the mid.",
-    "3 open positions carry verified marks totalling -10.94 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "2 open positions carry verified marks totalling 1.68 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
     "Blocked order attempts and their recorded reasons: already_holding (11), settlement_result_not_published (227), insufficient_depth_within_price_tolerance (30).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
