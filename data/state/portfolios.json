@@ -1,13 +1,63 @@
 {
   "cross-venue-basis": {
-    "cash_usd": 94557.769914,
+    "cash_usd": 90777.835888,
     "closed_trades": 12,
-    "equity_complete": true,
+    "equity_complete": false,
     "equity_usd": 123205.72199,
-    "fees_paid_usd": 114.764418,
+    "fees_paid_usd": 122.632574,
     "market_type": "Cross-venue: Kalshi perpetual future vs exchange-listed future",
-    "open_positions": 2,
+    "open_positions": 4,
     "positions": {
+      "kalshiperp:KXBTCPERP": {
+        "avg_entry_price": 7.7281,
+        "contracts": 258,
+        "entry_fee_usd": 2.39262,
+        "entry_signal": {
+          "basis": -0.00772,
+          "leg": "perpetual",
+          "name": "cross_venue_basis",
+          "normalization": {
+            "formula": "basis = (perp_mid / perp_contract_size - moex_mid) / moex_mid",
+            "moex_face_unit": "USD",
+            "moex_lot_size": 1,
+            "moex_mid": 77881,
+            "moex_quote_unit": "USD",
+            "moex_ticker": "BTX6",
+            "moex_usd_per_ounce": 77881,
+            "perp_contract_size": 0.0001,
+            "perp_mid": 7.728,
+            "perp_ticker": "KXBTCPERP",
+            "perp_usd_per_ounce": 77280,
+            "sources": {
+              "moex": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BTX6.json?iss.meta=off",
+              "moex_description": "https://iss.moex.com/iss/securities/BTX6.json?iss.meta=off&iss.only=description",
+              "perp": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200"
+            }
+          }
+        },
+        "entry_trade_id": "dc242664d7dc4b8847cd",
+        "entry_ts": "2026-10-31T11:06:22.693Z",
+        "instrument_id": "kalshiperp:KXBTCPERP",
+        "kind": "perpetual",
+        "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
+        "margin_usd": 312.231796,
+        "mark_price": 7.7279,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
+        "mark_status": "long_marked_at_bid",
+        "market": {
+          "close_time": null,
+          "exchange": "Kalshi (CFTC-regulated designated contract market)",
+          "expiration_date": null,
+          "last_trade_date": null,
+          "series_ticker": null
+        },
+        "outcome": null,
+        "side": "long",
+        "ticker": "KXBTCPERP",
+        "unrealized_pnl_usd": -0.0516,
+        "usd_per_price_unit": 1,
+        "venue": "kalshi_margin"
+      },
       "moex:BTV6": {
         "avg_entry_price": 81015,
         "contracts": 247,
@@ -41,9 +91,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 5039.394037,
-        "mark_price": 0,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BTV6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -54,8 +104,58 @@
         "outcome": null,
         "side": "short",
         "ticker": "BTV6",
-        "unrealized_pnl_usd": 19977.287123,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.00099833,
+        "venue": "moex_forts"
+      },
+      "moex:BTX6": {
+        "avg_entry_price": 77870,
+        "contracts": 176,
+        "entry_fee_usd": 5.475536,
+        "entry_signal": {
+          "basis": -0.00772,
+          "leg": "future",
+          "name": "cross_venue_basis",
+          "normalization": {
+            "formula": "basis = (perp_mid / perp_contract_size - moex_mid) / moex_mid",
+            "moex_face_unit": "USD",
+            "moex_lot_size": 1,
+            "moex_mid": 77881,
+            "moex_quote_unit": "USD",
+            "moex_ticker": "BTX6",
+            "moex_usd_per_ounce": 77881,
+            "perp_contract_size": 0.0001,
+            "perp_mid": 7.728,
+            "perp_ticker": "KXBTCPERP",
+            "perp_usd_per_ounce": 77280,
+            "sources": {
+              "moex": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BTX6.json?iss.meta=off",
+              "moex_description": "https://iss.moex.com/iss/securities/BTX6.json?iss.meta=off&iss.only=description",
+              "perp": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200"
+            }
+          }
+        },
+        "entry_trade_id": "a427e95c72fa6f8a136b",
+        "entry_ts": "2026-10-31T11:06:22.693Z",
+        "instrument_id": "moex:BTX6",
+        "kind": "future",
+        "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
+        "margin_usd": 3459.834074,
+        "mark_price": 77892,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BTX6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "market": {
+          "close_time": null,
+          "exchange": "Moscow Exchange (MOEX) FORTS",
+          "expiration_date": null,
+          "last_trade_date": "2026-11-27",
+          "series_ticker": null
+        },
+        "outcome": null,
+        "side": "short",
+        "ticker": "BTX6",
+        "unrealized_pnl_usd": -3.850975,
+        "usd_per_price_unit": 0.00099457,
         "venue": "moex_forts"
       },
       "moex:GDZ6": {
@@ -91,7 +191,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1583.670916,
-        "mark_price": 3920.9,
+        "mark_price": 3931.4,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -104,18 +204,18 @@
         "outcome": null,
         "side": "short",
         "ticker": "GDZ6",
-        "unrealized_pnl_usd": 2047.6,
+        "unrealized_pnl_usd": 2005.6,
         "usd_per_price_unit": 1,
         "venue": "moex_forts"
       }
     },
     "realized_pnl_usd": 0,
-    "slippage_paid_usd": 106678.3016,
+    "slippage_paid_usd": 108614.3274,
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "cross-venue-basis",
-    "unrealized_pnl_usd": 22024.887123,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 2001.697425,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@basis-hunter"
   },
   "kalshi-cheap-momentum": {
@@ -497,7 +597,7 @@
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-cheap-momentum",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@tail-rider"
   },
   "kalshi-extreme-reversion": {
@@ -515,7 +615,7 @@
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-extreme-reversion",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@vol-crusher"
   },
   "kalshi-favourite-carry": {
@@ -533,7 +633,7 @@
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-favourite-carry",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@carry-collector"
   },
   "kalshi-jump-reversal": {
@@ -551,17 +651,17 @@
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-jump-reversal",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@snap-fader"
   },
   "kalshi-ladder-arbitrage": {
-    "cash_usd": 78914.258724,
+    "cash_usd": 78652.608744,
     "closed_trades": 185,
     "equity_complete": false,
     "equity_usd": 99968.85,
-    "fees_paid_usd": 660.97,
+    "fees_paid_usd": 663.78,
     "market_type": "Kalshi event contract",
-    "open_positions": 28,
+    "open_positions": 34,
     "positions": {
       "kalshi:KXAAAGASEOYNJ-26DEC31-3.7000": {
         "avg_entry_price": 0.98,
@@ -1203,6 +1303,198 @@
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
+      "kalshi:KXNATGASD-26NOV0217-T2.980": {
+        "avg_entry_price": 0.19,
+        "contracts": 125,
+        "entry_fee_usd": 1.35,
+        "entry_signal": {
+          "leg": "low_strike_yes",
+          "name": "ladder_violation_underpriced_leg",
+          "violation": -0.07
+        },
+        "entry_trade_id": "8c7bdd8c71fec7e656a1",
+        "entry_ts": "2026-10-31T11:06:22.686Z",
+        "instrument_id": "kalshi:KXNATGASD-26NOV0217-T2.980",
+        "kind": "event_contract",
+        "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
+        "margin_usd": 0,
+        "mark_price": 0.15,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26NOV0217-T2.980/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "market": {
+          "close_time": "2026-11-02T22:00:00Z",
+          "exchange": "Kalshi (CFTC-regulated designated contract market)",
+          "expiration_date": null,
+          "last_trade_date": null,
+          "series_ticker": "KXNATGASD"
+        },
+        "outcome": "yes",
+        "side": "long",
+        "ticker": "KXNATGASD-26NOV0217-T2.980",
+        "unrealized_pnl_usd": -5,
+        "usd_per_price_unit": 1,
+        "venue": "kalshi"
+      },
+      "kalshi:KXNATGASD-26NOV0217-T2.985": {
+        "avg_entry_price": 0.98198,
+        "contracts": 101,
+        "entry_fee_usd": 0.13,
+        "entry_signal": {
+          "leg": "high_strike_no",
+          "name": "ladder_violation_overpriced_leg",
+          "violation": -0.07
+        },
+        "entry_trade_id": "dd2de5fb1a478eecd68c",
+        "entry_ts": "2026-10-31T11:06:22.686Z",
+        "instrument_id": "kalshi:KXNATGASD-26NOV0217-T2.985",
+        "kind": "event_contract",
+        "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
+        "margin_usd": 0,
+        "mark_price": 0.55,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26NOV0217-T2.985/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "market": {
+          "close_time": "2026-11-02T22:00:00Z",
+          "exchange": "Kalshi (CFTC-regulated designated contract market)",
+          "expiration_date": null,
+          "last_trade_date": null,
+          "series_ticker": "KXNATGASD"
+        },
+        "outcome": "no",
+        "side": "long",
+        "ticker": "KXNATGASD-26NOV0217-T2.985",
+        "unrealized_pnl_usd": -43.62998,
+        "usd_per_price_unit": 1,
+        "venue": "kalshi"
+      },
+      "kalshi:KXNATGASD-26NOV0217-T3": {
+        "avg_entry_price": 0.33,
+        "contracts": 55,
+        "entry_fee_usd": 0.86,
+        "entry_signal": {
+          "leg": "low_strike_yes",
+          "name": "ladder_violation_underpriced_leg",
+          "violation": -0.04
+        },
+        "entry_trade_id": "58644e15857f116bb295",
+        "entry_ts": "2026-10-31T11:06:22.686Z",
+        "instrument_id": "kalshi:KXNATGASD-26NOV0217-T3",
+        "kind": "event_contract",
+        "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
+        "margin_usd": 0,
+        "mark_price": 0.04,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26NOV0217-T3/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "market": {
+          "close_time": "2026-11-02T22:00:00Z",
+          "exchange": "Kalshi (CFTC-regulated designated contract market)",
+          "expiration_date": null,
+          "last_trade_date": null,
+          "series_ticker": "KXNATGASD"
+        },
+        "outcome": "yes",
+        "side": "long",
+        "ticker": "KXNATGASD-26NOV0217-T3",
+        "unrealized_pnl_usd": -15.95,
+        "usd_per_price_unit": 1,
+        "venue": "kalshi"
+      },
+      "kalshi:KXNATGASD-26NOV0217-T3.005": {
+        "avg_entry_price": 0.96,
+        "contracts": 9,
+        "entry_fee_usd": 0.03,
+        "entry_signal": {
+          "leg": "high_strike_no",
+          "name": "ladder_violation_overpriced_leg",
+          "violation": -0.04
+        },
+        "entry_trade_id": "19eba1b67f50c53748f9",
+        "entry_ts": "2026-10-31T11:06:22.687Z",
+        "instrument_id": "kalshi:KXNATGASD-26NOV0217-T3.005",
+        "kind": "event_contract",
+        "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
+        "margin_usd": 0,
+        "mark_price": 0.59,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26NOV0217-T3.005/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "market": {
+          "close_time": "2026-11-02T22:00:00Z",
+          "exchange": "Kalshi (CFTC-regulated designated contract market)",
+          "expiration_date": null,
+          "last_trade_date": null,
+          "series_ticker": "KXNATGASD"
+        },
+        "outcome": "no",
+        "side": "long",
+        "ticker": "KXNATGASD-26NOV0217-T3.005",
+        "unrealized_pnl_usd": -3.33,
+        "usd_per_price_unit": 1,
+        "venue": "kalshi"
+      },
+      "kalshi:KXNATGASD-26NOV0217-T3.065": {
+        "avg_entry_price": 0.37,
+        "contracts": 22,
+        "entry_fee_usd": 0.36,
+        "entry_signal": {
+          "leg": "low_strike_yes",
+          "name": "ladder_violation_underpriced_leg",
+          "violation": -0.04
+        },
+        "entry_trade_id": "0e3850ae66cee570beff",
+        "entry_ts": "2026-10-31T11:06:22.687Z",
+        "instrument_id": "kalshi:KXNATGASD-26NOV0217-T3.065",
+        "kind": "event_contract",
+        "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
+        "margin_usd": 0,
+        "mark_price": 0.01,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26NOV0217-T3.065/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "market": {
+          "close_time": "2026-11-02T22:00:00Z",
+          "exchange": "Kalshi (CFTC-regulated designated contract market)",
+          "expiration_date": null,
+          "last_trade_date": null,
+          "series_ticker": "KXNATGASD"
+        },
+        "outcome": "yes",
+        "side": "long",
+        "ticker": "KXNATGASD-26NOV0217-T3.065",
+        "unrealized_pnl_usd": -7.92,
+        "usd_per_price_unit": 1,
+        "venue": "kalshi"
+      },
+      "kalshi:KXNATGASD-26NOV0217-T3.070": {
+        "avg_entry_price": 0.99,
+        "contracts": 102,
+        "entry_fee_usd": 0.08,
+        "entry_signal": {
+          "leg": "high_strike_no",
+          "name": "ladder_violation_overpriced_leg",
+          "violation": -0.04
+        },
+        "entry_trade_id": "3b3125b366981a9ab383",
+        "entry_ts": "2026-10-31T11:06:22.687Z",
+        "instrument_id": "kalshi:KXNATGASD-26NOV0217-T3.070",
+        "kind": "event_contract",
+        "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
+        "margin_usd": 0,
+        "mark_price": 0.55,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXNATGASD-26NOV0217-T3.070/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "market": {
+          "close_time": "2026-11-02T22:00:00Z",
+          "exchange": "Kalshi (CFTC-regulated designated contract market)",
+          "expiration_date": null,
+          "last_trade_date": null,
+          "series_ticker": "KXNATGASD"
+        },
+        "outcome": "no",
+        "side": "long",
+        "ticker": "KXNATGASD-26NOV0217-T3.070",
+        "unrealized_pnl_usd": -44.88,
+        "usd_per_price_unit": 1,
+        "venue": "kalshi"
+      },
       "kalshi:KXNATGASMON-26OCT3017-T4.099": {
         "avg_entry_price": 0.99,
         "contracts": 40,
@@ -1441,12 +1733,12 @@
       }
     },
     "realized_pnl_usd": -19529.993073,
-    "slippage_paid_usd": 23705.886276,
+    "slippage_paid_usd": 23766.846256,
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-ladder-arbitrage",
-    "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": -120.70998,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@ladder-arb"
   },
   "kalshi-longshot-fade": {
@@ -3093,9 +3385,9 @@
         "kind": "event_contract",
         "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
         "margin_usd": 0,
-        "mark_price": 0.96,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T7.02/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": "2026-11-06T22:00:00Z",
           "exchange": "Kalshi (CFTC-regulated designated contract market)",
@@ -3106,7 +3398,7 @@
         "outcome": "no",
         "side": "long",
         "ticker": "KXCOPPERW-26NOV0617-T7.02",
-        "unrealized_pnl_usd": -3.75,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
@@ -3127,9 +3419,9 @@
         "kind": "event_contract",
         "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
         "margin_usd": 0,
-        "mark_price": 0.96,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T7.05/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": "2026-11-06T22:00:00Z",
           "exchange": "Kalshi (CFTC-regulated designated contract market)",
@@ -3140,7 +3432,7 @@
         "outcome": "no",
         "side": "long",
         "ticker": "KXCOPPERW-26NOV0617-T7.05",
-        "unrealized_pnl_usd": -3.75,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
@@ -3161,9 +3453,9 @@
         "kind": "event_contract",
         "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
         "margin_usd": 0,
-        "mark_price": 0.96,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T7.08/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": "2026-11-06T22:00:00Z",
           "exchange": "Kalshi (CFTC-regulated designated contract market)",
@@ -3174,7 +3466,7 @@
         "outcome": "no",
         "side": "long",
         "ticker": "KXCOPPERW-26NOV0617-T7.08",
-        "unrealized_pnl_usd": -3.75,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
@@ -3195,9 +3487,9 @@
         "kind": "event_contract",
         "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
         "margin_usd": 0,
-        "mark_price": 0.96,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T7.11/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": "2026-11-06T22:00:00Z",
           "exchange": "Kalshi (CFTC-regulated designated contract market)",
@@ -3208,7 +3500,7 @@
         "outcome": "no",
         "side": "long",
         "ticker": "KXCOPPERW-26NOV0617-T7.11",
-        "unrealized_pnl_usd": -3.75,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
@@ -4340,8 +4632,8 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-longshot-fade",
-    "unrealized_pnl_usd": -15,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 0,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@fade-the-crowd"
   },
   "kalshi-oil-trend": {
@@ -4904,7 +5196,7 @@
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-oil-trend",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@barrel-rider"
   },
   "kalshi-orderbook-imbalance": {
@@ -5319,9 +5611,9 @@
         "kind": "event_contract",
         "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
         "margin_usd": 0,
-        "mark_price": 0.74,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T6.69/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": "2026-11-06T22:00:00Z",
           "exchange": "Kalshi (CFTC-regulated designated contract market)",
@@ -5332,7 +5624,7 @@
         "outcome": "no",
         "side": "long",
         "ticker": "KXCOPPERW-26NOV0617-T6.69",
-        "unrealized_pnl_usd": -3.75,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
@@ -5354,9 +5646,9 @@
         "kind": "event_contract",
         "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
         "margin_usd": 0,
-        "mark_price": 0.79,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T6.72/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": "2026-11-06T22:00:00Z",
           "exchange": "Kalshi (CFTC-regulated designated contract market)",
@@ -5367,7 +5659,7 @@
         "outcome": "no",
         "side": "long",
         "ticker": "KXCOPPERW-26NOV0617-T6.72",
-        "unrealized_pnl_usd": -3.75,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
@@ -5389,9 +5681,9 @@
         "kind": "event_contract",
         "margin_model": "fully_funded_binary_contract_premium_paid_in_full",
         "margin_usd": 0,
-        "mark_price": 0.83,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T6.75/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": "2026-11-06T22:00:00Z",
           "exchange": "Kalshi (CFTC-regulated designated contract market)",
@@ -5402,7 +5694,7 @@
         "outcome": "no",
         "side": "long",
         "ticker": "KXCOPPERW-26NOV0617-T6.75",
-        "unrealized_pnl_usd": -3.75,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "kalshi"
       },
@@ -5657,8 +5949,8 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-orderbook-imbalance",
-    "unrealized_pnl_usd": -11.25,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 0,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@book-watcher"
   },
   "kalshi-perp-mark-fade": {
@@ -5710,7 +6002,7 @@
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-perp-mark-fade",
     "unrealized_pnl_usd": -139272917756506140,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@mark-fade"
   },
   "kalshi-perp-trend": {
@@ -5739,7 +6031,7 @@
         "last_funding_time": "2026-10-21T20:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 46860.890368,
-        "mark_price": 1.2936,
+        "mark_price": 1.3229,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -5752,7 +6044,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "KXAAVEPERP",
-        "unrealized_pnl_usd": 46.062161,
+        "unrealized_pnl_usd": 39.616161,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -5773,7 +6065,7 @@
         "last_funding_time": "2026-10-30T20:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 244.872419,
-        "mark_price": 0.1925,
+        "mark_price": 0.1917,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -5786,7 +6078,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "KXADAPERP",
-        "unrealized_pnl_usd": -145.9455,
+        "unrealized_pnl_usd": -148.5575,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -5841,7 +6133,7 @@
         "last_funding_time": "2026-10-31T04:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 2925.623442,
-        "mark_price": 2.8872,
+        "mark_price": 2.8843,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -5854,7 +6146,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "KXBCHPERP",
-        "unrealized_pnl_usd": 1.374746,
+        "unrealized_pnl_usd": 1.342846,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -5875,7 +6167,7 @@
         "last_funding_time": "2026-10-30T20:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 407.148624,
-        "mark_price": 0.7013,
+        "mark_price": 0.7029,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -5888,7 +6180,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "KXBNBPERP",
-        "unrealized_pnl_usd": -8.105263,
+        "unrealized_pnl_usd": -7.734063,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -5909,7 +6201,7 @@
         "last_funding_time": "2026-10-31T04:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 782.851107,
-        "mark_price": 7.7112,
+        "mark_price": 7.7281,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -5922,7 +6214,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "KXBTCPERP",
-        "unrealized_pnl_usd": 318.4322,
+        "unrealized_pnl_usd": 308.1739,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -5977,7 +6269,7 @@
         "last_funding_time": "2026-10-30T04:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 1680.743112,
-        "mark_price": 7.5101,
+        "mark_price": 7.5024,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -5990,7 +6282,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "KXDOGEPERP",
-        "unrealized_pnl_usd": -64.01084,
+        "unrealized_pnl_usd": -64.54214,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -6011,7 +6303,7 @@
         "last_funding_time": "2026-10-31T04:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 1025.625946,
-        "mark_price": 2.2368,
+        "mark_price": 2.2406,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -6024,7 +6316,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "KXETHPERP",
-        "unrealized_pnl_usd": 499.1772,
+        "unrealized_pnl_usd": 491.5316,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -6045,7 +6337,7 @@
         "last_funding_time": "2026-10-30T14:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 327.21991,
-        "mark_price": 3.8837,
+        "mark_price": 3.8852,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -6058,7 +6350,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "KXGOLDPERP",
-        "unrealized_pnl_usd": -372.3066,
+        "unrealized_pnl_usd": -370.5201,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -6079,7 +6371,7 @@
         "last_funding_time": "2026-10-31T04:00:00Z",
         "margin_model": "kalshi_perp_notional_divided_by_exchange_implied_leverage_estimate",
         "margin_usd": 3455.446138,
-        "mark_price": 8.8506,
+        "mark_price": 8.763,
         "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/margin/markets?limit=200",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -6092,7 +6384,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "KXHYPEPERP",
-        "unrealized_pnl_usd": -4.17251,
+        "unrealized_pnl_usd": -2.68331,
         "usd_per_price_unit": 1,
         "venue": "kalshi_margin"
       },
@@ -6129,8 +6421,8 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-perp-trend",
-    "unrealized_pnl_usd": 848550227390883.6,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 848550227390859.8,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@perp-surfer"
   },
   "kalshi-spread-capture": {
@@ -6148,17 +6440,17 @@
     "starting_cash_usd": 100000,
     "strategy_id": "kalshi-spread-capture",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@spread-hunter"
   },
   "moex-agri-trend": {
-    "cash_usd": 93351.230538,
+    "cash_usd": 93269.414487,
     "closed_trades": 0,
     "equity_complete": false,
     "equity_usd": 104897.601342,
-    "fees_paid_usd": 5.76276,
+    "fees_paid_usd": 5.859675,
     "market_type": "Exchange-listed commodity future",
-    "open_positions": 12,
+    "open_positions": 13,
     "positions": {
       "moex:CCG7": {
         "avg_entry_price": 487.2,
@@ -6170,7 +6462,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 935.869216,
-        "mark_price": 467.2,
+        "mark_price": 466.7,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -6183,7 +6475,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "CCG7",
-        "unrealized_pnl_usd": 203.021714,
+        "unrealized_pnl_usd": 208.097256,
         "usd_per_price_unit": 0.11803588,
         "venue": "moex_forts"
       },
@@ -6197,7 +6489,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 917.241501,
-        "mark_price": 444.8,
+        "mark_price": 444.7,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCX6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -6210,7 +6502,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "CCX6",
-        "unrealized_pnl_usd": -250.708209,
+        "unrealized_pnl_usd": -251.770532,
         "usd_per_price_unit": 0.11803588,
         "venue": "moex_forts"
       },
@@ -6224,7 +6516,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 669.569405,
-        "mark_price": 2.825,
+        "mark_price": 2.829,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/KCG7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -6237,7 +6529,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "KCG7",
-        "unrealized_pnl_usd": -72.362199,
+        "unrealized_pnl_usd": -78.794394,
         "usd_per_price_unit": 9.92622757,
         "venue": "moex_forts"
       },
@@ -6251,7 +6543,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 683.129721,
-        "mark_price": 2.887,
+        "mark_price": 2.879,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/KCX6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -6264,7 +6556,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "KCX6",
-        "unrealized_pnl_usd": 194.037897,
+        "unrealized_pnl_usd": 179.664719,
         "usd_per_price_unit": 9.92622757,
         "venue": "moex_forts"
       },
@@ -6283,7 +6575,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 63.982295,
-        "mark_price": 1.381,
+        "mark_price": 1.38,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/OJF7.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -6296,7 +6588,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "OJF7",
-        "unrealized_pnl_usd": -46.057915,
+        "unrealized_pnl_usd": -46.256441,
         "usd_per_price_unit": 99.26274788,
         "venue": "moex_forts"
       },
@@ -6347,7 +6639,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 552.274079,
-        "mark_price": 36.64,
+        "mark_price": 36.77,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SAH7.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -6360,7 +6652,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "SAH7",
-        "unrealized_pnl_usd": -283.86119,
+        "unrealized_pnl_usd": -269.830028,
         "usd_per_price_unit": 11.9924457,
         "venue": "moex_forts"
       },
@@ -6465,9 +6757,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 572.588173,
-        "mark_price": 0,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/W4V6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -6478,7 +6770,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "W4V6",
-        "unrealized_pnl_usd": 4970.255677,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01180359,
         "venue": "moex_forts"
       },
@@ -6497,7 +6789,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 18.692019,
-        "mark_price": 10250,
+        "mark_price": 10160,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/W4X6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -6510,18 +6802,50 @@
         "outcome": null,
         "side": "short",
         "ticker": "W4X6",
-        "unrealized_pnl_usd": 34.549978,
+        "unrealized_pnl_usd": 35.629664,
         "usd_per_price_unit": 0.01199652,
+        "venue": "moex_forts"
+      },
+      "moex:W4Z6": {
+        "avg_entry_price": 11810,
+        "contracts": 5,
+        "entry_fee_usd": 0.096915,
+        "entry_signal": {
+          "momentum": -0.3413,
+          "name": "agri_momentum",
+          "observations": 86
+        },
+        "entry_trade_id": "44a011774ca2fae13463",
+        "entry_ts": "2026-10-31T11:06:22.691Z",
+        "instrument_id": "moex:W4Z6",
+        "kind": "future",
+        "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
+        "margin_usd": 81.719136,
+        "mark_price": 11840,
+        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/W4Z6.json?iss.meta=off",
+        "mark_status": "short_marked_at_offer",
+        "market": {
+          "close_time": null,
+          "exchange": "Moscow Exchange (MOEX) FORTS",
+          "expiration_date": null,
+          "last_trade_date": "2026-12-30",
+          "series_ticker": null
+        },
+        "outcome": null,
+        "side": "short",
+        "ticker": "W4Z6",
+        "unrealized_pnl_usd": -1.851852,
+        "usd_per_price_unit": 0.01234568,
         "venue": "moex_forts"
       }
     },
     "realized_pnl_usd": 0,
-    "slippage_paid_usd": 3041.4035,
+    "slippage_paid_usd": 3116.4035,
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "moex-agri-trend",
-    "unrealized_pnl_usd": 5971.792806,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 997.805446,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@agri-trend"
   },
   "moex-calendar-carry": {
@@ -6550,7 +6874,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 61801.785152,
-        "mark_price": 467.2,
+        "mark_price": 466.7,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CCG7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -6563,7 +6887,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "CCG7",
-        "unrealized_pnl_usd": 72.77236,
+        "unrealized_pnl_usd": 73.893965,
         "usd_per_price_unit": 0.11806375,
         "venue": "moex_forts"
       },
@@ -6618,9 +6942,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 28.784051,
-        "mark_price": 15170,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NCZ6.json?iss.meta=off",
-        "mark_status": "long_marked_at_bid",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -6631,7 +6955,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "NCZ6",
-        "unrealized_pnl_usd": -4.42888,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.00995254,
         "venue": "moex_forts"
       },
@@ -6788,9 +7112,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1085.357518,
-        "mark_price": 0,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/W4V6.json?iss.meta=off",
-        "mark_status": "long_marked_at_bid",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -6801,7 +7125,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "W4V6",
-        "unrealized_pnl_usd": -537.183581,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01193317,
         "venue": "moex_forts"
       },
@@ -6822,7 +7146,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1189.972316,
-        "mark_price": 10250,
+        "mark_price": 10160,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/W4X6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -6835,7 +7159,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "W4X6",
-        "unrealized_pnl_usd": 364.102075,
+        "unrealized_pnl_usd": 378.063884,
         "usd_per_price_unit": 0.01193317,
         "venue": "moex_forts"
       }
@@ -6845,8 +7169,8 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "moex-calendar-carry",
-    "unrealized_pnl_usd": -524.444246,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 32.25163,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@calendar-carry"
   },
   "moex-energy-trend": {
@@ -6940,9 +7264,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 93.917853,
-        "mark_price": 66160,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/92X6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -6953,7 +7277,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "92X6",
-        "unrealized_pnl_usd": 32.555422,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01166861,
         "venue": "moex_forts"
       },
@@ -6973,9 +7297,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 93.895003,
-        "mark_price": 63450,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/92Z6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -6986,7 +7310,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "92Z6",
-        "unrealized_pnl_usd": -11.734913,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01235254,
         "venue": "moex_forts"
       },
@@ -7072,9 +7396,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 103.653326,
-        "mark_price": 68300,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/95X6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -7085,7 +7409,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "95X6",
-        "unrealized_pnl_usd": 19.953323,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01166861,
         "venue": "moex_forts"
       },
@@ -7105,9 +7429,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 113.266506,
-        "mark_price": 66340,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/95Z6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -7118,7 +7442,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "95Z6",
-        "unrealized_pnl_usd": -15.193624,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01235254,
         "venue": "moex_forts"
       },
@@ -7171,7 +7495,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1166.037535,
-        "mark_price": 117.63,
+        "mark_price": 117.65,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BRX6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -7184,7 +7508,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "BRX6",
-        "unrealized_pnl_usd": 1117.202228,
+        "unrealized_pnl_usd": 1118.194855,
         "usd_per_price_unit": 9.92627479,
         "venue": "moex_forts"
       },
@@ -7204,7 +7528,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1244.03149,
-        "mark_price": 112.42,
+        "mark_price": 112.61,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/BRZ6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -7217,7 +7541,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "BRZ6",
-        "unrealized_pnl_usd": 803.872423,
+        "unrealized_pnl_usd": 813.341472,
         "usd_per_price_unit": 9.96742,
         "venue": "moex_forts"
       },
@@ -7303,9 +7627,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 93.332094,
-        "mark_price": 61000,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/DLX6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -7316,7 +7640,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "DLX6",
-        "unrealized_pnl_usd": 23.99304,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01199652,
         "venue": "moex_forts"
       },
@@ -7336,9 +7660,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 88.613427,
-        "mark_price": 60210,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/DLZ6.json?iss.meta=off",
-        "mark_status": "long_marked_at_bid",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -7349,7 +7673,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "DLZ6",
-        "unrealized_pnl_usd": -2.96461,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.01235254,
         "venue": "moex_forts"
       },
@@ -7402,9 +7726,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 2631.458924,
-        "mark_price": 0,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/FFV6.json?iss.meta=off",
-        "mark_status": "long_marked_at_bid",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -7415,7 +7739,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "FFV6",
-        "unrealized_pnl_usd": -4963.738784,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1.13755902,
         "venue": "moex_forts"
       },
@@ -7435,7 +7759,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 84.968239,
-        "mark_price": 103.26,
+        "mark_price": 103.19,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/FFX6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -7448,7 +7772,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "FFX6",
-        "unrealized_pnl_usd": -66.644766,
+        "unrealized_pnl_usd": -66.485411,
         "usd_per_price_unit": 1.13825391,
         "venue": "moex_forts"
       },
@@ -7534,7 +7858,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 196.837072,
-        "mark_price": 2.9,
+        "mark_price": 2.904,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NGX6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -7547,7 +7871,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "NGX6",
-        "unrealized_pnl_usd": 115.704328,
+        "unrealized_pnl_usd": 114.909109,
         "usd_per_price_unit": 99.40234352,
         "venue": "moex_forts"
       },
@@ -7567,7 +7891,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1191.99729,
-        "mark_price": 3.403,
+        "mark_price": 3.394,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NGZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -7580,7 +7904,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "NGZ6",
-        "unrealized_pnl_usd": 175.702331,
+        "unrealized_pnl_usd": 188.252497,
         "usd_per_price_unit": 99.60449577,
         "venue": "moex_forts"
       },
@@ -7666,7 +7990,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 16.736737,
-        "mark_price": 2.903,
+        "mark_price": 2.904,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NRX6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -7679,7 +8003,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "NRX6",
-        "unrealized_pnl_usd": 9.877,
+        "unrealized_pnl_usd": 9.86,
         "usd_per_price_unit": 1,
         "venue": "moex_forts"
       },
@@ -7699,7 +8023,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 615.446097,
-        "mark_price": 3.405,
+        "mark_price": 3.4,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NRZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -7712,7 +8036,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "NRZ6",
-        "unrealized_pnl_usd": 92.902261,
+        "unrealized_pnl_usd": 96.503124,
         "usd_per_price_unit": 0.9960893,
         "venue": "moex_forts"
       },
@@ -7765,9 +8089,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 247.30121,
-        "mark_price": 102,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/WTX6.json?iss.meta=off",
-        "mark_status": "long_marked_at_bid",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -7778,7 +8102,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "WTX6",
-        "unrealized_pnl_usd": 121.912716,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 9.83167066,
         "venue": "moex_forts"
       },
@@ -7821,15 +8145,15 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "moex-energy-trend",
-    "unrealized_pnl_usd": -2546.601626,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 2274.575646,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@rig-count"
   },
   "moex-fx-trend": {
     "cash_usd": 99035.221915,
     "closed_trades": 0,
     "equity_complete": true,
-    "equity_usd": 99518.723331,
+    "equity_usd": 99525.144483,
     "fees_paid_usd": 0.445696,
     "market_type": "Exchange-listed FX future",
     "open_positions": 2,
@@ -7850,7 +8174,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 484.540132,
-        "mark_price": 12.486,
+        "mark_price": 12.495,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CRH7.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -7863,7 +8187,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "CRH7",
-        "unrealized_pnl_usd": -239.471199,
+        "unrealized_pnl_usd": -236.071766,
         "usd_per_price_unit": 11.80358829,
         "venue": "moex_forts"
       },
@@ -7883,7 +8207,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 479.792257,
-        "mark_price": 12.269,
+        "mark_price": 12.277,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CRZ6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -7896,7 +8220,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "CRZ6",
-        "unrealized_pnl_usd": -241.359773,
+        "unrealized_pnl_usd": -238.338055,
         "usd_per_price_unit": 11.80358829,
         "venue": "moex_forts"
       }
@@ -7906,15 +8230,15 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "moex-fx-trend",
-    "unrealized_pnl_usd": -480.830973,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": -474.409821,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@usd-rub-desk"
   },
   "moex-index-trend": {
     "cash_usd": 97529.825521,
     "closed_trades": 0,
     "equity_complete": true,
-    "equity_usd": 98393.045355,
+    "equity_usd": 98405.805775,
     "fees_paid_usd": 2.491851,
     "market_type": "Exchange-listed equity index future",
     "open_positions": 5,
@@ -7935,7 +8259,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 360.067517,
-        "mark_price": 258800,
+        "mark_price": 258775,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/MXH7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -7948,7 +8272,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "MXH7",
-        "unrealized_pnl_usd": -235.186531,
+        "unrealized_pnl_usd": -234.891441,
         "usd_per_price_unit": 0.01180359,
         "venue": "moex_forts"
       },
@@ -7968,7 +8292,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 322.211166,
-        "mark_price": 251800,
+        "mark_price": 251750,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/MXZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -7981,7 +8305,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "MXZ6",
-        "unrealized_pnl_usd": -216.005697,
+        "unrealized_pnl_usd": -215.415517,
         "usd_per_price_unit": 0.01180359,
         "venue": "moex_forts"
       },
@@ -8001,7 +8325,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 628.115203,
-        "mark_price": 28609,
+        "mark_price": 28629,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NAH7.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -8014,7 +8338,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "NAH7",
-        "unrealized_pnl_usd": -332.40959,
+        "unrealized_pnl_usd": -329.233197,
         "usd_per_price_unit": 0.00992623,
         "venue": "moex_forts"
       },
@@ -8034,7 +8358,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 601.19169,
-        "mark_price": 28450,
+        "mark_price": 28477,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NAZ6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -8047,7 +8371,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "NAZ6",
-        "unrealized_pnl_usd": -357.34428,
+        "unrealized_pnl_usd": -353.056149,
         "usd_per_price_unit": 0.00992623,
         "venue": "moex_forts"
       },
@@ -8067,7 +8391,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 556.097052,
-        "mark_price": 97130,
+        "mark_price": 97020,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/RIZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8080,7 +8404,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "RIZ6",
-        "unrealized_pnl_usd": -463.516696,
+        "unrealized_pnl_usd": -459.10607,
         "usd_per_price_unit": 0.0200483,
         "venue": "moex_forts"
       }
@@ -8090,8 +8414,8 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "moex-index-trend",
-    "unrealized_pnl_usd": -1604.462794,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": -1591.702374,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@index-mover"
   },
   "moex-metal-breakout": {
@@ -8109,13 +8433,13 @@
     "starting_cash_usd": 100000,
     "strategy_id": "moex-metal-breakout",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@donchian-desk"
   },
   "moex-metals-trend": {
     "cash_usd": 91662.5641,
     "closed_trades": 0,
-    "equity_complete": true,
+    "equity_complete": false,
     "equity_usd": 106799.33505,
     "fees_paid_usd": 6.569516,
     "market_type": "Exchange-listed commodity future",
@@ -8137,7 +8461,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 782.481586,
-        "mark_price": 3105.5,
+        "mark_price": 3106.5,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/ANZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8150,7 +8474,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "ANZ6",
-        "unrealized_pnl_usd": 371.639736,
+        "unrealized_pnl_usd": 369.853006,
         "usd_per_price_unit": 0.09926275,
         "venue": "moex_forts"
       },
@@ -8164,7 +8488,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 773.71577,
-        "mark_price": 14195,
+        "mark_price": 14227,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/CEZ6.json?iss.meta=off",
         "mark_status": "long_marked_at_bid",
         "market": {
@@ -8177,7 +8501,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "CEZ6",
-        "unrealized_pnl_usd": -268.802308,
+        "unrealized_pnl_usd": -256.096734,
         "usd_per_price_unit": 0.00992623,
         "venue": "moex_forts"
       },
@@ -8191,7 +8515,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 420.620397,
-        "mark_price": 3988.1,
+        "mark_price": 3998.4,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDH7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8204,7 +8528,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "GDH7",
-        "unrealized_pnl_usd": 498.49752,
+        "unrealized_pnl_usd": 488.273457,
         "usd_per_price_unit": 0.99262748,
         "venue": "moex_forts"
       },
@@ -8218,7 +8542,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 395.917729,
-        "mark_price": 3920.9,
+        "mark_price": 3931.4,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/GDZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8231,7 +8555,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "GDZ6",
-        "unrealized_pnl_usd": 504.354023,
+        "unrealized_pnl_usd": 493.931434,
         "usd_per_price_unit": 0.99262748,
         "venue": "moex_forts"
       },
@@ -8251,9 +8575,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 40.63279,
-        "mark_price": 1492.8,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/LTH7.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -8264,7 +8588,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "LTH7",
-        "unrealized_pnl_usd": 38.960445,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.09926228,
         "venue": "moex_forts"
       },
@@ -8278,7 +8602,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1178.345609,
-        "mark_price": 1452.6,
+        "mark_price": 1457.7,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/LTZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8291,7 +8615,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "LTZ6",
-        "unrealized_pnl_usd": 1267.063152,
+        "unrealized_pnl_usd": 1250.863548,
         "usd_per_price_unit": 0.09926228,
         "venue": "moex_forts"
       },
@@ -8305,9 +8629,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 154.90085,
-        "mark_price": 15290,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/NCZ6.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -8318,7 +8642,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "NCZ6",
-        "unrealized_pnl_usd": 62.535501,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.00992627,
         "venue": "moex_forts"
       },
@@ -8338,9 +8662,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 406.07153,
-        "mark_price": 1492.8,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/PTH7.json?iss.meta=off",
-        "mark_status": "short_marked_at_offer",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -8351,7 +8675,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "PTH7",
-        "unrealized_pnl_usd": 391.9,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 1,
         "venue": "moex_forts"
       },
@@ -8371,7 +8695,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1104.037181,
-        "mark_price": 1454,
+        "mark_price": 1456.6,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/PTZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8384,7 +8708,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "PTZ6",
-        "unrealized_pnl_usd": 1194,
+        "unrealized_pnl_usd": 1186.2,
         "usd_per_price_unit": 1,
         "venue": "moex_forts"
       },
@@ -8404,7 +8728,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1291.457035,
-        "mark_price": 51.53,
+        "mark_price": 51.71,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SVH7.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8417,7 +8741,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "SVH7",
-        "unrealized_pnl_usd": 1442.883303,
+        "unrealized_pnl_usd": 1428.589468,
         "usd_per_price_unit": 9.92627479,
         "venue": "moex_forts"
       },
@@ -8437,7 +8761,7 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 1211.99339,
-        "mark_price": 49.94,
+        "mark_price": 50.11,
         "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/SVZ6.json?iss.meta=off",
         "mark_status": "short_marked_at_offer",
         "market": {
@@ -8450,7 +8774,7 @@
         "outcome": null,
         "side": "short",
         "ticker": "SVZ6",
-        "unrealized_pnl_usd": 1459.559445,
+        "unrealized_pnl_usd": 1446.059711,
         "usd_per_price_unit": 9.92627479,
         "venue": "moex_forts"
       },
@@ -8464,9 +8788,9 @@
         "kind": "future",
         "margin_model": "moex_published_initial_margin_rub_converted_at_official_usd_rub",
         "margin_usd": 570.692517,
-        "mark_price": 3785.5,
-        "mark_source_url": "https://iss.moex.com/iss/engines/futures/markets/forts/securities/ZCZ6.json?iss.meta=off",
-        "mark_status": "long_marked_at_bid",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "market": {
           "close_time": null,
           "exchange": "Moscow Exchange (MOEX) FORTS",
@@ -8477,7 +8801,7 @@
         "outcome": null,
         "side": "long",
         "ticker": "ZCZ6",
-        "unrealized_pnl_usd": -156.686251,
+        "unrealized_pnl_usd": null,
         "usd_per_price_unit": 0.09926275,
         "venue": "moex_forts"
       }
@@ -8487,8 +8811,8 @@
     "started_at": "2026-09-22T00:00:00Z",
     "starting_cash_usd": 100000,
     "strategy_id": "moex-metals-trend",
-    "unrealized_pnl_usd": 6805.904566,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "unrealized_pnl_usd": 6407.673891,
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@metal-trend"
   },
   "moex-rate-curve": {
@@ -8576,7 +8900,7 @@
     "starting_cash_usd": 100000,
     "strategy_id": "moex-rate-curve",
     "unrealized_pnl_usd": 0,
-    "updated_at": "2026-10-31T05:23:13.253Z",
+    "updated_at": "2026-10-31T11:06:33.583Z",
     "username": "@ruonia-curve"
   }
 }
