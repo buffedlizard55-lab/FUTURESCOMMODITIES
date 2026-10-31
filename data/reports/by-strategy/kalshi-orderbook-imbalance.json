@@ -13,10 +13,10 @@
         "trades": 22
       },
       "Copper": {
-        "fees_usd": 28.25,
+        "fees_usd": 32.16,
         "realized_pnl_usd": -132.398475,
-        "slippage_usd": 14.591412,
-        "trades": 20
+        "slippage_usd": 20.216412,
+        "trades": 23
       },
       "Gasoline (US retail average)": {
         "fees_usd": 13.57,
@@ -162,6 +162,36 @@
         "unrealized_pnl_usd": null
       },
       {
+        "contracts": 125,
+        "entry_price": 0.77,
+        "instrument_id": "kalshi:KXCOPPERW-26NOV0617-T6.69",
+        "mark_price": 0.74,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T6.69/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERW-26NOV0617-T6.69",
+        "unrealized_pnl_usd": -3.75
+      },
+      {
+        "contracts": 125,
+        "entry_price": 0.82,
+        "instrument_id": "kalshi:KXCOPPERW-26NOV0617-T6.72",
+        "mark_price": 0.79,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T6.72/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERW-26NOV0617-T6.72",
+        "unrealized_pnl_usd": -3.75
+      },
+      {
+        "contracts": 125,
+        "entry_price": 0.86,
+        "instrument_id": "kalshi:KXCOPPERW-26NOV0617-T6.75",
+        "mark_price": 0.83,
+        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXCOPPERW-26NOV0617-T6.75/orderbook?depth=20",
+        "mark_status": "long_marked_at_bid_conservative",
+        "ticker": "KXCOPPERW-26NOV0617-T6.75",
+        "unrealized_pnl_usd": -3.75
+      },
+      {
         "contracts": 12,
         "entry_price": 0.65,
         "instrument_id": "kalshi:KXGOLDDIRY-26DEC31H1700-T4300",
@@ -225,15 +255,15 @@
         "contracts": 51,
         "entry_price": 0.19,
         "instrument_id": "kalshi:KXWTIMIN-26DEC31-T65",
-        "mark_price": 0.04,
-        "mark_source_url": "https://api.elections.kalshi.com/trade-api/v2/markets/KXWTIMIN-26DEC31-T65/orderbook?depth=20",
-        "mark_status": "long_marked_at_bid_conservative",
+        "mark_price": null,
+        "mark_source_url": null,
+        "mark_status": "no_quote_in_snapshot",
         "ticker": "KXWTIMIN-26DEC31-T65",
-        "unrealized_pnl_usd": -7.65
+        "unrealized_pnl_usd": null
       }
     ],
     "trades_by_venue": {
-      "kalshi": 121
+      "kalshi": 124
     },
     "worst_closed_trade": {
       "pnl_usd": -88.578475,
@@ -241,21 +271,21 @@
       "ticker": "KXCOPPERMON-26OCT3017-T6.63"
     }
   },
-  "blocked_orders": 44,
+  "blocked_orders": 50,
   "blocked_reasons": {
     "insufficient_depth_within_price_tolerance": 11,
-    "settlement_result_not_published": 33
+    "settlement_result_not_published": 39
   },
   "closed_trades": 86,
   "disabled_reason": null,
   "display_name": "Order-Book Imbalance",
   "enabled": true,
-  "entries": 104,
+  "entries": 107,
   "equity_usd": 99980.310055,
   "exits": 17,
-  "fees_paid_usd": 186.55,
+  "fees_paid_usd": 190.46,
   "market_type": "Kalshi event contract",
-  "open_positions": 18,
+  "open_positions": 21,
   "origin": {
     "claim": "Standing-book imbalance is a classic order-flow signal: when resting depth is heavily concentrated on one side, the next short-horizon move is disproportionately in that side's direction. Prediction-market strategy write-ups list flow/liquidity signals among the recurring edges.",
     "kind": "documented_anomaly",
@@ -274,25 +304,25 @@
     "exit": "Exit when the depth ratio crosses back through 50% or the market closes.",
     "sizing": "Target notional, capped at 25% of the resting depth within 2 cents of the offer."
   },
-  "slippage_paid_usd": 165.777457,
+  "slippage_paid_usd": 171.402457,
   "strategy_id": "kalshi-orderbook-imbalance",
   "thesis": "Trade in the direction of the heavily unbalanced resting book: when the official order book shows at least 70% of visible depth on one side and the spread is tight, buy that side, betting that the resting liquidity reflects informed order flow.",
   "traded_market_types": [
     "Kalshi event contract"
   ],
-  "trades": 121,
-  "unrealized_pnl_usd": -7.65,
+  "trades": 124,
+  "unrealized_pnl_usd": -11.25,
   "username": "@book-watcher",
   "venues": [
     "kalshi"
   ],
   "what_it_means": [
-    "121 ledger records so far: 7 distinct commodity exposures across kalshi.",
-    "Closed-trade P&L is -336.79 USD against 186.55 USD of fees and 165.78 USD of measured slippage against the mid.",
+    "124 ledger records so far: 7 distinct commodity exposures across kalshi.",
+    "Closed-trade P&L is -336.79 USD against 190.46 USD of fees and 171.40 USD of measured slippage against the mid.",
     "Best closed trade: KXAAAGASW-26OCT05-4.3800 at 2.45 USD (book_imbalance_flip).",
     "Worst closed trade: KXCOPPERMON-26OCT3017-T6.63 at -88.578475 USD (book_imbalance_flip).",
-    "1 open positions carry verified marks totalling -7.65 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
-    "Blocked order attempts and their recorded reasons: settlement_result_not_published (33), insufficient_depth_within_price_tolerance (11).",
+    "3 open positions carry verified marks totalling -11.25 USD unrealised; positions whose exit price could not be read from the book are reported as null rather than estimated.",
+    "Blocked order attempts and their recorded reasons: settlement_result_not_published (39), insufficient_depth_within_price_tolerance (11).",
     "Verdict: not yet statistically meaningful - a one-year season is the measurement window, and the report states only what the ledger shows."
   ]
 }
